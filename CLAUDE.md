@@ -5,9 +5,9 @@
      Keep this file under ~150 lines — Claude loads it every session.
      See the guide at https://hugosantanna.github.io/clo-author/ for full documentation. -->
 
-**Project:** [YOUR PROJECT NAME]
-**Institution:** [YOUR INSTITUTION]
-**Field:** [YOUR FIELD — Economics by default. Can be adapted to Finance, Accounting, Marketing, etc.]
+**Project:** The Labor Market and Distributional Impact of Generative AI: Causal Evidence for Latin America
+**Institution:** PUCP (Pontificia Universidad Católica del Perú) — Programa Doctoral en Economía
+**Field:** Labor Economics (adjacent: Development Economics, Public Economics, AI & Technology)
 **Branch:** main
 
 ---
@@ -34,7 +34,7 @@
 ## Folder Structure
 
 ```
-[YOUR-PROJECT]/
+gen-ai-lac-labor/
 ├── CLAUDE.MD                    # This file
 ├── .claude/                     # Rules, skills, agents, hooks
 ├── Bibliography_base.bib        # Centralized bibliography
@@ -115,14 +115,17 @@ See `quality.md` for weighted aggregation formula.
 
 | Environment       | Effect        | Use Case       |
 |-------------------|---------------|----------------|
-| `[your-env]`      | [Description] | [When to use]  |
+| `exposuremap`     | Side-by-side map + coefficient table | Cross-country exposure variation |
+| `eventstudy`      | Full-width event study plot | Pre-trends and dynamic treatment effects |
+| `countrycomp`     | 5-panel layout (one per country) | Cross-country heterogeneity results |
+| `distplot`        | Wage distribution overlay (pre/post) | RIF regression results (Paper 2) |
 
 ---
 
 ## Output Organization
 
 <!-- Options: by-script (default) or by-purpose -->
-Output organization: by-script
+Output organization: by-purpose
 
 <!-- by-script:  paper/figures/main_regression/figure1.pdf, paper/tables/main_regression/table1.tex -->
 <!-- by-purpose: paper/figures/estimation/coefplot_main.pdf, paper/tables/robustness/alt_controls.tex -->
@@ -133,7 +136,8 @@ Output organization: by-script
 
 | Component | File | Status | Description |
 |-----------|------|--------|-------------|
-| Paper | `paper/main.tex` | [draft/submitted/R&R] | [Brief description] |
-| Data | `scripts/R/` | [complete/in-progress] | [Analysis description] |
-| Replication | `paper/replication/` | [not started/ready] | [Deposit status] |
-| Job Market Talk | `paper/talks/job_market_talk.tex` | -- | [Status] |
+| Paper 1 | `paper/main.tex` | not started | Labor market effects of GenAI across 5 LAC countries (DiD) |
+| Paper 2 | `paper/paper2/main.tex` | not started | Distributional and social protection effects |
+| Data | `scripts/R/` | not started | Multi-country survey harmonization + exposure mapping |
+| Replication | `paper/replication/` | not started | Not yet packaged |
+| Job Market Talk | `paper/talks/jmt.tex` | -- | Not started |
