@@ -1,8 +1,10 @@
-stage,n_in,n_out,match_rate
-Eloundou task-level rows,19265,798,
-SOCs in Eloundou,798,798,1
-SOCs in BLS crosswalk,840,840,1
-SOCs matched (Eloundou join),840,686,0.816666666666667
-ISCO-08 4d in crosswalk,438,438,1
-ISCO-08 4d matched,438,394,0.899543378995434
-ISCO-08 3d in output,130,130,1
+stage,n_in,n_out,match_rate,soc_vintage
+Eloundou task-level rows,19265,798,,SOC-2018 bridged to SOC-2010
+SOCs in Eloundou,798,798,1,SOC-2018 bridged to SOC-2010
+SOCs after vintage bridge,798,778,,SOC-2018 bridged to SOC-2010
+SOCs in BLS ISCO crosswalk,840,840,1,SOC-2018 bridged to SOC-2010
+SOCs matched (Eloundou join),840,778,0.926190476190476,SOC-2018 bridged to SOC-2010
+ISCO-08 4d in crosswalk,438,438,1,SOC-2018 bridged to SOC-2010
+ISCO-08 4d matched,438,430,0.981735159817352,SOC-2018 bridged to SOC-2010
+ISCO-08 4d cells with partial,438,283,,SOC-2018 bridged to SOC-2010
+ISCO-08 3d in output,130,130,1,SOC-2018 bridged to SOC-2010
