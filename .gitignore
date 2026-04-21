@@ -26,6 +26,20 @@ master_supporting_docs/supporting_papers/**/*.pdf
 master_supporting_docs/supporting_slides/**/*.pdf
 master_supporting_docs/**/.DS_Store
 
+# Raw survey microdata — confidential, large, not redistributable
+# The entire data/raw directory (or its symlink to an external data store)
+# is local-only. The user sets this up on each machine independently.
+# See data/raw/README.md (in main repo) for structure and naming convention.
+/data/raw
+
+# Cleaned data intermediate files
+data/cleaned/**/*.rds
+data/cleaned/**/*.parquet
+data/cleaned/**/*.feather
+# Allow small metadata/codebooks in cleaned/
+!data/cleaned/**/README.md
+!data/cleaned/**/codebook.*
+
 # Python
 __pycache__/
 *.pyc
@@ -61,3 +75,6 @@ paper/quarto/.quarto/
 # *.rds
 # output/**/*.rds
 docs/
+
+# Scheduled tasks runtime state (local)
+.claude/scheduled_tasks.lock

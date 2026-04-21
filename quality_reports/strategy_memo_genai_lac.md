@@ -192,7 +192,7 @@ $$
 - **Rotemberg weights** \citep{GoldsmithPinkham2020_bartik} reported in an appendix table.
 - **Narrative discussion of top-5 weighted occupations** to argue for share credibility.
 - **Robustness: drop the top-weighted occupation** and re-estimate; the result must survive in sign.
-- **Share-period mismatch acknowledged.** Shares are 2019; post period is 2023. The 4-year gap between share construction and the shift is short by Bartik standards (Acemoglu-Restrepo 2020 robots use 1990 shares against 2007–2016 shifts). We offer 2019-only shares as the primary specification; 2015–2019 averaged shares as robustness.
+- **Share-period selection.** Post-COVID sample precludes 2015–2019 shares (pre-COVID structure does not reflect the post-COVID equilibrium where our DiD operates). Primary: 2021 shares (first available post-COVID year — predetermined relative to ChatGPT launch by ~2 years). Robustness: average of 2021–2022 shares to reduce measurement noise.
 - **Adão-Kolesár-Morales SE** via `ShiftShareSE` as the design-appropriate inference.
 
 ### 3.5 Honest-DiD \citep{RambachanRoth2023_honest}
@@ -379,7 +379,27 @@ Beyond LAC, the formality channel speaks to other developing regions with simila
 
 ### 8.1 Time window
 
-Pre: 2015–2022 (8 years). Treatment: 2023Q1. Post: 2023–most recent (expected through 2024Q4 / 2025Q1).
+**Post-COVID steady-state sample.** Pre-treatment: 2021Q1–2022Q3 (7 quarters). Buffer (dropped): 2022Q4 (ChatGPT launched 30 Nov 2022; Q4 averages are 2/3 pre-launch, biasing τ toward zero if included as treated). Post-treatment: 2023Q1–2025Q4 (12 quarters). Primary unit of time: annual for the 7-country panel (2021, 2022, 2023, 2024, 2025 — 5 years); quarterly for the 5-country event study.
+
+**Deliberate design choice:** We exclude the 2015–2020 pre-COVID period even where data exist. Rationale: COVID differentially affected high-exposure cognitive occupations (remote-work migration, differential sectoral reallocation) vs low-exposure manual/service occupations (in-person disruption, informalization). Including pre-COVID periods would compare labor markets operating in two structurally different equilibria, violating the comparability requirement for the DiD control group. Starting from 2021Q1 ensures both the treatment and control time series are drawn from the post-COVID steady state. This framing aligns with \citet{BergBZ2018_ai_inequality} on regime-shift identification and with the post-COVID labor-market literature documenting occupation-specific COVID responses.
+
+**Trade-off acknowledged:** 7 pre-period quarters is shorter than the canonical DiD literature. This is mitigated by: (i) elevating Honest-DiD bounds (\citet{RambachanRoth2023_honest}) from robustness to core identification (§4.3) — the method is designed for short pre-periods; (ii) replacing temporal placebo tests (2019, 2021) with cross-sectional placebos on ζ=0 occupations; (iii) placebo outcomes tests on variables that should not respond to LLM exposure (hours worked by agricultural manual laborers); (iv) extended post-period (12 quarters vs typical 4-8) compensates for shorter pre-period in aggregate sample size.
+
+### 8.1.1 Survey-frequency harmonization
+
+Seven surveys span three native frequencies. Harmonization protocol (executed in `scripts/R/02_harmonize_surveys.R`):
+
+| Country | Survey | Native frequency | Harmonization to quarterly |
+|---------|--------|------------------|----------------------------|
+| Chile | ENE | Monthly (rolling-quarter trimestre móvil) | Non-overlapping **calendar** quarters: EFM (Q1), AMJ (Q2), JAS (Q3), OND (Q4) — aligns with Mexico/Costa Rica/Colombia/Ecuador calendar-quarter convention and keeps OND 2022 cleanly as the buffer drop |
+| Colombia | GEIH | Monthly | Pool 3 months per quarter; stack observations |
+| Ecuador | ENEMDU | Monthly (continuous since 2020) | Pool 3 months per quarter; stack observations |
+| Costa Rica | ECE | Quarterly native | Use as-is |
+| Mexico | ENOE | Quarterly native | Use as-is |
+| Peru | ENAHO | Annual | Use as-is (annual analysis only) |
+| Uruguay | ECH | Annual | Use as-is (annual analysis only) |
+
+For annual aggregation, we average quarterly cell means weighted by survey expansion factors. Monthly-to-quarterly stacking preserves all original observations and the cross-sectional weighting within the quarter.
 
 ### 8.2 Occupation coding
 
@@ -458,7 +478,7 @@ Per §5.1: country, baseline formality (primary), gender, education, age, sector
 
 ### 10.5 Robustness tests
 
-Pre-trends; placebos (2019, 2021); Honest-DiD $\bar M$; alternative exposures; drop-one-country (Mexico nearshoring); alternative cutoffs; alternative controls; alternative cluster structures; Bartik with 2019 vs 2015–2019 shares; DDD with placebo-demeaned Trends.
+Honest-DiD $\bar M$ bounds (core given short pre-period, not merely robustness); cross-sectional placebo on $\zeta=0$ occupations; placebo outcomes on LLM-irrelevant variables (agricultural manual hours); alternative exposures (Webb, Felten, Handa); drop-one-country (Mexico nearshoring); alternative cutoffs; alternative controls; alternative cluster structures; Bartik with 2019 vs 2021 shares; DDD with placebo-demeaned Trends.
 
 ### 10.6 What counts as a null
 
