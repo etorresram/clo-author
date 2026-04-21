@@ -21,6 +21,11 @@
 # Compiled PDFs (uncomment to track specific PDFs)
 # *.pdf
 
+# Reference library PDFs — local-only, copyright-sensitive, often large
+master_supporting_docs/supporting_papers/**/*.pdf
+master_supporting_docs/supporting_slides/**/*.pdf
+master_supporting_docs/**/.DS_Store
+
 # Python
 __pycache__/
 *.pyc

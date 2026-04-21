@@ -28,14 +28,17 @@ Last updated: 2026-04-11
 
 | Dataset | Type | Access | Notes |
 |---------|------|--------|-------|
-| ENOE (Mexico) | Rotating panel labor survey, quarterly | Public (INEGI) | Largest LAC labor survey; SOC-comparable occupation codes; rotating panel allows short-run tracking |
-| ENE/NENE (Chile) | Household employment survey, quarterly | Public (INE Chile) | ISCO-08 compatible since 2010; covers formal/informal |
-| ENEMDU (Ecuador) | Continuous employment survey, quarterly | Public (INEC Ecuador) | ISCO-08 codes available; covers urban/rural |
-| ECE/EH (Bolivia) | Continuous household survey | Public (INE Bolivia) | Smaller sample; occupation codes require crosswalk validation |
-| ENAHO (Peru) | National household survey, quarterly | Public (INEI) | Rich income/expenditure data; ISCO-88 to ISCO-08 crosswalk needed |
+| ENOE (Mexico) | Labor survey, quarterly | Public (INEGI) | Largest LAC labor survey; rotating panel; ISCO-08 compatible |
+| ENE (Chile) | Labor survey, quarterly | Public (INE Chile) | ISCO-08 compatible; covers formal/informal |
+| ENEMDU (Ecuador) | Labor survey, quarterly | Public (INEC Ecuador) | ISCO-08 codes available; urban/rural |
+| GEIH (Colombia) | Labor survey, quarterly | Public (DANE) | ISCO-08 compatible; large sample |
+| ECE (Costa Rica) | Labor survey, quarterly | Public (INEC Costa Rica) | ISCO-08 compatible; smaller sample |
+| ENAHO (Peru) | Household survey, annual | Public (INEI) | Rich income/expenditure data; ISCO-08 compatible |
+| ECH (Uruguay) | Household survey, annual | Public (INE Uruguay) | ISCO-08 compatible; small but clean |
 | O*NET 27.2 | Occupation task content database | Public (US DOL) | Source for AI exposure scores via Eloundou et al. (2023) |
-| SOC-2010 to ISCO-08 crosswalk | Concordance | Public (BLS/ILO) | Maps US occupational codes to international standard |
-| WDI | Country-level macro indicators | Public (World Bank) | Internet penetration, GDP, digitalization indices for context |
+| SOC-2010 to ISCO-08 crosswalk | Concordance | Public (BLS/ILO) | >90% match rate confirmed (Azuara et al. 2024) |
+| WDI | Country-level macro indicators | Public (World Bank) | Internet penetration, GDP, digitalization indices |
+| Google Trends | ChatGPT search intensity by country | Public (Google) | Proxy for country-level LLM adoption intensity |
 
 ---
 
