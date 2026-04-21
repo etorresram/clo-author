@@ -1,0 +1,42 @@
+\documentclass[12pt]{article}
+
+\input{preambles/preamble}
+\addbibresource{../Bibliography_base.bib}
+
+\title{The Labor Market Impact of Generative AI:\\ Causal Evidence from Latin America\thanks{Pontificia Universidad Cat\'{o}lica del Per\'{u} (PUCP), Programa Doctoral en Econom\'{i}a. Contact: \texttt{etorres@pucp.edu.pe}. I thank my advisors and the PUCP labor reading group for comments. This paper extends joint work with Oliver Azuara and Laura Ripani at the Inter-American Development Bank \citep{Azuara2024_idb_ai}. All errors are my own.}}
+
+\author{Eric Torres}
+
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\begin{abstract}
+\noindent \singlespacing
+The launch of ChatGPT in November 2022 delivered a common, exogenous shock to labor markets worldwide, yet the only careful causal estimates come from OECD economies where informality is low and digital adoption is high. This paper provides the first causal estimates of how exposure to large language models (LLMs) affected employment, hours, and wages in Latin America. Using harmonized labor force surveys from seven countries (2021Q1--2025Q4), occupational exposure scores from \citet{Eloundou2023_gpt_exposure}, and the continuous-treatment difference-in-differences estimator of \citet{CallawayCGBS2024_continuous}, I estimate the Average Causal Response on the Treated along the dose dimension. Baseline (2021) formality is pre-registered as the central heterogeneity margin. I contrast the results with the near-null Danish estimates of \citet{HumlumVestergaard2025_llm} and test four pre-committed narratives in which informality either amplifies, buffers, or reallocates the shock.
+
+\vspace{1em}
+\noindent \textbf{JEL Codes:} J23, J31, O33, O54, D63, L86
+
+\vspace{0.5em}
+\noindent \textbf{Keywords:} generative AI, large language models, labor demand, wage inequality, informality, Latin America, difference-in-differences
+\end{abstract}
+
+\newpage
+\setcounter{page}{1}
+
+\input{sections/introduction}
+\input{sections/literature}
+\input{sections/methodology}
+\input{sections/data}
+\input{sections/results}
+\input{sections/robustness}
+\input{sections/conclusion}
+
+\clearpage
+\small \printbibliography
+
+\end{document}
