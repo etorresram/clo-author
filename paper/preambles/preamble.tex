@@ -75,7 +75,15 @@
             natbib=true,
             uniquename=false,
             uniquelist=true,
-            sortcites=true]{biblatex}
+            sortcites=true,
+            maxcitenames=2,
+            mincitenames=1,
+            maxbibnames=99,
+            minbibnames=99,
+            giveninits=false
+            ]{biblatex}
+% Keep English-APA mapping for the bibliography (cited works are in English).
+% Document body language is set to Spanish via babel below.
 \DeclareLanguageMapping{english}{english-apa}
 
 \DeclareCiteCommand{\cite}
@@ -104,6 +112,9 @@
 \setcounter{biburllcpenalty}{7000}
 \setcounter{biburlucpenalty}{8000}
 \setcounter{biburlnumpenalty}{9000}
+
+% ====== Babel (Spanish document body) ======
+\usepackage[spanish,es-tabla,es-noindentfirst]{babel}
 
 % ====== Hyperref (second-to-last) ======
 \usepackage[hidelinks, breaklinks, colorlinks=true,

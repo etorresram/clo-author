@@ -1,73 +1,73 @@
-\section{Theoretical Framework}
+\section{Marco Teórico}
 \label{sec:theory}
 
-This section develops a stylized task-based framework that organizes the empirical predictions and clarifies why the labor-market response to LLMs in Latin America is ex ante ambiguous. The framework adapts \citet{AcemogluAutor2011_tasks} and \citet{AcemogluRestrepo2018_race, AcemogluRestrepo2022_tasks_inequality} to the case of a general-purpose technology that primarily reshapes non-routine cognitive tasks. The model is intentionally compact: its job is to discipline the empirical specification, not to deliver a quantitative calibration.
+Esta sección desarrolla un marco estilizado basado en tareas que organiza las predicciones empíricas y aclara por qué la respuesta del mercado laboral a los LLM en América Latina es ex ante ambigua. El marco adapta a \citet{AcemogluAutor2011_tasks} y \citet{AcemogluRestrepo2018_race, AcemogluRestrepo2022_tasks_inequality} al caso de una tecnología de propósito general que reconfigura principalmente tareas cognitivas no rutinarias. El modelo es deliberadamente compacto: su función es disciplinar la especificación empírica, no entregar una calibración cuantitativa.
 
-\subsection{Task-based production}
+\subsection{Producción basada en tareas}
 \label{subsec:theory_tasks}
 
-Final output in occupation $o$ is produced by combining a continuum of tasks $j \in [0, N]$. Each task is performed by either human labor or capital, where capital includes traditional automation and, after 2022, software built on LLMs. Occupations are bundles of tasks: occupation $o$ is characterized by a fixed share vector $\{s_{oj}\}_{j \in [0,N]}$ with $\sum_j s_{oj} = 1$, where $s_{oj}$ is the share of occupation $o$'s output produced by task $j$. The technology that defines an occupation is taken as fixed in the short run; reallocation across occupations is governed by labor demand.
+El producto final en la ocupación $o$ se obtiene combinando un continuo de tareas $j \in [0, N]$. Cada tarea es realizada por trabajo humano o por capital, donde el capital incluye la automatización tradicional y, a partir de 2022, software construido sobre LLM. Las ocupaciones son paquetes de tareas: la ocupación $o$ se caracteriza por un vector fijo de participaciones $\{s_{oj}\}_{j \in [0,N]}$ con $\sum_j s_{oj} = 1$, donde $s_{oj}$ es la participación del producto de la ocupación $o$ generado por la tarea $j$. La tecnología que define a una ocupación se toma como fija en el corto plazo; la reasignación entre ocupaciones es regida por la demanda laboral.
 
-The wage in occupation $o$ is the sum of task-specific compensation:
+El salario en la ocupación $o$ es la suma de la remuneración específica por tarea:
 \begin{equation}
 w_o \;=\; \sum_j s_{oj} \cdot p_j,
 \label{eq:wage_basic}
 \end{equation}
-where $p_j$ is the equilibrium price of task $j$. Pre-LLM, $p_j$ depends on the human labor productivity in task $j$ and on the local demand for goods that use task $j$ intensively. The framework follows \citet{AutorLM2003_skill_content} in treating the routine versus non-routine distinction as the relevant axis for earlier waves of automation, and follows \citet{AcemogluAutor2011_tasks} in allowing capital to substitute for labor in any task for which a sufficiently productive technology exists.
+donde $p_j$ es el precio de equilibrio de la tarea $j$. Antes de los LLM, $p_j$ depende de la productividad del trabajo humano en la tarea $j$ y de la demanda local por bienes que usan intensivamente la tarea $j$. El marco sigue a \citet{AutorLM2003_skill_content} al tratar la distinción entre tareas rutinarias y no rutinarias como el eje relevante para olas previas de automatización, y sigue a \citet{AcemogluAutor2011_tasks} al permitir que el capital sustituya al trabajo en cualquier tarea para la que exista una tecnología suficientemente productiva.
 
-\subsection{LLMs as a new technology}
+\subsection{Los LLM como una nueva tecnología}
 \label{subsec:theory_llm}
 
-The launch of ChatGPT in November 2022 marks the date at which a subset of tasks $J^{\text{LLM}} \subset [0, N]$ becomes performable by software built on top of LLMs. The Eloundou et al. complementary-exposure score is the share of occupation $o$'s tasks that fall in this subset:
+El lanzamiento de ChatGPT en noviembre de 2022 marca la fecha en la que un subconjunto de tareas $J^{\text{LLM}} \subset [0, N]$ pasa a ser realizable por software construido sobre LLM. El puntaje de exposición complementaria de Eloundou et al. es la participación de las tareas de la ocupación $o$ que caen en este subconjunto:
 \begin{equation}
 \beta_o \;\equiv\; \sum_{j \in J^{\text{LLM}}} s_{oj}.
 \label{eq:beta_def}
 \end{equation}
-The score $\beta_o$ measures the share of an occupation's tasks where at least 50 percent of the time required can be reduced through software \emph{built on top of LLMs}, as opposed to direct LLM substitution ($\alpha_o$) or the upper-bound sum ($\zeta_o = \alpha_o + \beta_o$); see \citet{Eloundou2023_gpt_exposure}. The choice of $\beta$ rather than $\zeta$ is theoretically motivated for the LAC setting: direct interaction with chat interfaces remains modest, but third-party software with embedded LLM capability (customer-relationship platforms, accounting tools, customer-service chatbots, code assistants) is the primary diffusion channel through multinational firms operating in the region.
+El puntaje $\beta_o$ mide la participación de las tareas de una ocupación en las que al menos el 50 por ciento del tiempo requerido puede reducirse mediante software \emph{construido sobre LLM}, en contraste con la sustitución directa por LLM ($\alpha_o$) o la suma cota superior ($\zeta_o = \alpha_o + \beta_o$); véase \citet{Eloundou2023_gpt_exposure}. La elección de $\beta$ y no de $\zeta$ está motivada teóricamente para el contexto de ALC: la interacción directa con interfaces de chat sigue siendo modesta, pero el software de terceros con capacidad LLM incorporada (plataformas de relación con clientes, herramientas de contabilidad, chatbots de atención al cliente, asistentes de código) es el canal de difusión principal a través de las firmas multinacionales que operan en la región.
 
-The arrival of LLMs has two opposing effects on the wage in exposed occupations. The \emph{displacement effect} ($\tau_d > 0$) operates because firms now produce tasks $j \in J^{\text{LLM}}$ at lower cost using software, reducing labor demand in the corresponding occupations. The magnitude scales with $\beta_o$: occupations with a larger share of automatable tasks face stronger displacement. The \emph{reinstatement effect} ($\tau_r > 0$) operates because firms create new tasks complementary to the technology: prompt design, output verification, oversight, integration with existing workflows. These tasks are performed by humans alongside the software and raise the productivity of labor in exposed occupations.
+La llegada de los LLM tiene dos efectos opuestos sobre el salario en las ocupaciones expuestas. El \emph{efecto desplazamiento} ($\tau_d > 0$) opera porque las firmas ahora producen las tareas $j \in J^{\text{LLM}}$ a menor costo usando software, reduciendo la demanda laboral en las ocupaciones correspondientes. La magnitud escala con $\beta_o$: las ocupaciones con mayor participación de tareas automatizables enfrentan un desplazamiento más fuerte. El \emph{efecto reposición} ($\tau_r > 0$) opera porque las firmas crean nuevas tareas complementarias a la tecnología: diseño de prompts, verificación de salidas, supervisión, integración con flujos de trabajo existentes. Estas tareas son realizadas por humanos junto al software y elevan la productividad del trabajo en las ocupaciones expuestas.
 
-The net wage response is the difference of the two channels, scaled by exposure:
+La respuesta salarial neta es la diferencia de los dos canales, escalada por la exposición:
 \begin{equation}
 \Delta w_o \;=\; \bigl(\tau_r - \tau_d\bigr) \cdot \beta_o.
 \label{eq:net_effect}
 \end{equation}
-The sign and magnitude of $\tau_r - \tau_d$ are empirical objects, not theoretical predictions. The framework only fixes the cross-occupation shape: the response is proportional to $\beta_o$ in absolute value, and high-exposure occupations move more (in either direction) than low-exposure occupations.
+El signo y la magnitud de $\tau_r - \tau_d$ son objetos empíricos, no predicciones teóricas. El marco solo fija la forma entre ocupaciones: la respuesta es proporcional a $\beta_o$ en valor absoluto, y las ocupaciones de alta exposición se mueven más (en cualquier dirección) que las de baja exposición.
 
-\subsection{Heterogeneous adoption: the formality channel}
+\subsection{Adopción heterogénea: el canal de la formalidad}
 \label{subsec:theory_formality}
 
-Adoption of LLM-augmented software is not free at the firm level. Subscription fees, integration with existing systems, worker training, and IT support all require fixed-cost investment. Firms with weak access to credit, low capitalization, and limited managerial capacity face prohibitive adoption costs. In Latin America, this heterogeneity maps tightly onto the formal-informal divide: formal firms are larger, more capitalized, and more likely to operate in sectors where LLM-augmented software is already commercialized; informal firms are smaller, cash-constrained, and frequently operate outside the digital infrastructure required to deploy these tools.
+La adopción de software aumentado con LLM no es gratuita a nivel de la firma. Las cuotas de suscripción, la integración con sistemas existentes, la capacitación de los trabajadores y el soporte de TI requieren inversión de costo fijo. Las firmas con débil acceso al crédito, baja capitalización y escasa capacidad gerencial enfrentan costos de adopción prohibitivos. En América Latina, esta heterogeneidad se mapea estrechamente sobre la división formal-informal: las firmas formales son más grandes, están más capitalizadas y tienen mayor probabilidad de operar en sectores donde el software aumentado con LLM ya está comercializado; las firmas informales son más pequeñas, restringidas en efectivo y operan con frecuencia fuera de la infraestructura digital requerida para desplegar estas herramientas.
 
-The framework therefore predicts asymmetric short-run effects across the formal-informal divide. Within the formal sector, both channels operate: $\tau_d^F > 0$ generates partial displacement, and $\tau_r^F > 0$ generates complementary task creation, with the relative magnitudes potentially favoring tertiary-educated workers who can perform the new oversight tasks. Within the informal sector, direct adoption is near zero in the short run, so $\tau_d^I \approx 0$ and $\tau_r^I \approx 0$ in the partial-equilibrium sense. Informal workers can still be affected indirectly: formal firms that adopt the technology become more productive and may capture market share from informal competitors, generating an indirect demand-side displacement on informal employment that is harder to sign a priori.
+El marco predice, por tanto, efectos asimétricos de corto plazo a través de la división formal-informal. Dentro del sector formal operan ambos canales: $\tau_d^F > 0$ genera desplazamiento parcial y $\tau_r^F > 0$ genera creación de tareas complementarias, con magnitudes relativas que pueden favorecer a los trabajadores con educación terciaria capaces de realizar las nuevas tareas de supervisión. Dentro del sector informal, la adopción directa es cercana a cero en el corto plazo, de modo que $\tau_d^I \approx 0$ y $\tau_r^I \approx 0$ en el sentido de equilibrio parcial. Los trabajadores informales pueden, no obstante, verse afectados indirectamente: las firmas formales que adoptan la tecnología se vuelven más productivas y pueden capturar cuota de mercado a expensas de competidores informales, generando un desplazamiento indirecto por el lado de la demanda sobre el empleo informal cuyo signo es difícil de fijar a priori.
 
-The net comparison is:
+La comparación neta es:
 \begin{equation}
 \Delta w_o^F - \Delta w_o^I \;=\; \bigl[(\tau_r^F - \tau_d^F) - (\tau_r^I - \tau_d^I)\bigr] \cdot \beta_o.
 \label{eq:formal_informal}
 \end{equation}
-Whether the formal-informal differential is positive or negative depends on the relative strength of direct adoption in formal firms (which can go either way) and indirect spillovers to informal firms (typically negative). The sign is an empirical question in every country.
+Que el diferencial formal-informal sea positivo o negativo depende de la fuerza relativa de la adopción directa en las firmas formales (que puede ir en cualquier dirección) y de los derrames indirectos sobre las firmas informales (típicamente negativos). El signo es una pregunta empírica en cada país.
 
-\subsection{Testable predictions}
+\subsection{Predicciones contrastables}
 \label{subsec:theory_predictions}
 
-The framework delivers four predictions that the empirical specification of \cref{sec:method} is designed to test.
+El marco entrega cuatro predicciones que la especificación empírica de la \cref{sec:method} está diseñada para evaluar.
 
-\textbf{P1 (cross-occupation, within country).} The labor-market response in country $c$ is proportional to $\beta_o$:
+\textbf{P1 (entre ocupaciones, dentro del país).} La respuesta del mercado laboral en el país $c$ es proporcional a $\beta_o$:
 \begin{equation*}
 \frac{\partial Y_{ot}^c}{\partial \beta_o} \;\gtreqless\; 0
 \end{equation*}
-according to whether reinstatement dominates displacement, dominates equally, or is dominated. The sign is empirical and may differ across countries.
+según si la reposición domina al desplazamiento, lo iguala o es dominada. El signo es empírico y puede diferir entre países.
 
-\textbf{P2 (formal vs. informal, within country).} Short-run adoption is concentrated in the formal sector. The framework predicts $|\tau^F| > |\tau^I|$ at the two-year horizon for countries in which formal adoption is meaningful. In countries where formal adoption is also low, both channels are muted.
+\textbf{P2 (formal vs. informal, dentro del país).} La adopción de corto plazo se concentra en el sector formal. El marco predice $|\tau^F| > |\tau^I|$ en el horizonte de dos años para los países en los que la adopción formal es relevante. En países donde la adopción formal también es baja, ambos canales quedan amortiguados.
 
-\textbf{P3 (cross-country comparison of estimates).} Countries with higher formality rates and stronger digital infrastructure should exhibit larger $|\tau|$ than countries with lower formality and weaker infrastructure. This prediction is tested by comparing the six country-specific estimates $\{\hat\tau^c\}_{c=1}^6$ against the corresponding country-level formality and digital-readiness indicators. Cross-country heterogeneity is the headline result rather than a robustness check.
+\textbf{P3 (comparación entre países de las estimaciones).} Los países con mayores tasas de formalidad y mejor infraestructura digital deberían exhibir un $|\tau|$ mayor que los países con menor formalidad e infraestructura más débil. Esta predicción se evalúa comparando las seis estimaciones específicas por país $\{\hat\tau^c\}_{c=1}^6$ frente a los indicadores correspondientes de formalidad y preparación digital a nivel de país. La heterogeneidad entre países es el resultado principal y no una prueba de robustez.
 
-\textbf{P4 (within-occupation skill heterogeneity).} Within an exposed occupation, tertiary-educated workers are better positioned to perform the new reinstatement tasks (oversight, prompting, verification) and therefore experience a smaller displacement effect than secondary-educated workers in the same occupation. This prediction is tested by interacting $\beta_o \cdot \text{Post}_t$ with worker education in each country.
+\textbf{P4 (heterogeneidad por habilidad dentro de la ocupación).} Dentro de una ocupación expuesta, los trabajadores con educación terciaria están mejor posicionados para realizar las nuevas tareas de reposición (supervisión, prompting, verificación) y, por lo tanto, experimentan un efecto desplazamiento menor que los trabajadores con educación secundaria en la misma ocupación. Esta predicción se evalúa interactuando $\beta_o \cdot \text{Post}_t$ con la educación del trabajador en cada país.
 
-\subsection{Why LAC differs from the OECD evidence}
+\subsection{Por qué ALC difiere de la evidencia de la OCDE}
 \label{subsec:theory_lac}
 
-The framework reconciles the apparently divergent estimates in the existing causal literature. \citet{Brynjolfsson2023_genai} and \citet{CuiDemirerJaffe2025_copilot} document large within-firm productivity gains in US settings where adoption is exogenously delivered to high-formality, digitally ready workers. These estimates correspond to a high-$\tau_r$ environment in formal-sector firms: the reinstatement channel is fully operative because the supporting institutions are in place. \citet{HumlumVestergaard2025_llm} document near-null aggregate effects in Denmark, a setting with high formality, high adoption, and tight labor markets. The framework rationalizes this as a high-$\tau_d$, high-$\tau_r$ environment in which the two channels approximately offset, leaving the aggregate wage response close to zero.
+El marco reconcilia las estimaciones aparentemente divergentes en la literatura causal existente. \citet{Brynjolfsson2023_genai} y \citet{CuiDemirerJaffe2025_copilot} documentan grandes ganancias de productividad intra-firma en contextos estadounidenses donde la adopción se entrega de manera exógena a trabajadores de alta formalidad y preparación digital. Estas estimaciones corresponden a un entorno de alto $\tau_r$ en firmas del sector formal: el canal de reposición está plenamente operativo porque las instituciones de soporte están en su lugar. \citet{HumlumVestergaard2025_llm} documentan efectos agregados cercanos a cero en Dinamarca, un contexto con alta formalidad, alta adopción y mercados laborales ajustados. El marco racionaliza este resultado como un entorno de alto $\tau_d$ y alto $\tau_r$ en el que los dos canales aproximadamente se compensan, dejando la respuesta salarial agregada cercana a cero.
 
-LAC differs on both margins. Adoption is heterogeneous across countries (and across formality strata within countries), and labor markets are not tight in the Danish sense. Cross-country variation in formality (from roughly 25 percent informal in Uruguay to over 70 percent in parts of the Andean region) generates ex ante predictions that vary by country. This is why a country-by-country empirical strategy is the right test of the framework. Pooling would average over heterogeneity that the theory predicts is first-order. Each of the six country estimates is an independent test of the same underlying mechanism, and the cross-country pattern of estimates is the central empirical contribution.
+ALC difiere en ambos márgenes. La adopción es heterogénea entre países (y entre estratos de formalidad dentro de los países), y los mercados laborales no son ajustados en el sentido danés. La variación entre países en formalidad (desde aproximadamente 25 por ciento informal en Uruguay hasta más del 70 por ciento en partes de la región andina) genera predicciones ex ante que varían según el país. Por eso una estrategia empírica pa\'{i}s por pa\'{i}s es la prueba correcta del marco. Agrupar promediar\'{i}a sobre una heterogeneidad que la teoría predice es de primer orden. Cada una de las seis estimaciones por país es una prueba independiente del mismo mecanismo subyacente, y el patrón entre países de las estimaciones es la contribución empírica central.
