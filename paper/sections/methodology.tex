@@ -1,12 +1,12 @@
 \section{Empirical Strategy}
 \label{sec:method}
 
-The paper's identification strategy is a difference-in-differences (DiD) design with continuous treatment and a single adoption date. Occupations are exposed to different intensities of LLM capability, measured by the Eloundou $\zeta$ score, and ChatGPT's launch on 30 November 2022 is the common treatment date. Identification comes from within-(occupation, country) variation in the interaction of exposure and the post-launch indicator. This section details the sample, the treatment variable, the primary and secondary specifications, the identifying assumptions, the heterogeneity analysis centered on baseline formality, the robustness layer, and the four pre-registered narratives.
+The paper's identification strategy is a difference-in-differences (DiD) design with continuous treatment and a single adoption date, estimated \emph{country by country}. Each of the seven countries (Chile, Colombia, Costa Rica, Ecuador, Mexico, Peru, Uruguay) is analyzed separately. Occupations within a country are exposed to different intensities of LLM capability, measured by the Eloundou complementary-exposure score $\beta$, and ChatGPT's launch on 30 November 2022 is the common treatment date. Identification within each country comes from within-occupation variation in the interaction of exposure and the post-launch indicator. The cross-country comparison emerges from the side-by-side display of the seven estimated $\hat\tau^c$ values, not from any pooled regression. This section details the sample, the treatment variable, the primary and secondary specifications, the identifying assumptions, the within-country heterogeneity analysis centered on baseline formality, the robustness layer, and the four pre-registered narratives.
 
 \subsection{Sample and data}
 \label{subsec:method_sample}
 
-The sample is a seven-country harmonized panel of labor force surveys covering 2021Q1 through 2025Q4. The countries, surveys, and native frequencies are summarized in \cref{tab:surveys}.
+The sample is a set of seven country-level harmonized labor force survey datasets covering 2021Q1 through 2025Q4. The countries, surveys, and native frequencies are summarized in \cref{tab:surveys}.
 
 \begin{table}[H]
 \centering
@@ -23,148 +23,147 @@ Colombia    & GEIH   & Monthly                     & Pool three months per quart
 Costa Rica  & ECE    & Quarterly                   & As-is \\
 Ecuador     & ENEMDU & Monthly (continuous)        & Pool three months per quarter \\
 Mexico      & ENOE   & Quarterly                   & As-is; rotating panel used for Paper 2 \\
-Peru        & ENAHO  & Annual                      & Annual panel only \\
-Uruguay     & ECH    & Annual                      & Annual panel only \\
+Peru        & ENAHO  & Annual                      & Annual frequency \\
+Uruguay     & ECH    & Annual                      & Annual frequency \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \footnotesize
-\item \emph{Notes:} Quarterly analysis uses the five calendar-quarter countries (Chile, Colombia, Costa Rica, Ecuador, Mexico). The annual panel stacks all seven. Sample window is 2021Q1--2025Q4. The 2022Q4 quarter is dropped from the primary specification as a transitional period and included as treated in a robustness specification.
+\item \emph{Notes:} Each country is analyzed at its native (harmonized) frequency: quarterly for Chile, Colombia, Costa Rica, Ecuador, and Mexico; annual for Peru and Uruguay. Sample window is 2021Q1--2025Q4. The 2022Q4 quarter is dropped from the primary specification as a transitional period and included as treated in a robustness specification.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-The time window is a deliberate design choice. Pre-2020 periods are excluded even where data exist: COVID-19 differentially affected high-exposure cognitive occupations (remote-work migration, sectoral reallocation) relative to low-exposure manual and service occupations, so combining pre-COVID and post-COVID years would pool labor markets operating in two structurally different equilibria. The 2021Q1 start date ensures that both the pre-treatment and post-treatment periods are drawn from the post-COVID steady state. The trade-off is a short pre-period (seven quarters); this is mitigated by (i) elevating the Honest-DiD bounds of \citet{RambachanRoth2023_honest} from robustness to core identification, (ii) replacing temporal placebo dates (2019, 2021) with cross-sectional placebos on $\zeta = 0$ occupations, and (iii) a longer post-period (twelve quarters) that compensates for the shorter pre-period in aggregate sample size.
+The time window is a deliberate design choice. Pre-2020 periods are excluded even where data exist: COVID-19 differentially affected high-exposure cognitive occupations (remote-work migration, sectoral reallocation) relative to low-exposure manual and service occupations, so combining pre-COVID and post-COVID years would compare labor markets operating in two structurally different equilibria. The 2021Q1 start date ensures that both the pre-treatment and post-treatment periods are drawn from the post-COVID steady state. The trade-off is a short pre-period (seven quarters in the quarterly countries, two years in the annual countries); this is mitigated by (i) elevating the Honest-DiD bounds of \citet{RambachanRoth2023_honest} from robustness to core identification, (ii) replacing temporal placebo dates (2019, 2021) with cross-sectional placebos on $\beta = 0$ occupations, and (iii) a longer post-period (twelve quarters or three years) that compensates for the shorter pre-period in aggregate sample size.
 
-The unit of observation is the individual worker $i$ in country $c$ at time $t$, with the 4-digit ISCO-08 occupation $o(i)$ recorded in the survey. The pooled country sample uses the annual frequency; the event-study specification uses quarterly data for the five calendar-quarter countries.
+The unit of observation in country $c$ is the individual worker $i$ at time $t$, with the 4-digit ISCO-08 occupation $o(i)$ recorded in the survey. For aggregate event-study and dose-response specifications, microdata are aggregated to the (occupation, time) cell within each country.
 
 \subsection{Treatment variable}
 \label{subsec:method_treatment}
 
-The treatment is continuous occupational exposure to LLMs, measured by the Eloundou $\zeta$ score \citep{Eloundou2023_gpt_exposure}. The score is defined for US SOC-2010 occupations and mapped to ISCO-08 via the BLS concordance. After applying the crosswalk, 98.2 percent of 4-digit ISCO codes with positive employment in any of the seven countries match at least one SOC-2010 code; unmatched codes are assigned at the 3-digit level. The crosswalk builds on and extends the Chile-Mexico-Peru pilot validated in \citet{Azuara2024_idb_ai}. I use $\zeta \in [0, 1]$ as the primary treatment, with $\alpha$ and $\beta$ (the direct and complementary components) as robustness specifications.
+The treatment is continuous occupational exposure to LLMs, measured by the Eloundou complementary-exposure score $\beta_o$ \citep{Eloundou2023_gpt_exposure}. The score is the share of an occupation's tasks where at least 50 percent of the time required can be reduced through software \emph{built on top of LLMs} (LLM-augmented applications), as distinct from $\alpha_o$ (direct LLM substitution) and $\zeta_o = \alpha_o + \beta_o$ (the upper bound); see Table 1 of \citet{Eloundou2023_gpt_exposure}. Throughout, $E_{o} \equiv \beta_o$ is the operative exposure variable in the estimating equation.
 
-Interpreting $\zeta$ requires care. It is a \emph{predicted} exposure index constructed from GPT-4 and human task ratings, not a realized dose delivered to each worker. I adopt the score-as-dose interpretation following \citet{Handa2025_economic_tasks}, who show that the Eloundou ranking correlates strongly with observed Claude API usage across occupations. The $\tau$ parameter estimated below can then be read as the labor-market response to a unit increase in the exposure index, with the understanding that the index maps to a realized-use gradient via the Handa correlation. As robustness, \cref{sec:robustness} reports estimates using the Webb patent-based measure \citep{Webb2020_ai_exposure}, the Felten AIOE index \citep{Felten2023_ai_exposure}, and a Handa realized-usage measure.
+The choice of $\beta$ rather than $\zeta$ is theoretically motivated. The complementary channel ($\beta$) captures the diffusion of LLM-augmented software -- third-party applications, productivity tools, customer-relationship platforms, accounting systems, customer-service chatbots, and code assistants built on LLM APIs -- through which workers experience LLM capability without necessarily interacting with chat interfaces directly. In Latin America, where direct ChatGPT use lags OECD levels but multinational firms deploy LLM-augmented enterprise software, $\beta$ is theoretically the correct treatment intensity. It is also more conservative than $\zeta$: $\beta$ is mechanically smaller than the upper bound, generating a sharper and harder-to-meet test. The score is defined for US SOC-2010 occupations and mapped to ISCO-08 via the BLS concordance. After applying the crosswalk, 98.2 percent of 4-digit ISCO codes with positive employment in any of the seven countries match at least one SOC-2010 code; unmatched codes are assigned at the 3-digit level. The crosswalk builds on and extends the Chile-Mexico-Peru pilot validated in \citet{Azuara2024_idb_ai}.
+
+As alternative exposure measures, \cref{sec:robustness} reports estimates using $\alpha_o$ (direct LLM substitution), $\zeta_o = \alpha_o + \beta_o$ (the upper bound), the Webb patent-based measure \citep{Webb2020_ai_exposure}, and the Felten AIOE index \citep{Felten2023_ai_exposure}. \citet{Handa2025_economic_tasks} provide complementary evidence on realized usage by mapping Claude conversations to O*NET tasks.
 
 The post-treatment indicator is $\text{Post}_t = \mathbb{1}[t \geq 2023\text{Q1}]$. The 2022Q4 quarter is dropped from the primary specification because Q4 averages are two-thirds pre-launch, which would bias $\tau$ toward zero if the quarter were coded as treated. A robustness specification includes 2022Q4 as treated to provide a conservative lower bound; this matches the convention in \citet{HumlumVestergaard2025_llm} and \citet{Hartley2024_labor_effects}.
 
-\subsection{Primary specification: continuous difference-in-differences}
+\subsection{Primary specification: country-by-country continuous DiD}
 \label{subsec:method_primary}
 
-The primary estimator is the continuous-treatment DiD of \citet{CallawayCGBS2024_continuous}. The target parameter is the Average Causal Response on the Treated (ACRT) along the dose dimension, averaged over the exposure distribution. The parametric companion specification is
-
+The primary estimator is the continuous-treatment DiD of \citet{CallawayCGBS2024_continuous}, applied separately to each of the seven countries. The target parameter is the country-specific Average Causal Response on the Treated (ACRT) along the dose dimension, averaged over the country's exposure distribution. After aggregating microdata to the (occupation, time) cell, the parametric specification estimated within country $c$ is
 \begin{equation}
-Y_{ict} \;=\; \tau \cdot \bigl(E_{o(i)} \cdot \text{Post}_t\bigr) \;+\; \mathbf{X}_{ict}^\prime \gamma \;+\; \alpha_{oc} \;+\; \alpha_{ct} \;+\; \varepsilon_{ict},
+Y_{ot}^{c} \;=\; \tau^{c} \cdot \bigl(E_{o} \cdot \text{Post}_t\bigr) \;+\; \alpha_{o}^{c} \;+\; \alpha_{t}^{c} \;+\; \varepsilon_{ot}^{c},
 \label{eq:did_main}
 \end{equation}
+where $Y_{ot}^c$ is one of three primary outcomes (employment rate, average weekly hours, or average log hourly wage) in country $c$'s (occupation, time) cell, $E_{o} \equiv \beta_o \in [0,1]$ is the Eloundou complementary-exposure score for the 4-digit ISCO occupation, $\text{Post}_t = \mathbb{1}[t \geq 2023\text{Q1}]$, $\alpha_{o}^c$ is an occupation fixed effect (within country), $\alpha_{t}^c$ is a time fixed effect (within country), and $\varepsilon_{ot}^c$ is an idiosyncratic error. Worker-level controls (age, age-squared, gender, education category, urban indicator, household-head status) are absorbed at the cell-construction stage by aggregating outcomes within demographic cells before the regression.
 
-where $Y_{ict}$ is one of three primary outcomes (an employment indicator, weekly hours, or log hourly wage), $E_{o(i)} \in [0,1]$ is the Eloundou $\zeta$ score for the worker's 4-digit ISCO occupation, $\text{Post}_t = \mathbb{1}[t \geq 2023\text{Q1}]$, $\mathbf{X}_{ict}$ is a vector of individual controls (age, age-squared, gender, education category, urban indicator, household-head status), $\alpha_{oc}$ is an occupation-by-country fixed effect, $\alpha_{ct}$ is a country-by-time fixed effect, and $\varepsilon_{ict}$ is an idiosyncratic error.
-
-The coefficient $\tau$ is the ACRT parameter. The occupation-by-country fixed effect $\alpha_{oc}$ absorbs the level of $E_o$ (which is time-invariant within an occupation) and any country-specific occupational wage structure. The country-by-time fixed effect $\alpha_{ct}$ absorbs country-specific macro shocks, including post-COVID recovery and inflation. What remains is within-(occupation, country) variation in how the outcome responds to the post-launch indicator, weighted by exposure intensity. \Cref{tab:fe_identification} clarifies what each fixed-effects stack identifies.
+The coefficient $\tau^c$ is the country-$c$ ACRT parameter. The occupation fixed effect $\alpha_{o}^c$ absorbs the level of $E_o$ (which is time-invariant within an occupation) and the country-specific baseline occupational wage structure. The time fixed effect $\alpha_{t}^c$ absorbs country-specific macro shocks, including post-COVID recovery and inflation. What remains is within-occupation variation in how the outcome responds to the post-launch indicator, weighted by exposure intensity. \Cref{tab:fe_identification} clarifies what each fixed-effects stack identifies within a single country.
 
 \begin{table}[H]
 \centering
 \small
 \begin{threeparttable}
-\caption{Fixed-effects stacks and what they identify}
+\caption{Within-country fixed-effects stacks and what they identify}
 \label{tab:fe_identification}
 \begin{tabular}{lll}
 \toprule
-Fixed effects & $\tau$ identified from & Interpretation \\
+Fixed effects & $\tau^c$ identified from & Interpretation \\
 \midrule
-$\alpha_{oc} + \alpha_{ct}$ & Within-(occupation, country) temporal variation & \textbf{Primary DiD} \\
-$\alpha_{oc} + \alpha_{ct} + \alpha_{ot}$ & Cross-country deviation from global occupation trajectory & Hard identification \\
-$\alpha_{oct}$ & Not identified (treatment absorbed) & Not estimated \\
+$\alpha_{o}^c + \alpha_{t}^c$ & Within-occupation temporal variation & \textbf{Primary DiD (within country)} \\
+$\alpha_{ot}^c$ & Not identified (treatment absorbed) & Not estimated \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \footnotesize
-\item \emph{Notes:} Primary DiD compares within-country, within-occupation temporal change. Hard identification additionally removes any common-across-countries occupation trend, leaving only cross-country differentials in occupation-level dynamics.
+\item \emph{Notes:} Within country $c$, the primary DiD compares within-occupation temporal change weighted by $\beta$. Cross-country comparison happens at the level of the seven estimated $\hat\tau^c$ values, not within a single regression.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
-I also estimate the dose-response curve non-parametrically by partitioning exposure into quintiles and estimating ATT for each quintile relative to the lowest:
+The headline result of the paper is the side-by-side comparison of $\{\hat\tau^c\}_{c=1}^7$ across the seven countries, reported in Table~1 of \cref{sec:results} with one column per country, each row showing the country-specific point estimate, standard error, and Honest-DiD breakdown bound. Cross-country variation in $\hat\tau^c$ is the empirical object of interest.
 
+I also estimate the dose-response curve non-parametrically within each country by partitioning exposure into quintiles and estimating ATT for each quintile relative to the lowest:
 \begin{equation}
-Y_{ict} \;=\; \sum_{q=2}^{5} \tau_q \cdot \mathbb{1}[E_{o(i)} \in Q_q] \cdot \text{Post}_t \;+\; \mathbf{X}_{ict}^\prime \gamma \;+\; \alpha_{oc} \;+\; \alpha_{ct} \;+\; \varepsilon_{ict}.
+Y_{ot}^c \;=\; \sum_{q=2}^{5} \tau_q^c \cdot \mathbb{1}[E_{o} \in Q_q^c] \cdot \text{Post}_t \;+\; \alpha_{o}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{ot}^c,
 \label{eq:dose_response}
 \end{equation}
+where $Q_q^c$ are the country-$c$ employment-weighted exposure quintiles. Monotonicity of $\{\tau_2^c, \ldots, \tau_5^c\}$ is a testable implication of a clean dose-response relationship within country $c$.
 
-Monotonicity of $\{\tau_2, \ldots, \tau_5\}$ is a testable implication of a clean dose-response relationship.
-
-Observations are weighted by the survey expansion factor for population representativeness, with unweighted estimates reported as robustness per \citet{SolonHW2015_weight}. In pooled cross-country regressions, country weights are rescaled so each country contributes equally, preventing Mexico (the largest survey) from dominating the pooled estimate. Standard errors are clustered at the 4-digit ISCO occupation level, the unit at which $E_o$ varies \citep{AbadieAIW2023_cluster}. Robustness specifications use two-way clustering by occupation and country-by-time. For specifications with fewer than fifty clusters (country-specific or heterogeneity-cell analyses), I use the wild cluster bootstrap via \texttt{fwildclusterboot}.
+Cells are weighted by survey-expanded employment for population representativeness, with unweighted estimates reported as robustness per \citet{SolonHW2015_weight}. Standard errors are clustered at the 4-digit ISCO occupation level within country, the unit at which $E_o$ varies \citep{AbadieAIW2023_cluster}. For specifications with fewer than fifty clusters (heterogeneity-cell analyses within smaller countries), I use the wild cluster bootstrap via \texttt{fwildclusterboot}.
 
 \subsection{Secondary estimators}
 \label{subsec:method_secondary}
 
-Three secondary estimators triangulate the primary result. The first is the binary-cutoff DiD of \citet{CallawayS2021_did}:
+Two secondary estimators triangulate the primary result within each country. The first is the binary-cutoff DiD of \citet{CallawayS2021_did}:
 \begin{equation}
-Y_{ict} \;=\; \tau^{\text{bin}} \cdot (D_o \cdot \text{Post}_t) \;+\; \mathbf{X}_{ict}^\prime \gamma \;+\; \alpha_{oc} \;+\; \alpha_{ct} \;+\; \varepsilon_{ict},\qquad D_o = \mathbb{1}[E_o > \text{median}(E)].
+Y_{ot}^c \;=\; \tau^{c,\text{bin}} \cdot (D_o \cdot \text{Post}_t) \;+\; \alpha_{o}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{ot}^c,\qquad D_o = \mathbb{1}[E_o > \text{median}^c(E)].
 \label{eq:did_binary}
 \end{equation}
-This specification is reported because it is the identification design used by \citet{Hartley2024_labor_effects}, \citet{Hui2024_online_labor}, and \citet{Liu2025_generate_future}, allowing a direct magnitude comparison. The cutoff is the population-weighted median; alternative cutoffs at the 25th, 33rd, 66th, and 75th percentiles appear in robustness.
+This specification is reported because it is the identification design used by \citet{Hartley2024_labor_effects}, \citet{Hui2024_online_labor}, and \citet{Liu2025_generate_future}, allowing a direct magnitude comparison. The cutoff is the country-specific employment-weighted median; alternative cutoffs at the 25th, 33rd, 66th, and 75th percentiles appear in robustness.
 
-The second secondary estimator is the Sun-Abraham interaction-weighted event study \citep{SunAbraham2021_eventstudy}:
+The second secondary estimator is the Sun-Abraham interaction-weighted event study \citep{SunAbraham2021_eventstudy}, estimated within each country:
 \begin{equation}
-Y_{ict} \;=\; \sum_{\substack{k=-K \\ k \neq -1}}^{K} \theta_k \cdot \bigl(E_{o(i)} \cdot \mathbb{1}[t - t^\ast = k]\bigr) \;+\; \mathbf{X}_{ict}^\prime \gamma \;+\; \alpha_{oc} \;+\; \alpha_{ct} \;+\; \varepsilon_{ict},
+Y_{ot}^c \;=\; \sum_{\substack{k=-K \\ k \neq -1}}^{K} \theta_k^c \cdot \bigl(E_{o} \cdot \mathbb{1}[t - t^\ast = k]\bigr) \;+\; \alpha_{o}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{ot}^c,
 \label{eq:event_study}
 \end{equation}
-where $t^\ast = 2023\text{Q1}$ is the treatment date and $k = -1$ is the reference period. The quarterly event study covers $k \in [-12, +8]$ for the five calendar-quarter countries; the annual event study covers $k \in [-2, +3]$ for all seven. The expected pattern is flat $\theta_k$ for $k < -1$ (parallel pre-trends) and a step change at $k = 0$ that either persists or grows.
+where $t^\ast = 2023\text{Q1}$ is the treatment date and $k = -1$ is the reference period. The quarterly event study covers $k \in [-12, +8]$ for the five calendar-quarter countries; the annual event study covers $k \in [-2, +3]$ for Peru and Uruguay. The expected pattern is flat $\theta_k^c$ for $k < -1$ (parallel pre-trends) and a step change at $k = 0$ that either persists or grows.
 
-The third is a shift-share specification following \citet{GoldsmithPinkham2020_bartik} and \citet{BorusyakHJ2022_shiftshare}. For each local labor market $\ell$ in country $c$, I construct a predetermined occupation-share exposure index $Z_{\ell c} = \sum_o \text{emp}_{o, \ell c, 2021} \cdot E_o$ using 2021 employment shares (the first post-COVID year, predetermined relative to ChatGPT by two years) and estimate
+A country-specific shift-share specification follows \citet{GoldsmithPinkham2020_bartik} and \citet{BorusyakHJ2022_shiftshare}. For each local labor market $\ell$ in country $c$, I construct a predetermined occupation-share exposure index $Z_{\ell c} = \sum_o \text{emp}_{o, \ell c, 2021} \cdot E_o$ using 2021 employment shares (the first post-COVID year, predetermined relative to ChatGPT by two years) and estimate
 \begin{equation}
-Y_{\ell c t} \;=\; \gamma \cdot (Z_{\ell c} \cdot \text{Post}_t) \;+\; \alpha_{\ell c} \;+\; \alpha_{ct} \;+\; \varepsilon_{\ell c, t}.
+Y_{\ell t}^c \;=\; \gamma^c \cdot (Z_{\ell c} \cdot \text{Post}_t) \;+\; \alpha_{\ell}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{\ell t}^c.
 \label{eq:bartik}
 \end{equation}
-Rotemberg weights are reported in an appendix table with a narrative discussion of the top-weighted occupations. Robustness re-estimates dropping the top-weighted occupation and using 2021--2022 average shares. Inference uses the Adão-Kolesár-Morales standard errors via \texttt{ShiftShareSE}.
+The shift in this design is country-specific (the country's own ChatGPT-era adoption shock); the shares are also country-specific (each country's 2021 local employment composition). Rotemberg weights are reported in an appendix table with a narrative discussion of the top-weighted occupations within each country. Robustness re-estimates dropping the top-weighted occupation and using 2021--2022 average shares. Inference uses the Adão-Kolesár-Morales standard errors via \texttt{ShiftShareSE}.
 
 \subsection{Identifying assumptions}
 \label{subsec:method_assumptions}
 
-The primary specification identifies the ACRT under four assumptions.
+The country-by-country specification identifies $\tau^c$ under four assumptions, evaluated separately within each country.
 
-\emph{Parallel trends.} For any exposure level $e$, the counterfactual outcome trajectory for treated occupations would have evolved in parallel with the trajectory for zero-exposure occupations absent the LLM shock. Formally, $\mathbb{E}[Y_{ict}(0) - Y_{ic,t^\ast - 1}(0) \mid E_{o(i)} = e] = \mathbb{E}[Y_{ict}(0) - Y_{ic,t^\ast - 1}(0) \mid E_{o(i)} = 0]$ for all $e$ and all $t \geq t^\ast$. This assumption is defended with the Sun-Abraham pre-trend event study, a joint test that $\theta_k = 0$ for $k < -1$, cross-sectional placebos on zero-exposure occupations, and partial-identification bounds following \citet{RambachanRoth2023_honest}. Given the short pre-period, the Honest-DiD bounds are reported as core identification rather than as robustness; headline claims require a breakdown value $\bar M \geq 2$.
+\emph{Parallel trends.} Within country $c$, for any exposure level $e$, the counterfactual outcome trajectory for treated occupations would have evolved in parallel with the trajectory for zero-exposure occupations absent the LLM shock. Formally, $\mathbb{E}[Y_{ot}^c(0) - Y_{o,t^\ast - 1}^c(0) \mid E_{o} = e] = \mathbb{E}[Y_{ot}^c(0) - Y_{o,t^\ast - 1}^c(0) \mid E_{o} = 0]$ for all $e$ and all $t \geq t^\ast$. This assumption is defended within each country with the Sun-Abraham pre-trend event study, a joint test that $\theta_k^c = 0$ for $k < -1$, cross-sectional placebos on zero-exposure occupations, and partial-identification bounds following \citet{RambachanRoth2023_honest}. Given the short pre-period, the Honest-DiD bounds are reported as core identification within each country; headline claims for country $c$ require a country-specific breakdown value $\bar M^c \geq 2$.
 
-\emph{No anticipation.} Workers in LAC did not adjust labor-supply or employment outcomes in anticipation of ChatGPT prior to its launch. The launch was exogenous to LAC labor markets: pre-release access was restricted to OpenAI employees and selected external testers, none of whom operated in LAC labor markets at the scale needed to move aggregate outcomes. A weak residual anticipation channel via the GPT-3.5 API (released March 2022) is bounded by the event-study coefficients $\theta_{-2}$ and $\theta_{-1}$.
+\emph{No anticipation.} Workers in country $c$ did not adjust labor-supply or employment outcomes in anticipation of ChatGPT prior to its launch. The launch was exogenous to LAC labor markets: pre-release access was restricted to OpenAI employees and selected external testers, none of whom operated in LAC labor markets at the scale needed to move aggregate outcomes. A weak residual anticipation channel via the GPT-3.5 API (released March 2022) is bounded by the event-study coefficients $\theta_{-2}^c$ and $\theta_{-1}^c$ within each country.
 
-\emph{Exposure exogeneity.} The $\zeta$ exposure score is constructed from O*NET task content (US, 2022--2023) using GPT-4 and a human rubric. Neither the task content nor the rating procedure is a function of LAC 2023 labor-market outcomes. Task content within ISCO codes is stable across countries; this is validated in \citet{Azuara2024_idb_ai} for Chile, Mexico, and Peru. Robustness using the Webb patent-based measure, Felten AIOE, and Handa realized-usage confirms that the result does not depend on the specific Eloundou ranking.
+\emph{Exposure exogeneity.} The $\beta$ exposure score is constructed from O*NET task content (US, 2022--2023) using GPT-4 and a human rubric. Neither the task content nor the rating procedure is a function of country-$c$ 2023 labor-market outcomes. Task content within ISCO codes is stable across countries; this is validated in \citet{Azuara2024_idb_ai} for Chile, Mexico, and Peru. Robustness using $\alpha$, $\zeta$, the Webb patent-based measure, and the Felten AIOE confirms that within-country results do not depend on the specific Eloundou complementary score.
 
-\emph{SUTVA.} The stable unit treatment value assumption rules out cross-occupation spillovers. Intra-firm spillovers bias toward zero: if high-exposure colleagues raise low-exposure colleagues' productivity, the estimated displacement effect understates the true dose-response. Industry-by-country-by-time fixed effects in robustness bound the spillover magnitude; the narrative bound of \citet{BergBZ2018_ai_inequality} suggests that with below-20-percent adoption, general-equilibrium spillovers across occupations are modest. SUTVA is the most at-risk assumption and is acknowledged as such.
+\emph{SUTVA.} The stable unit treatment value assumption rules out cross-occupation spillovers within a country. Intra-firm spillovers bias toward zero: if high-exposure colleagues raise low-exposure colleagues' productivity, the estimated displacement effect understates the true dose-response. Industry-by-time fixed effects within country bound the spillover magnitude in robustness; the narrative bound of \citet{BergBZ2018_ai_inequality} suggests that with below-20-percent adoption, general-equilibrium spillovers across occupations are modest. SUTVA is the most at-risk assumption and is acknowledged as such for every country estimate.
 
-Temporal placebo tests at 2019 or 2021 are infeasible given the post-COVID sample window. I substitute cross-sectional placebos that restrict estimation to $\zeta = 0$ occupations (the true-zero control group) and placebo outcomes that should not respond to LLM exposure (weekly hours of agricultural manual laborers). The trade-off is discussed in the strategy memo and in \cref{subsec:method_robustness} below.
+Temporal placebo tests at 2019 or 2021 are infeasible given the post-COVID sample window. I substitute cross-sectional placebos that restrict estimation to $\beta = 0$ occupations within each country (the true-zero control group) and placebo outcomes that should not respond to LLM exposure (weekly hours of agricultural manual laborers).
 
-\subsection{Heterogeneity: baseline formality as the central margin}
+\subsection{Within-country heterogeneity: baseline formality as the central margin}
 \label{subsec:method_heterogeneity}
 
-Baseline formality status $F_{i,2021}$ is the pre-registered central heterogeneity dimension. I use \emph{baseline} rather than contemporaneous formality because contemporaneous $F_{ict}$ is itself an outcome of LLM exposure: a worker may transition formal-to-informal because of treatment, and conditioning on a post-treatment outcome is a bad control. Baseline $F_{i,2021}$ is the worker's formality status as of the last pre-2023 observation and is econometrically predetermined with respect to the ChatGPT shock.
+Baseline formality status $F_{i,2021}$ is the pre-registered central within-country heterogeneity dimension for every country in which formal-informal segmentation is non-trivial. I use \emph{baseline} rather than contemporaneous formality because contemporaneous $F_{ict}$ is itself an outcome of LLM exposure: a worker may transition formal-to-informal because of treatment, and conditioning on a post-treatment outcome is a bad control. Baseline $F_{i,2021}$ is the worker's formality status as of the last pre-2023 observation and is econometrically predetermined with respect to the ChatGPT shock.
 
-The imputation protocol depends on the survey structure. For Mexico's ENOE (a rotating panel), $F_{i,2021}$ is the worker's last observed pre-2023Q1 formality status; workers who entered after 2023Q1 are dropped from the formality-interaction analysis. For the six repeated cross-sections (Colombia GEIH, Peru ENAHO, Chile ENE, Costa Rica ECE, Ecuador ENEMDU, Uruguay ECH), $F_{i,2021}$ is cell-imputed as the 2021 share of formal workers in the worker's (4-digit ISCO occupation, 5-year age bin, gender, education tier, urban) cell. Sensitivity analysis uses 3-digit ISCO cells.
+The imputation protocol depends on the survey structure. For Mexico's ENOE (a rotating panel), $F_{i,2021}$ is the worker's last observed pre-2023Q1 formality status; workers who entered after 2023Q1 are dropped from the formality-interaction analysis. For the six repeated cross-sections (Colombia GEIH, Peru ENAHO, Chile ENE, Costa Rica ECE, Ecuador ENEMDU, Uruguay ECH), $F_{i,2021}$ is cell-imputed as the 2021 share of formal workers in the worker's (4-digit ISCO occupation, 5-year age bin, gender, education tier, urban) cell within country $c$. Sensitivity analysis uses 3-digit ISCO cells.
 
-The interaction specification is
+The within-country interaction specification (estimated separately for each country) is
 \begin{equation}
-Y_{ict} \;=\; \tau_F \cdot (E_{o(i)} \cdot \text{Post}_t \cdot F_{i,2021}) \;+\; \tau_I \cdot (E_{o(i)} \cdot \text{Post}_t \cdot (1 - F_{i,2021})) \;+\; \mathbf{X}_{ict}^\prime \gamma \;+\; \alpha_{oc} \;+\; \alpha_{ct} \;+\; \varepsilon_{ict},
+Y_{ot}^c \;=\; \tau_F^c \cdot (E_{o} \cdot \text{Post}_t \cdot F_{o,2021}^c) \;+\; \tau_I^c \cdot (E_{o} \cdot \text{Post}_t \cdot (1 - F_{o,2021}^c)) \;+\; \alpha_{o}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{ot}^c,
 \label{eq:formality_interaction}
 \end{equation}
-where $\tau_F$ and $\tau_I$ are the ACRT coefficients for baseline-formal and baseline-informal workers respectively. The four narratives in \cref{subsec:method_narratives} are defined in terms of the signs and magnitudes of $(\tau_F, \tau_I)$.
+where $\tau_F^c$ and $\tau_I^c$ are the ACRT coefficients for baseline-formal and baseline-informal cells within country $c$, and $F_{o,2021}^c$ is the imputed baseline formality share for occupation $o$ in country $c$. The four narratives in \cref{subsec:method_narratives} are evaluated within each country in terms of the signs and magnitudes of $(\tau^c, \tau_F^c, \tau_I^c)$.
 
-Other pre-registered heterogeneity dimensions are country, gender, education (tertiary vs. less than tertiary), age (15--29, 30--49, 50+), 1-digit ISIC sector, skill level (1-digit ISCO), and urban/rural. Causal forests \citep{AtheyWager2018_forests} provide an exploratory data-driven complement.
+Other pre-registered within-country heterogeneity dimensions are gender, education (tertiary vs.\ less than tertiary), age (15--29, 30--49, 50+), 1-digit ISIC sector, skill level (1-digit ISCO), and urban/rural. Causal forests \citep{AtheyWager2018_forests} provide an exploratory data-driven complement, run within each country.
 
 \subsection{Robustness layer}
 \label{subsec:method_robustness}
 
-The robustness layer is the following. I report Honest-DiD bounds from \citet{RambachanRoth2023_honest} with the breakdown value $\bar M$ for every headline result. Cross-sectional placebos restrict the sample to $\zeta = 0$ occupations. Placebo outcome tests use variables that should not respond to LLM exposure (hours worked by agricultural manual laborers). Alternative exposure measures (Webb, Felten, Handa) are substituted for the Eloundou $\zeta$ score. A drop-one-country robustness addresses whether any single country (notably Mexico, given its nearshoring dynamics) drives the pooled result. A 3-digit ISCO fallback addresses small-cell concerns. Alternative binary cutoffs are reported at the 25th, 33rd, 66th, and 75th percentiles. The wild cluster bootstrap \citep{AbadieAIW2023_cluster} is used for specifications with fewer than fifty clusters via \texttt{fwildclusterboot}. The Bartik specification is reported with Rotemberg weights and re-estimated dropping the top-weighted occupation. Oster bounds \citep{Oster2019_unobservables} are reported with $\delta = 1$ and $R^2_{\max} = 1.3 R^2$ via \texttt{sensemakr}; if the identified set includes zero, the headline is flagged as not robust and requires Honest-DiD $\bar M \geq 2$ to be retained. Multiple-testing corrections follow Romano-Wolf within dimensions (for the six social-protection outcomes in Paper 2 and for the eight heterogeneity dimensions) and Bonferroni across dimensions, targeting family-wise error rate ten percent.
+The robustness layer is run within every country. I report Honest-DiD bounds from \citet{RambachanRoth2023_honest} with the breakdown value $\bar M^c$ for every country headline. Cross-sectional placebos restrict the country sample to $\beta = 0$ occupations. Placebo outcome tests use variables that should not respond to LLM exposure (hours worked by agricultural manual laborers). Alternative exposure measures ($\alpha$, $\zeta$, Webb, Felten) are substituted for the $\beta$ score within each country. A 3-digit ISCO fallback addresses small-cell concerns. Alternative binary cutoffs are reported at the 25th, 33rd, 66th, and 75th percentiles within each country. The wild cluster bootstrap \citep{AbadieAIW2023_cluster} is used for specifications with fewer than fifty clusters via \texttt{fwildclusterboot}. The Bartik specification is reported with country-specific Rotemberg weights and re-estimated dropping the top-weighted occupation. Oster bounds \citep{Oster2019_unobservables} are reported with $\delta = 1$ and $R^2_{\max} = 1.3 R^2$ via \texttt{sensemakr} for each country headline; if the identified set includes zero, the country headline is flagged as not robust and requires Honest-DiD $\bar M^c \geq 2$ to be retained. Multiple-testing corrections follow Romano-Wolf within dimensions and Bonferroni across dimensions, targeting family-wise error rate ten percent within each country.
 
-\subsection{Four pre-registered narratives}
+\subsection{Four pre-registered narratives, evaluated per country}
 \label{subsec:method_narratives}
 
-The identification strategy is designed to speak to four empirical patterns, pre-committed before the analysis is run. The narratives are defined by the estimated $(\tau, \tau_F, \tau_I)$:
+The identification strategy is designed to speak to four empirical patterns, pre-committed before the analysis is run, and \emph{evaluated within every one of the seven countries}. Each country reports which of the four patterns its $(\hat\tau^c, \hat\tau_F^c, \hat\tau_I^c)$ supports. The headline empirical contribution is therefore seven independent tests of the same set of narratives, with cross-country variation in which narrative obtains as the central finding.
 
-\textbf{Narrative A} -- \emph{Informality amplifies}. Aggregate $|\bar\tau| > 2\%$ and $\tau_I < \tau_F < 0$. Informal workers absorb the shock more than formal workers; Denmark's buffers attenuate what LAC's fragmented labor markets reveal.
+\textbf{Narrative A} -- \emph{Informality amplifies}. In country $c$: $|\hat\tau^c| > 2\%$ and $\tau_I^c < \tau_F^c < 0$. Informal workers absorb the shock more than formal workers in country $c$.
 
-\textbf{Narrative B} -- \emph{Null replication}. Aggregate $|\bar\tau|$ is small and statistically indistinguishable from zero in both channels. First LAC null-replication of \citet{HumlumVestergaard2025_llm}; informative given the region's high exposure heterogeneity.
+\textbf{Narrative B} -- \emph{Null replication}. In country $c$: $|\hat\tau^c|$ is small and statistically indistinguishable from zero in both channels. Country $c$ is a LAC null replication of \citet{HumlumVestergaard2025_llm}.
 
-\textbf{Narrative C} -- \emph{Null in formal, large in informal}. $\tau_F \approx 0$ and $\tau_I$ meaningfully negative. Identifies a channel that Danish and US designs cannot detect because their informal sectors are negligible.
+\textbf{Narrative C} -- \emph{Null in formal, large in informal}. In country $c$: $\tau_F^c \approx 0$ and $\tau_I^c$ meaningfully negative. Country $c$ identifies a channel that Danish and US designs cannot detect because their informal sectors are negligible.
 
-\textbf{Narrative D} -- \emph{Stratified gains}. $\tau > 0$ on log wages for high-exposure occupations, concentrated in tertiary-educated urban formal workers ($\tau_F^{\text{tertiary, urban}} > 0$); employment effects near zero. LLMs act as a skill-biased productivity enhancer for the protected segment, bypassing the informal majority.
+\textbf{Narrative D} -- \emph{Stratified gains}. In country $c$: $\tau^c > 0$ on log wages for high-exposure occupations, concentrated in tertiary-educated urban formal workers ($\tau_F^{c,\text{tertiary, urban}} > 0$); employment effects near zero. LLMs act as a skill-biased productivity enhancer for the protected segment in country $c$.
 
-Pre-committing the narratives is itself a methodological contribution. Which narrative the paper emphasizes in the final draft is determined by the realized empirical pattern, not by specification search. The pre-analysis plan is deposited on OSF before the continuous-DiD estimates on 2023+ data are run.
+Pre-committing the narratives is itself a methodological contribution. Which narrative the paper reports for country $c$ in the final draft is determined by the realized empirical pattern in country $c$, not by specification search. The pre-analysis plan is deposited on OSF before the country-by-country estimates on 2023+ data are run. The seven independent applications of the same set of narratives sharpen the test: a finding that one narrative obtains in all seven countries is informative about the universality of the mechanism, and a finding that different countries support different narratives is informative about the role of country-specific institutions.

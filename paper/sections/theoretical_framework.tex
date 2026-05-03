@@ -1,0 +1,73 @@
+\section{Theoretical Framework}
+\label{sec:theory}
+
+This section develops a stylized task-based framework that organizes the empirical predictions and clarifies why the labor-market response to LLMs in Latin America is ex ante ambiguous. The framework adapts \citet{AcemogluAutor2011_tasks} and \citet{AcemogluRestrepo2018_race, AcemogluRestrepo2022_tasks_inequality} to the case of a general-purpose technology that primarily reshapes non-routine cognitive tasks. The model is intentionally compact: its job is to discipline the empirical specification, not to deliver a quantitative calibration.
+
+\subsection{Task-based production}
+\label{subsec:theory_tasks}
+
+Final output in occupation $o$ is produced by combining a continuum of tasks $j \in [0, N]$. Each task is performed by either human labor or capital, where capital includes traditional automation and, after 2022, software built on LLMs. Occupations are bundles of tasks: occupation $o$ is characterized by a fixed share vector $\{s_{oj}\}_{j \in [0,N]}$ with $\sum_j s_{oj} = 1$, where $s_{oj}$ is the share of occupation $o$'s output produced by task $j$. The technology that defines an occupation is taken as fixed in the short run; reallocation across occupations is governed by labor demand.
+
+The wage in occupation $o$ is the sum of task-specific compensation:
+\begin{equation}
+w_o \;=\; \sum_j s_{oj} \cdot p_j,
+\label{eq:wage_basic}
+\end{equation}
+where $p_j$ is the equilibrium price of task $j$. Pre-LLM, $p_j$ depends on the human labor productivity in task $j$ and on the local demand for goods that use task $j$ intensively. The framework follows \citet{AutorLM2003_skill_content} in treating the routine versus non-routine distinction as the relevant axis for earlier waves of automation, and follows \citet{AcemogluAutor2011_tasks} in allowing capital to substitute for labor in any task for which a sufficiently productive technology exists.
+
+\subsection{LLMs as a new technology}
+\label{subsec:theory_llm}
+
+The launch of ChatGPT in November 2022 marks the date at which a subset of tasks $J^{\text{LLM}} \subset [0, N]$ becomes performable by software built on top of LLMs. The Eloundou et al. complementary-exposure score is the share of occupation $o$'s tasks that fall in this subset:
+\begin{equation}
+\beta_o \;\equiv\; \sum_{j \in J^{\text{LLM}}} s_{oj}.
+\label{eq:beta_def}
+\end{equation}
+The score $\beta_o$ measures the share of an occupation's tasks where at least 50 percent of the time required can be reduced through software \emph{built on top of LLMs}, as opposed to direct LLM substitution ($\alpha_o$) or the upper-bound sum ($\zeta_o = \alpha_o + \beta_o$); see \citet{Eloundou2023_gpt_exposure}. The choice of $\beta$ rather than $\zeta$ is theoretically motivated for the LAC setting: direct interaction with chat interfaces remains modest, but third-party software with embedded LLM capability (customer-relationship platforms, accounting tools, customer-service chatbots, code assistants) is the primary diffusion channel through multinational firms operating in the region.
+
+The arrival of LLMs has two opposing effects on the wage in exposed occupations. The \emph{displacement effect} ($\tau_d > 0$) operates because firms now produce tasks $j \in J^{\text{LLM}}$ at lower cost using software, reducing labor demand in the corresponding occupations. The magnitude scales with $\beta_o$: occupations with a larger share of automatable tasks face stronger displacement. The \emph{reinstatement effect} ($\tau_r > 0$) operates because firms create new tasks complementary to the technology: prompt design, output verification, oversight, integration with existing workflows. These tasks are performed by humans alongside the software and raise the productivity of labor in exposed occupations.
+
+The net wage response is the difference of the two channels, scaled by exposure:
+\begin{equation}
+\Delta w_o \;=\; \bigl(\tau_r - \tau_d\bigr) \cdot \beta_o.
+\label{eq:net_effect}
+\end{equation}
+The sign and magnitude of $\tau_r - \tau_d$ are empirical objects, not theoretical predictions. The framework only fixes the cross-occupation shape: the response is proportional to $\beta_o$ in absolute value, and high-exposure occupations move more (in either direction) than low-exposure occupations.
+
+\subsection{Heterogeneous adoption: the formality channel}
+\label{subsec:theory_formality}
+
+Adoption of LLM-augmented software is not free at the firm level. Subscription fees, integration with existing systems, worker training, and IT support all require fixed-cost investment. Firms with weak access to credit, low capitalization, and limited managerial capacity face prohibitive adoption costs. In Latin America, this heterogeneity maps tightly onto the formal-informal divide: formal firms are larger, more capitalized, and more likely to operate in sectors where LLM-augmented software is already commercialized; informal firms are smaller, cash-constrained, and frequently operate outside the digital infrastructure required to deploy these tools.
+
+The framework therefore predicts asymmetric short-run effects across the formal-informal divide. Within the formal sector, both channels operate: $\tau_d^F > 0$ generates partial displacement, and $\tau_r^F > 0$ generates complementary task creation, with the relative magnitudes potentially favoring tertiary-educated workers who can perform the new oversight tasks. Within the informal sector, direct adoption is near zero in the short run, so $\tau_d^I \approx 0$ and $\tau_r^I \approx 0$ in the partial-equilibrium sense. Informal workers can still be affected indirectly: formal firms that adopt the technology become more productive and may capture market share from informal competitors, generating an indirect demand-side displacement on informal employment that is harder to sign a priori.
+
+The net comparison is:
+\begin{equation}
+\Delta w_o^F - \Delta w_o^I \;=\; \bigl[(\tau_r^F - \tau_d^F) - (\tau_r^I - \tau_d^I)\bigr] \cdot \beta_o.
+\label{eq:formal_informal}
+\end{equation}
+Whether the formal-informal differential is positive or negative depends on the relative strength of direct adoption in formal firms (which can go either way) and indirect spillovers to informal firms (typically negative). The sign is an empirical question in every country.
+
+\subsection{Testable predictions}
+\label{subsec:theory_predictions}
+
+The framework delivers four predictions that the empirical specification of \cref{sec:method} is designed to test.
+
+\textbf{P1 (cross-occupation, within country).} The labor-market response in country $c$ is proportional to $\beta_o$:
+\begin{equation*}
+\frac{\partial Y_{ot}^c}{\partial \beta_o} \;\gtreqless\; 0
+\end{equation*}
+according to whether reinstatement dominates displacement, dominates equally, or is dominated. The sign is empirical and may differ across countries.
+
+\textbf{P2 (formal vs. informal, within country).} Short-run adoption is concentrated in the formal sector. The framework predicts $|\tau^F| > |\tau^I|$ at the two-year horizon for countries in which formal adoption is meaningful. In countries where formal adoption is also low, both channels are muted.
+
+\textbf{P3 (cross-country comparison of estimates).} Countries with higher formality rates and stronger digital infrastructure should exhibit larger $|\tau|$ than countries with lower formality and weaker infrastructure. This prediction is tested by comparing the seven country-specific estimates $\{\hat\tau^c\}_{c=1}^7$ against the corresponding country-level formality and digital-readiness indicators. Cross-country heterogeneity is the headline result rather than a robustness check.
+
+\textbf{P4 (within-occupation skill heterogeneity).} Within an exposed occupation, tertiary-educated workers are better positioned to perform the new reinstatement tasks (oversight, prompting, verification) and therefore experience a smaller displacement effect than secondary-educated workers in the same occupation. This prediction is tested by interacting $\beta_o \cdot \text{Post}_t$ with worker education in each country.
+
+\subsection{Why LAC differs from the OECD evidence}
+\label{subsec:theory_lac}
+
+The framework reconciles the apparently divergent estimates in the existing causal literature. \citet{Brynjolfsson2023_genai} and \citet{CuiDemirerJaffe2025_copilot} document large within-firm productivity gains in US settings where adoption is exogenously delivered to high-formality, digitally ready workers. These estimates correspond to a high-$\tau_r$ environment in formal-sector firms: the reinstatement channel is fully operative because the supporting institutions are in place. \citet{HumlumVestergaard2025_llm} document near-null aggregate effects in Denmark, a setting with high formality, high adoption, and tight labor markets. The framework rationalizes this as a high-$\tau_d$, high-$\tau_r$ environment in which the two channels approximately offset, leaving the aggregate wage response close to zero.
+
+LAC differs on both margins. Adoption is heterogeneous across countries (and across formality strata within countries), and labor markets are not tight in the Danish sense. Cross-country variation in formality (from roughly 25 percent informal in Uruguay to over 70 percent in parts of the Andean region) generates ex ante predictions that vary by country. This is precisely why a country-by-country empirical strategy is the correct test of the framework: pooling would average over heterogeneity that the theory predicts is first-order. Each of the seven country estimates is an independent test of the same underlying mechanism, and the cross-country pattern of estimates is the central empirical contribution.
