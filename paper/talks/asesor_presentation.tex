@@ -4,13 +4,13 @@
 % Estilo: blanco y negro, sobrio, academico
 % =============================================================================
 
-\documentclass[10pt, aspectratio=169]{beamer}
+\documentclass[9pt, aspectratio=169]{beamer}
 
 % Tema: minimalista, blanco y negro
 \usetheme{default}
-\usecolortheme{seagull}        % Paleta gris (sin colores)
+%\usecolortheme{seagull}        % Paleta gris (sin colores)
 \useinnertheme{rectangles}      % Bullets cuadrados, sin sombras
-\useoutertheme{miniframes}      % Footer con secciones
+%\useoutertheme{miniframes}      % Footer con secciones
 \setbeamercovered{transparent}  % Items futuros transparentes
 
 % Forzar blanco y negro: sobreescribir cualquier color residual
@@ -91,10 +91,10 @@
 \title[Impacto laboral de la IA generativa en ALC]
       {El Impacto Laboral de la Inteligencia Artificial Generativa\\
        Evidencia Causal para América Latina}
-\subtitle{Presentación al asesor}
-\author{Eric Torres}
-\institute{Pontificia Universidad Católica del Perú\\Programa Doctoral en Economía}
-\date{\today}
+%\subtitle{Presentación al asesor}
+%\author{Eric Torres}
+%\institute{Pontificia Universidad Católica del Perú\\Programa Doctoral en Economía}
+\date{Mayo 2026}
 
 % =============================================================================
 \begin{document}
@@ -105,9 +105,9 @@
 \end{frame}
 
 % --- Slide 2: Plan de la presentacion ---------------------------------------
-\begin{frame}{Plan de la presentación}
-  \tableofcontents
-\end{frame}
+%\begin{frame}{Plan de la presentación}
+  %\tableofcontents
+%\end{frame}
 
 % =============================================================================
 \section{Motivación y pregunta de investigación}
@@ -263,14 +263,14 @@
   Colombia   & GEIH      & Mensual $\to$ T & Nacional \\
   Ecuador    & ENEMDU    & Mensual $\to$ T & Nacional \\
   México     & ENOE      & Trimestral      & Nacional \\
-  Perú       & ENPE      & Trimestral      & Lima Metropolitana \\
+  Perú       & EPEN      & Trimestral      & Lima Metropolitana \\
   Uruguay    & ECH       & Anual           & Nacional \\
   \bottomrule
   \end{tblr}
   \vfill
   \footnotesize
   \textbf{Selección:} cinco países publican microdatos directamente en ISCO-08; México publica en SINCO con \emph{crosswalk} oficial a ISCO-08.
-  \textbf{Caveat de Perú:} la ENAHO descontinuó el módulo trimestral de empleo en 2023; la ENPE solo cubre Lima Metropolitana, por lo que $\hat\tau^{Per\acute{u}}$ se interpreta como Lima-específico, no nacionalmente representativo.
+  \textbf{Caveat de Perú:} la ENAHO descontinuó el módulo trimestral de empleo en 2023; la EPEN solo cubre Lima Metropolitana, por lo que $\hat\tau^{Per\acute{u}}$ se interpreta como Lima-específico, no nacionalmente representativo.
 \end{frame}
 
 % --- Slide 12: Variable de tratamiento --------------------------------------
@@ -391,20 +391,21 @@
 % --- Slide 18: Estado del proyecto ------------------------------------------
 \begin{frame}{Estado actual del proyecto}
   \begin{itemize}
-    \setlength\itemsep{0.45em}
-    \item[\textbf{Hecho.}]
+    %\setlength\itemsep{0.45em}
+    
+    \item \textbf{Hecho.}
       \begin{itemize}
         \item Estrategia de identificación finalizada y validada.
         \item Crosswalk O*NET $\to$ ISCO-08 construido (98.2\% match).
         \item Datos crudos de los seis países descargados, descomprimidos y normalizados (127 GB).
         \item Borrador del paper en español: introducción, marco teórico, metodología.
       \end{itemize}
-    \item[\textbf{En curso.}]
+    \item \textbf{En curso.}
       \begin{itemize}
         \item Armonización de microdatos: 6 encuestas con esquema común.
         \item Imputación de exposición $\beta$ a microdatos por país.
       \end{itemize}
-    \item[\textbf{Pendiente.}]
+    \item \textbf{Pendiente.}
       \begin{itemize}
         \item Estimación principal país por país.
         \item Robustez: Honest-DiD, Bartik, Oster, alternative exposures.
@@ -418,21 +419,13 @@
   \begin{enumerate}
     \setlength\itemsep{0.5em}
     \item \textbf{Estimador principal:} ¿continuous DiD (CGBS 2024) o TWFE simple? Trade-off entre frontera metodológica y comparabilidad con la literatura cercana.
-    \item \textbf{Caveat de Perú:} ¿incluir Perú con representatividad solo de Lima, o relegarlo a robustez? La justificación está en el diseño de la ENPE.
+    \item \textbf{Caveat de Perú:} ¿incluir Perú con representatividad solo de Lima, o relegarlo a robustez? La justificación está en el diseño de la EPEN.
     \item \textbf{Cutoff binario para la especificación secundaria:} mediana ($p50$) por comparabilidad con \citet{Liu2025_generate_future} vs.\ cutoff teórico de $\beta > 0.5$.
     \item \textbf{Posicionamiento del paper:} ¿énfasis en contraste con Dinamarca o en las cuatro narrativas como contribución metodológica?
     \item \textbf{Journal objetivo:} JLE, JHR, AEJ:Applied. Calendario de presentaciones previas (LACEA, NEUDC, IZA).
   \end{enumerate}
 \end{frame}
 
-% --- Slide 20: Gracias ------------------------------------------------------
-\begin{frame}[plain]
-  \begin{center}
-    \vspace{1cm}
-    {\Large \textbf{Gracias.}}\\[1.5em]
-    {\large Comentarios bienvenidos.}\\[2cm]
-    {\small Eric Torres \\ \texttt{etorres@pucp.edu.pe}}
-  \end{center}
-\end{frame}
+
 
 \end{document}
