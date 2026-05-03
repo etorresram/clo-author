@@ -64,25 +64,20 @@
 % ====== List Formatting ======
 \usepackage{enumitem}
 
-% ====== Bibliography and Citation (biblatex + biber) ======
+% ====== Bibliography and Citation (biblatex-apa, APA 7) ======
 \usepackage{xurl}
 \usepackage{xcolor}
 \definecolor{citationcolor}{RGB}{0, 127, 255}
+\usepackage{csquotes}
 
 \usepackage[backend=biber,
-            style=authoryear,
-            maxcitenames=3,
-            mincitenames=1,
-            maxbibnames=99,
-            giveninits=true,
+            style=apa,
+            natbib=true,
             uniquename=false,
             uniquelist=true,
-            dashed=false,
-            urldate=long,
-            url=true,
-            natbib=true]{biblatex}
+            sortcites=true]{biblatex}
+\DeclareLanguageMapping{english}{english-apa}
 
-\renewcommand*{\nameyeardelim}{\addcomma\space}
 \DeclareCiteCommand{\cite}
   {\usebibmacro{prenote}}
   {\usebibmacro{citeindex}%
