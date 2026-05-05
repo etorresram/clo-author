@@ -12,7 +12,30 @@ El reto t\'{e}cnico central de la EPEN es que cambia de clasificador ocupacional
 
 \subsubsection*{Armonizaci\'{o}n a CIUO-08 a cuatro d\'{i}gitos}
 
-La soluci\'{o}n adoptada lleva ambos per\'{i}odos a un clasificador internacional com\'{u}n, la CIUO-08 a cuatro d\'{i}gitos, usando las cuatro tablas oficiales de correspondencia publicadas por el INEI: Anexo~1 (CNO-2015 a CO-1995), Anexo~2 (CO-1995 a CNO-2015), Anexo~3 (CNO-2015 a CIUO-2008) y Anexo~4 (CIUO-2008 a CNO-2015). El clasificador maestro es la CIUO-08 a cuatro d\'{i}gitos por tres razones. Primero, las medidas de exposici\'{o}n a IA y a LLM se construyen a nivel SOC a cuatro o seis d\'{i}gitos \citep{Felten2023_ai_exposure, Webb2020_ai_exposure, Eloundou2023_gpt_exposure}, y el crosswalk SOC--CIUO-08 est\'{a} documentado oficialmente por la OIT y la Oficina de Estad\'{i}sticas Laborales de Estados Unidos\footnote{V\'{e}ase la documentaci\'{o}n de la CIUO-08 de la OIT en \url{https://www.ilo.org/public/english/bureau/stat/isco/isco08/} y los crosswalks SOC publicados por el U.S. Bureau of Labor Statistics en \url{https://www.bls.gov/soc/soccrosswalks.htm}, que incluyen el mapeo SOC-2018 a CIUO-08 utilizado por la literatura.}; trabajar a CIUO-08 preserva la granularidad a la que las medidas de exposici\'{o}n est\'{a}n definidas. Segundo, la CIUO-08 es el clasificador maestro usado para los otros cinco pa\'{i}ses del art\'{i}culo, de modo que armonizar Per\'{u} a CIUO-08 lo deja directamente comparable con Costa Rica, Colombia, Ecuador, M\'{e}xico y Uruguay. Tercero, el INEI dise\~{n}\'{o} el CNO-2015 alineado con la CIUO-08, de modo que el mapeo CNO-2015 a CIUO-08 v\'{i}a el Anexo~3 es cercanamente uno a uno y no requiere imputaci\'{o}n.
+La soluci\'{o}n adoptada lleva ambos per\'{i}odos a un clasificador internacional com\'{u}n, la CIUO-08 a cuatro d\'{i}gitos, usando las cuatro tablas oficiales de correspondencia publicadas por el INEI: Anexo~1 (CNO-2015 a CO-1995), Anexo~2 (CO-1995 a CNO-2015), Anexo~3 (CNO-2015 a CIUO-2008) y Anexo~4 (CIUO-2008 a CNO-2015).\footnote{Tablas de correspondencia descargadas del portal oficial del INEI: \url{https://www.inei.gob.pe/media/Tablas_de_correspondencia_CNO_CIUO_CO.xlsx}. La copia exacta utilizada se deposita en el paquete de replicaci\'{o}n del art\'{i}culo, junto con el script en R que produce los crosswalks operativos y los pesos posteriores emp\'{i}ricos.} La estructura topol\'{o}gica de los cuatro mapeos se resume en la \cref{tab:peru_crosswalks}.
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Estructura de los cuatro Anexos de correspondencia ocupacional del INEI}
+\label{tab:peru_crosswalks}
+\begin{tabular}{cllc}
+\toprule
+Anexo & Mapeo & Tipo & Uso en este art\'{i}culo \\
+\midrule
+1 & CNO-2015 (4d) $\to$ CO-1995 (3d) & Many-to-one         & Robustez 2 (\cref{tab:peru_classifier_ladder}) \\
+2 & CO-1995 (3d) $\to$ CNO-2015 (4d) & One-to-many         & Especificaci\'{o}n principal (per\'{i}odo pre) \\
+3 & CNO-2015 (4d) $\to$ CIUO-2008 (4d) & Cercanamente 1-a-1 & Especificaci\'{o}n principal (per\'{i}odo post) \\
+4 & CIUO-2008 (4d) $\to$ CNO-2015 (4d) & Cercanamente 1-a-1 & Validaci\'{o}n cruzada del Anexo~3 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} El CO-1995 a tres d\'{i}gitos cuenta con aproximadamente 116 c\'{o}digos activos en la EPEN; el CNO-2015 a cuatro d\'{i}gitos, con aproximadamente 390. La CIUO-08 a cuatro d\'{i}gitos contiene 436 c\'{o}digos en su versi\'{o}n oficial completa de la OIT. La estructura \emph{many-to-one} del Anexo~1 permite agregaci\'{o}n mec\'{a}nica sin imputaci\'{o}n; la estructura \emph{one-to-many} del Anexo~2 obliga a un esquema de pesos para asignar trabajadores del per\'{i}odo pre a c\'{o}digos m\'{a}s finos. El alineamiento cercano a uno a uno de los Anexos~3 y~4 refleja la decisi\'{o}n del INEI de dise\~{n}ar el CNO-2015 sobre la base de la CIUO-08.
+\end{tablenotes}
+\end{threeparttable}
+\end{table} El clasificador maestro es la CIUO-08 a cuatro d\'{i}gitos por tres razones. Primero, las medidas de exposici\'{o}n a IA y a LLM se construyen a nivel SOC a cuatro o seis d\'{i}gitos \citep{Felten2023_ai_exposure, Webb2020_ai_exposure, Eloundou2023_gpt_exposure}, y el crosswalk SOC--CIUO-08 est\'{a} documentado oficialmente por la OIT y la Oficina de Estad\'{i}sticas Laborales de Estados Unidos\footnote{V\'{e}ase la documentaci\'{o}n de la CIUO-08 de la OIT en \url{https://www.ilo.org/public/english/bureau/stat/isco/isco08/} y los crosswalks SOC publicados por el U.S. Bureau of Labor Statistics en \url{https://www.bls.gov/soc/soccrosswalks.htm}, que incluyen el mapeo SOC-2018 a CIUO-08 utilizado por la literatura.}; trabajar a CIUO-08 preserva la granularidad a la que las medidas de exposici\'{o}n est\'{a}n definidas. Segundo, la CIUO-08 es el clasificador maestro usado para los otros cinco pa\'{i}ses del art\'{i}culo, de modo que armonizar Per\'{u} a CIUO-08 lo deja directamente comparable con Costa Rica, Colombia, Ecuador, M\'{e}xico y Uruguay. Tercero, el INEI dise\~{n}\'{o} el CNO-2015 alineado con la CIUO-08, de modo que el mapeo CNO-2015 a CIUO-08 v\'{i}a el Anexo~3 es cercanamente uno a uno y no requiere imputaci\'{o}n.
 
 El procedimiento opera por per\'{i}odo. En el per\'{i}odo \emph{post} (2022T4 en adelante), cada trabajador codificado en CNO-2015 a cuatro d\'{i}gitos se asigna a su correspondiente c\'{o}digo CIUO-08 a cuatro d\'{i}gitos v\'{i}a el Anexo~3. En el per\'{i}odo \emph{pre} (2021T1--2022T3), encadeno los Anexos~2 y~3: cada c\'{o}digo CO-1995 a tres d\'{i}gitos se mapea primero a su conjunto de c\'{o}digos CNO-2015 a cuatro d\'{i}gitos hijos v\'{i}a el Anexo~2, y cada uno de estos c\'{o}digos hijos se mapea a su c\'{o}digo CIUO-08 v\'{i}a el Anexo~3. Como el primer paso es \emph{one-to-many}, el procedimiento debe asignar a cada trabajador del per\'{i}odo pre una distribuci\'{o}n de probabilidad sobre los c\'{o}digos CIUO-08 hijos, no un \'{u}nico c\'{o}digo. La elecci\'{o}n del esquema de pesos es la decisi\'{o}n metodol\'{o}gica clave.
 
