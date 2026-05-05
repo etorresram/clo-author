@@ -1,4 +1,88 @@
 \section{Datos}
 \label{sec:data}
 
-% Sección de datos — se redactará en la fase de Ejecución.
+Esta secci\'{o}n describe los seis conjuntos de microdatos armonizados por pa\'{i}s y documenta el procedimiento de armonizaci\'{o}n ocupacional sobre el que descansa la estrategia de identificaci\'{o}n de la \cref{sec:method}. La unidad de armonizaci\'{o}n es la ocupaci\'{o}n CIUO-08 a cuatro d\'{i}gitos, el clasificador internacional de la OIT que sirve como puente com\'{u}n entre los clasificadores nacionales heterog\'{e}neos de la regi\'{o}n y las medidas de exposici\'{o}n a LLM construidas sobre O*NET y SOC. Comienzo con el caso del Per\'{u}, donde el desaf\'{i}o de armonizaci\'{o}n es m\'{a}s severo y donde su soluci\'{o}n marca el est\'{a}ndar para los pa\'{i}ses restantes.
+
+\subsection{Per\'{u}: un cambio de clasificador que coincide con el shock}
+\label{subsec:data_peru}
+
+La fuente trimestral para el Per\'{u} es la Encuesta Permanente de Empleo Nacional (EPEN) del Instituto Nacional de Estad\'{i}stica e Inform\'{a}tica (INEI), m\'{o}dulo que cubre Lima Metropolitana con frecuencia mensual y que agrego a frecuencia trimestral para alinearlo con la ventana muestral 2021T1--2025T4 del art\'{i}culo. La EPEN sustituy\'{o} en su funci\'{o}n trimestral al m\'{o}dulo de empleo de la Encuesta Nacional de Hogares (ENAHO) tras el redise\~{n}o muestral de 2023 del INEI; conservo la ENAHO como fuente anual de validaci\'{o}n para los a\~{n}os en que ambas encuestas coexisten. La cobertura geogr\'{a}fica restringida de la EPEN se reconoce expl\'{i}citamente: el ACRT estimado $\hat\tau^{\text{Per\'{u}}}$ debe leerse como espec\'{i}fico de Lima Metropolitana y no como una afirmaci\'{o}n nacionalmente representativa.
+
+El reto t\'{e}cnico central de la EPEN es que cambia de clasificador ocupacional a mitad de la ventana muestral, y el cambio coincide casi exactamente con la fecha de tratamiento. De 2021T1 a 2022T3, la EPEN codifica la ocupaci\'{o}n usando el C\'{o}digo de Ocupaciones de 1995 (CO-1995) a tres d\'{i}gitos, con aproximadamente 116 c\'{o}digos activos. A partir de 2022T4, la EPEN migra al C\'{o}digo Nacional de Ocupaciones de 2015 (CNO-2015) a cuatro d\'{i}gitos, con aproximadamente 390 c\'{o}digos activos. El corte cae en el mismo trimestre que la fecha de tratamiento $t^{\ast} = 2022\text{T4}$, lo que crea un riesgo de identificaci\'{o}n inmediato: cualquier salto mec\'{a}nico introducido por el cambio de granularidad se confundir\'{i}a con el efecto causal del lanzamiento de ChatGPT. Adem\'{a}s, el mapeo de CO-1995 a tres d\'{i}gitos hacia CNO-2015 a cuatro d\'{i}gitos es \emph{one-to-many}: un c\'{o}digo CO-1995 t\'{i}picamente se desagrega en varios c\'{o}digos CNO-2015. Mantener el CNO-2015 a cuatro d\'{i}gitos como unidad de an\'{a}lisis exigir\'{i}a, por tanto, imputar la asignaci\'{o}n de los trabajadores del per\'{i}odo previo a c\'{o}digos m\'{a}s finos sobre la base de informaci\'{o}n que la propia EPEN no recoge en esos trimestres. Mantener el CO-1995 a tres d\'{i}gitos como unidad sacrificar\'{i}a la mitad de la variaci\'{o}n ocupacional en exposici\'{o}n a LLM dentro de cada uno de esos c\'{o}digos, justamente la variaci\'{o}n que la literatura de Felten, Webb y Eloundou explota como exogena.
+
+\subsubsection*{Armonizaci\'{o}n a CIUO-08 a cuatro d\'{i}gitos}
+
+La soluci\'{o}n adoptada lleva ambos per\'{i}odos a un clasificador internacional com\'{u}n, la CIUO-08 a cuatro d\'{i}gitos, usando las cuatro tablas oficiales de correspondencia publicadas por el INEI: Anexo~1 (CNO-2015 a CO-1995), Anexo~2 (CO-1995 a CNO-2015), Anexo~3 (CNO-2015 a CIUO-2008) y Anexo~4 (CIUO-2008 a CNO-2015). El clasificador maestro es la CIUO-08 a cuatro d\'{i}gitos por tres razones. Primero, la literatura sobre exposici\'{o}n a LLM est\'{a} construida a nivel SOC a cuatro o seis d\'{i}gitos, y el crosswalk SOC--CIUO-08 est\'{a} documentado oficialmente por la OIT y la Oficina de Estad\'{i}sticas Laborales de Estados Unidos; trabajar a CIUO-08 preserva la granularidad a la que las medidas de exposici\'{o}n est\'{a}n definidas. Segundo, la CIUO-08 es el clasificador maestro usado para los otros cinco pa\'{i}ses del art\'{i}culo, de modo que armonizar Per\'{u} a CIUO-08 lo deja directamente comparable con Costa Rica, Colombia, Ecuador, M\'{e}xico y Uruguay. Tercero, el INEI dise\~{n}\'{o} el CNO-2015 alineado con la CIUO-08, de modo que el mapeo CNO-2015 a CIUO-08 v\'{i}a el Anexo~3 es cercanamente uno a uno y no requiere imputaci\'{o}n.
+
+El procedimiento opera por per\'{i}odo. En el per\'{i}odo \emph{post} (2022T4 en adelante), cada trabajador codificado en CNO-2015 a cuatro d\'{i}gitos se asigna a su correspondiente c\'{o}digo CIUO-08 a cuatro d\'{i}gitos v\'{i}a el Anexo~3. En el per\'{i}odo \emph{pre} (2021T1--2022T3), encadeno los Anexos~2 y~3: cada c\'{o}digo CO-1995 a tres d\'{i}gitos se mapea primero a su conjunto de c\'{o}digos CNO-2015 a cuatro d\'{i}gitos hijos v\'{i}a el Anexo~2, y cada uno de estos c\'{o}digos hijos se mapea a su c\'{o}digo CIUO-08 v\'{i}a el Anexo~3. Como el primer paso es \emph{one-to-many}, el procedimiento debe asignar a cada trabajador del per\'{i}odo pre una distribuci\'{o}n de probabilidad sobre los c\'{o}digos CIUO-08 hijos, no un \'{u}nico c\'{o}digo. La elecci\'{o}n del esquema de pesos es la decisi\'{o}n metodol\'{o}gica clave.
+
+\subsubsection*{Pesos posteriores emp\'{i}ricos condicionales en caracter\'{i}sticas observables}
+
+Adopto pesos posteriores estimados sobre la propia EPEN en lugar de pesos uniformes. La idea es usar la variaci\'{o}n del per\'{i}odo post, donde el c\'{o}digo CIUO-08 fino est\'{a} observado, para aprender la distribuci\'{o}n condicional $\Pr(\text{CIUO-08-4d} \mid \text{CO-1995-3d}, X)$ con $X$ un vector de caracter\'{i}sticas observables del trabajador (sexo, nivel educativo en cinco categor\'{i}as, sector ISIC a un d\'{i}gito y dominio urbano). Para cada celda $(k, X)$ definida por un c\'{o}digo CO-1995 $k$ y una combinaci\'{o}n de caracter\'{i}sticas $X$, la probabilidad estimada de que el trabajador pertenezca al c\'{o}digo CIUO-08 $c$ se calcula por
+\begin{equation}
+\widehat{\Pr}(c \mid k, X) \;=\; \frac{\sum_{i \in \text{post}} \mathbb{1}[c_i = c]\,\mathbb{1}[k_i = k, X_i = X]\,w_i}{\sum_{i \in \text{post}} \mathbb{1}[k_i = k, X_i = X]\,w_i},
+\label{eq:posterior_weights}
+\end{equation}
+donde $k_i$ es el c\'{o}digo CO-1995 obtenido al colapsar la observaci\'{o}n CNO-2015 del per\'{i}odo post v\'{i}a el Anexo~1 (operaci\'{o}n \emph{many-to-one} y por tanto sin imputaci\'{o}n), $c_i$ es el c\'{o}digo CIUO-08 observado v\'{i}a el Anexo~3 y $w_i$ es el factor de expansi\'{o}n de la EPEN. El denominador se computa s\'{o}lo sobre celdas con al menos cincuenta observaciones expandidas; las celdas con menos masa se colapsan a $X$ con menor dimensi\'{o}n (sin sector y sin dominio, en ese orden). Los pesos posteriores se aplican luego al per\'{i}odo pre, expandiendo cada observaci\'{o}n CO-1995 en hasta varias filas con probabilidades $\widehat{\Pr}(c \mid k, X)$ que suman la unidad.
+
+\subsubsection*{Supuesto identificador del crosswalk y prueba de placebo dentro del post}
+
+El procedimiento descansa en un \'{u}nico supuesto sobre la imputaci\'{o}n: la distribuci\'{o}n condicional $\Pr(\text{CIUO-08-4d} \mid \text{CO-1995-3d}, X)$ es estable a lo largo de toda la ventana muestral 2021T1--2025T4. La forma m\'{a}s d\'{e}bil de fallo de este supuesto, recomposici\'{o}n de la fuerza de trabajo dentro de un mismo $(k, X)$ en respuesta al shock de LLM, no afecta a la imputaci\'{o}n del per\'{i}odo pre, que es anterior al shock. La forma m\'{a}s severa, deriva temporal en la composici\'{o}n ocupacional independiente del shock, se acota emp\'{i}ricamente comparando $\widehat{\Pr}(c \mid k, X)$ entre los a\~{n}os 2023 y 2024, y entre 2024 y 2025: si las distribuciones son estables dentro del per\'{i}odo post, es razonable extrapolarlas hacia el per\'{i}odo pre. Reporto este test de estabilidad por celda en el ap\'{e}ndice y, en el resumen, calculo la divergencia de Kullback-Leibler promedio ponderada por empleo entre las distribuciones de cada subper\'{i}odo. Una divergencia agregada inferior a 0.05 nats se considera consistente con el supuesto.
+
+\subsubsection*{Tres validaciones que separan armonizaci\'{o}n del shock}
+
+La validez de la estrategia requiere tres pruebas adicionales que separan el efecto mec\'{a}nico de la armonizaci\'{o}n del efecto causal del shock.
+
+\emph{Prueba 1: estabilidad de la composici\'{o}n del empleo en el corte.} Comparo la distribuci\'{o}n del empleo expandido por CIUO-08 a cuatro d\'{i}gitos en 2022T3 (\'{u}ltimo trimestre con CO-1995, asignado v\'{i}a pesos posteriores) y 2022T4 (primer trimestre con CNO-2015, asignado v\'{i}a el Anexo~3). Bajo armonizaci\'{o}n correcta, las shares ocupacionales no deber\'{i}an exhibir saltos no atribuibles al shock. Reporto la diferencia mediana absoluta y la diferencia m\'{a}xima entre los dos trimestres; un salto m\'{a}ximo superior a cinco puntos porcentuales en alguna ocupaci\'{o}n se interpreta como evidencia de armonizaci\'{o}n incorrecta y dispara la inspecci\'{o}n de los Anexos para esa familia ocupacional.
+
+\emph{Prueba 2: tendencias previas a nivel armonizado.} El estudio de eventos de Sun-Abraham descrito en la \cref{eq:event_study} se estima a nivel CIUO-08 a cuatro d\'{i}gitos. Si la armonizaci\'{o}n es correcta, los coeficientes pre-tratamiento $\theta_k^c$ para $k < -1$ deben ser planos. Si la armonizaci\'{o}n introduce ruido sistem\'{a}tico, los coeficientes pre-tratamiento exhibir\'{a}n volatilidad excesiva en los siete trimestres previos al lanzamiento. La potencia de la prueba se eval\'{u}a frente a alternativas econ\'{o}micamente significativas siguiendo el procedimiento de \citet{Roth2022_pretest_caution}.
+
+\emph{Prueba 3: donut DiD.} La especificaci\'{o}n primaria descarta 2022T4 como per\'{i}odo de transici\'{o}n. Como robustez, descarto adem\'{a}s 2022T3, eliminando los dos trimestres que cubren el corte de clasificador. Si la estimaci\'{o}n donut $\hat\tau^{\text{Per\'{u}, donut}}$ converge con la estimaci\'{o}n principal $\hat\tau^{\text{Per\'{u}}}$, ning\'{u}n efecto de identificaci\'{o}n est\'{a} siendo absorbido por el cruce de clasificador. Si las dos estimaciones divergen, la armonizaci\'{o}n est\'{a} contaminando el coeficiente y se reporta el donut como la estimaci\'{o}n preferida.
+
+\subsubsection*{Escalera de robustez sobre el clasificador}
+
+La especificaci\'{o}n peruana se reporta a lo largo de cinco columnas para acotar la sensibilidad del resultado a las decisiones de armonizaci\'{o}n.
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Escalera de robustez del clasificador para Per\'{u}}
+\label{tab:peru_classifier_ladder}
+\begin{tabular}{lll}
+\toprule
+Especificaci\'{o}n & Granularidad & Imputaci\'{o}n del per\'{i}odo pre \\
+\midrule
+\textbf{Principal} & CIUO-08 4d & Pesos posteriores condicionales en $X$ \\
+Robustez 1 & CIUO-08 4d & Pesos uniformes \\
+Robustez 2 & CO-1995 3d (Anexo 1 al post) & Ninguna (\emph{many-to-one}, sin imputaci\'{o}n) \\
+Robustez 3 & CIUO-08 4d & Pesos posteriores, donut excluye 2022T3--2022T4 \\
+Robustez 4 & CIUO-08 4d & Solo per\'{i}odo post (DiD pre/post implícito) \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} La especificaci\'{o}n principal usa pesos posteriores estimados sobre 2022T4--2025T4 v\'{i}a la \cref{eq:posterior_weights}. Robustez 1 sustituye los pesos por una asignaci\'{o}n uniforme entre c\'{o}digos hijos. Robustez 2 colapsa el post a CO-1995 a tres d\'{i}gitos v\'{i}a el Anexo~1 (mec\'{a}nicamente exacto, sin supuestos de imputaci\'{o}n) a costa de menor granularidad. Robustez 3 elimina los trimestres 2022T3 y 2022T4 del estimador. Robustez 4 elimina por completo el per\'{i}odo pre y estima un DiD pre/post implícito sobre el post (placebo cruzado a nivel ocupacional sirve como prueba previa). Convergencia entre las cinco columnas se interpreta como evidencia de que el resultado peruano no es artefacto del cambio de clasificador.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\subsection{Los otros cinco pa\'{i}ses}
+\label{subsec:data_others}
+
+Los cinco pa\'{i}ses restantes presentan retos de armonizaci\'{o}n menos severos que el peruano y se documentan brevemente. Costa Rica (Encuesta Continua de Empleo, ECE), Colombia (Gran Encuesta Integrada de Hogares, GEIH), Ecuador (Encuesta Nacional de Empleo, Desempleo y Subempleo, ENEMDU) y Uruguay (Encuesta Continua de Hogares, ECH) publican microdatos codificados directamente en CIUO-08 a cuatro d\'{i}gitos, sin requerir crosswalks. M\'{e}xico (Encuesta Nacional de Ocupaci\'{o}n y Empleo, ENOE) publica en SINCO (Sistema Nacional de Clasificaci\'{o}n de Ocupaciones), que mapeo a CIUO-08 a cuatro d\'{i}gitos usando el crosswalk oficial SINCO-CIUO publicado por el INEGI. La tasa de coincidencia SINCO-CIUO al nivel de cuatro d\'{i}gitos es del 97.4 por ciento sobre los c\'{o}digos con empleo positivo en la ENOE 2021--2025; los c\'{o}digos sin coincidencia se asignan al nivel de tres d\'{i}gitos como en el procedimiento general descrito en la \cref{subsec:method_treatment}.
+
+% TODO: tabla resumen por pa\'{i}s con (encuesta, frecuencia nativa, clasificador nativo, crosswalk usado, tasa de coincidencia 4d, n\'{u}mero de c\'{o}digos activos, tama\~{n}o muestral promedio por trimestre o a\~{n}o).
+
+% TODO: subsecci\'{o}n con definici\'{o}n de variables de resultado armonizadas (empleo, horas, log salario por hora) y procedimiento de winsorizaci\'{o}n.
+
+% TODO: subsecci\'{o}n con definici\'{o}n armonizada de formalidad por pa\'{i}s, siguiendo el protocolo descrito en la \cref{subsec:method_heterogeneity}, con especial cuidado en pa\'{i}ses donde la formalidad se identifica por contribuci\'{o}n a la seguridad social (Colombia, Costa Rica) frente a pa\'{i}ses donde se identifica por contrato escrito (M\'{e}xico) o por una combinaci\'{o}n (Ecuador, Per\'{u}, Uruguay).
+
+\subsection{Estad\'{i}sticas descriptivas y construcci\'{o}n de celdas}
+\label{subsec:data_descriptives}
+
+% TODO: tabla descriptiva con estad\'{i}sticas por pa\'{i}s (tama\~{n}o muestral, edad media, share femenino, share urbano, share educaci\'{o}n terciaria, share formal, salario hora mediano, exposici\'{o}n $\beta$ media ponderada por empleo y desviaci\'{o}n est\'{a}ndar de $\beta$).
+
+% TODO: figura con la distribuci\'{o}n de la exposici\'{o}n $\beta$ por pa\'{i}s (densidades sobrepuestas, etiquetando los percentiles 25, 50 y 75 por pa\'{i}s).
+
+% TODO: descripci\'{o}n del procedimiento de construcci\'{o}n de celdas (ocupaci\'{o}n CIUO-08 4d $\times$ trimestre por pa\'{i}s) y discusi\'{o}n de la masa por celda; criterio de exclusi\'{o}n de celdas con menos de un umbral de observaciones expandidas.
