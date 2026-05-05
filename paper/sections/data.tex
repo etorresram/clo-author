@@ -25,9 +25,9 @@ La soluci\'{o}n adoptada lleva ambos per\'{i}odos a un clasificador internaciona
 Anexo & Mapeo & Tipo & Uso en este art\'{i}culo \\
 \midrule
 1 & CNO-2015 (4d) $\to$ CO-1995 (3d) & Many-to-one         & Robustez 2 (\cref{tab:peru_classifier_ladder}) \\
-2 & CO-1995 (3d) $\to$ CNO-2015 (4d) & One-to-many         & Especificaci\'{o}n principal (per\'{i}odo pre) \\
-3 & CNO-2015 (4d) $\to$ CIUO-2008 (4d) & Cercanamente 1-a-1 & Especificaci\'{o}n principal (per\'{i}odo post) \\
-4 & CIUO-2008 (4d) $\to$ CNO-2015 (4d) & Cercanamente 1-a-1 & Validaci\'{o}n cruzada del Anexo~3 \\
+2 & CO-1995 (3d) $\to$ CNO-2015 (4d) & One-to-many         & Esp. principal (per\'{i}odo pre) \\
+3 & CNO-2015 (4d) $\to$ CIUO-2008 (4d) & Cerca 1-a-1 & Esp. principal (per\'{i}odo post) \\
+4 & CIUO-2008 (4d) $\to$ CNO-2015 (4d) & Cerca 1-a-1 & Validaci\'{o}n cruzada del Anexo~3 \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
@@ -79,7 +79,7 @@ Especificaci\'{o}n & Granularidad & Imputaci\'{o}n del per\'{i}odo pre \\
 \textbf{Principal} & CIUO-08 4d & Pesos posteriores condicionales en $X$ \\
 Robustez 1 & CIUO-08 4d & Pesos uniformes \\
 Robustez 2 & CO-1995 3d (Anexo 1 al post) & Ninguna (\emph{many-to-one}, sin imputaci\'{o}n) \\
-Robustez 3 & CIUO-08 4d & Pesos posteriores, donut excluye 2022T3--2022T4 \\
+Robustez 3 & CIUO-08 4d & Pesos post., donut excluye 2022T3--2022T4 \\
 Robustez 4 & CIUO-08 4d & Solo per\'{i}odo post (DiD pre/post implícito) \\
 \bottomrule
 \end{tabular}
