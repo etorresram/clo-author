@@ -136,3 +136,80 @@ SESSION_REPORT.md                               # This file
 ### First message after compression
 
 "Resuming after compression. Last task: Paper draft 1 pushed to Overleaf, 87/100 REVISE with 5 blocking fixes. Read SESSION_REPORT.md, quality_reports/writer_critic_paper_draft1.md, and `git log --oneline main..HEAD` to recover context. Next: apply 5 writer fixes (R2) and re-push to Overleaf."
+
+
+---
+
+## 2026-05-06 — Sesión completa: pipeline Perú + paper R&R + Word export
+
+**Operations:**
+- Phases 1-7 del pipeline Perú: armonización CO-1995 → CIUO-08 vía Anexos INEI con pesos posteriores empíricos (validados: max diff 2.05pp, KL ≤ 0.046 nats)
+- Phases 8-13: agregación a celdas (CIUO × t), DiD principal (TWFE + CS-2021), event study Sun-Abraham, Honest-DiD bounds, heterogeneidad por formalidad, triangulación
+- Phase 14-15: figuras finales (grises, serif, acentos OK) + estadísticas descriptivas (5 tablas + 1 figura)
+- Phase 17: redacción de sección Resultados completa
+- Bibliografía: reemplazo total con 41 citas verificadas + Pizzinelli + Gmyrek; eliminado Castellanos (alucinada)
+- Beamer: 23 slides actualizados con resultados de Perú
+- Word export: docx 378 KB con 121 ecuaciones OMML, 11 tablas, 4 figuras PNG, 89 hyperlinks de citas
+- Auditoría como referee: identificados 15 issues mayores (M1-M15) + 14 typos
+- Aplicados M2 (narrativa honesta: ninguna A-D encaja, articulado "Patrón P" exploratorio post-hoc), M3 (jerarquía Honest-DiD), M4 (selección suavizada), M5-M7 (errores técnicos), M9 (selección discutida), M10-M14 (menores)
+- Imputación peruana movida al apéndice (`app:peru_imputation`); cuerpo principal queda con diagnóstico + estrategia + resultado de validación + tabla de robustez
+
+**Decisions:**
+- Perú EPEN como principal; ENAHO módulo 500 reservada para robustez (módulo 400 Salud no descargado)
+- Definición formalidad: `seguro1 ∈ {1, 3}` (ESSALUD/EPS), por constraint de EPEN
+- Pesos posteriores condicionales en X = (sex, age_bin, educ5, sector_1d), threshold n_obs ≥ 30 con fallback progresivo
+- Trimestre móvil estándar (T1=ene-mar, ..., T4=oct-dic) común a los 6 países; Uruguay separado por mes de entrevista
+- Hierarchy de estimadores: TWFE continuo es principal pero falla M̄ ≥ 2; CS-2021 binario sobre balanceada se trata como lectura preferida del agregado
+- Patrón peruano (P) articulado como hipótesis exploratoria post-hoc, a añadir al pre-registro OSF antes de los otros 5 países
+- Cleveref configurado en español; tablas 6, 7, 11 movidas al apéndice
+- Sección de Robustez completa queda comentada (pendiente)
+
+**Results:**
+- log_employment: TWFE +0.221 (ns), CS-2021 +0.144*** | τ_F = +0.567*** vs τ_I = -0.222 (eq p=0.005)
+- log_salario: TWFE +0.042 (ns), CS-2021 +0.006 (ns) | τ_F = -0.128** vs τ_I = +0.265*** (eq p<0.001)
+- mean_hours: TWFE -3.25 (p=0.08), CS-2021 -0.80** | τ_F = -1.92*, τ_I = -5.11 (eq p=0.41)
+- Honest-DiD M̄ = 0 para los 3 outcomes en Panel A continuo
+- Lima Metropolitana: NO replica nulo danés en agregado, pero el agregado oculta cancelación entre canales formal/informal con signos opuestos
+
+**Commits (selectos, últimos 26):**
+- `35e83ed` Word export (docx + script regeneración)
+- `eba0f59` Sync overleaf: drop refs sec:robustness
+- `62a4060` Mover imputación al apéndice
+- `d43b51d` Beamer alineado post-referee
+- `10de4cd` Atender observaciones de referee (M2-M14)
+- `a50597a` Beamer con resultados Perú
+- `64722b7` EPEN principal, ENAHO solo robustez
+- `2e910f6` Trimestralización móvil
+- `8f5077a` Tabla 1 Peru EPEN + cleveref ES + tablas a apéndice
+- `c50f4cc` Bibliografía verificada (eliminar Castellanos, añadir Pizzinelli+Gmyrek)
+- `3c19e57` Conclusiones primeras
+- `a3b3ba2` Estadísticas descriptivas + primeros hallazgos
+- `e9dca16` Figuras grises + serif + acentos
+- `81bee6f` Phase 13 triangulación CS-2021
+- `1afc86b` Phase 12 heterogeneidad formalidad (HALLAZGO CENTRAL)
+- `19ed164` Phase 11 Honest-DiD bounds
+- `1e469e7` Phase 10 event study con figuras
+- `f52afcf` Phase 9 DiD principal
+- `4f38279` Phase 8 agregación a celdas
+- `ef3343d` Phase 7 merge exposición
+- `8878b31` Phase 5 panel armonizado CIUO
+- `fd6ee74` Phase 4 pesos posteriores
+- `e80189b` Phase 3 limpieza EPEN
+
+**Status:**
+- Done: pipeline Perú completo, paper redactado para Perú, beamer 23 slides, Word export, observaciones de referee atendidas (M2-M14)
+- Pendiente: replicar pipeline para CR/CO/EC/MX/UY (Paper completo); Robustez del clasificador (5-col ladder); medidas alternativas α/ζ/Webb/Felten/GBB; donut DiD; ENAHO módulo 400 para validar formalidad
+
+**Key paths for resumption:**
+```
+paper/sections/{intro, literature, theoretical_framework, methodology, data, results, conclusion, appendix}.tex
+paper/Bibliography_base.bib  # 43 entradas verificadas
+paper/talks/asesor_presentation.tex  # 23 slides
+paper/word_export/Torres_2026_IA_Latam_Peru.docx  # 378 KB
+paper/word_export/build_word.sh  # script regeneración
+scripts/R/peru/{01..15}.R  # pipeline completo (15 scripts)
+data/cleaned/peru/  # outputs intermedios (panel armonizado + DiD results)
+```
+
+**First message after compression:**
+"Resuming after compression. Última sesión: pipeline Perú completo + paper R&R + Word export. Estado: Perú end-to-end terminado, otros 5 países pendientes. Lee SESSION_REPORT.md (esta entrada) y `git log --oneline -20 myfork/claude/eager-mendel`. Próximo paso típico: replicar pipeline en CR primero (más simple, ECE trimestral nacional) o redactar Robustez (5-col ladder + α/ζ/Webb/Felten)."
