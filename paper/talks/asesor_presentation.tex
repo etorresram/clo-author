@@ -88,9 +88,10 @@
 % =============================================================================
 % Metadata
 % =============================================================================
-\title[Impacto laboral de la IA generativa en ALC]
-      {El Impacto Laboral de la Inteligencia Artificial Generativa\\
-       Evidencia Causal para América Latina}
+\title[IA Generativa y Mercados Laborales en ALC]
+      {Entrega parcial:\\
+       IA Generativa y Mercados Laborales\\
+       Evidencia Causal y el Rol de la Informalidad en América Latina}
 %\subtitle{Presentación al asesor}
 %\author{Eric Torres}
 %\institute{Pontificia Universidad Católica del Perú\\Programa Doctoral en Economía}
@@ -257,20 +258,21 @@
     rowsep = 3pt
   }
   \toprule
-  País       & Encuesta  & Frecuencia      & Cobertura \\
+  País       & Encuesta  & Frecuencia nativa $\to$ trimestral & Cobertura \\
   \midrule
-  Costa Rica & ECE       & Trimestral      & Nacional \\
-  Colombia   & GEIH      & Mensual $\to$ T & Nacional \\
-  Ecuador    & ENEMDU    & Mensual $\to$ T & Nacional \\
-  México     & ENOE      & Trimestral      & Nacional \\
-  Perú       & EPEN      & Trimestral      & Lima Metropolitana \\
-  Uruguay    & ECH       & Anual           & Nacional \\
+  Costa Rica & ECE       & Trimestral (tal cual) & Nacional \\
+  Colombia   & GEIH      & Mensual $\to$ agregar 3 meses & Nacional \\
+  Ecuador    & ENEMDU    & Mensual $\to$ agregar 3 meses & Nacional \\
+  México     & ENOE      & Trimestral (tal cual) & Nacional \\
+  \textbf{Perú} & \textbf{EPEN} & \textbf{Trimestral (tal cual)} & \textbf{Lima Metropolitana} \\
+  Uruguay    & ECH       & Anual (campo continuo) $\to$ separar por mes & Nacional \\
   \bottomrule
   \end{tblr}
   \vfill
   \footnotesize
-  \textbf{Selección:} cinco países publican microdatos directamente en ISCO-08; México publica en SINCO con \emph{crosswalk} oficial a ISCO-08.
-  \textbf{Caveat de Perú:} la ENAHO descontinuó el módulo trimestral de empleo en 2023; la EPEN solo cubre Lima Metropolitana, por lo que $\hat\tau^{Per\acute{u}}$ se interpreta como Lima-específico, no nacionalmente representativo.
+  \textbf{Regla común:} todos los países a frecuencia trimestral móvil (T1 = ene--mar, ..., T4 = oct--dic). Para Uruguay, el campo continuo de la ECH permite asignar cada hogar al trimestre por su mes de entrevista.
+  \\
+  \textbf{Perú (foco actual):} la fuente \emph{principal} es la EPEN (trimestral, Lima Metropolitana). La ENAHO se reserva como validación nacional en la sección de robustez.
 \end{frame}
 
 % --- Slide 12: Variable de tratamiento --------------------------------------
@@ -368,6 +370,104 @@
 \end{frame}
 
 % =============================================================================
+\section{Resultados (Perú, preliminar)}
+% =============================================================================
+
+% --- Slide R1: Resultado agregado, TWFE -------------------------------------
+\begin{frame}{Resultado 1 -- TWFE continuo: el agregado parece nulo}
+  \small
+  Especificación principal sobre 138 ocupaciones CIUO-08 (4 d), 20 trimestres, $n = 2{,}139$ celdas, ponderado por empleo.
+  \vfill
+  \begin{tblr}{
+    colspec = {l c c},
+    row{1} = {font=\bfseries},
+    rowsep = 3pt
+  }
+  \toprule
+  Outcome              & $\hat\tau^{\text{Per\'{u}}}$ (SE) & $p$-valor \\
+  \midrule
+  log empleo           & $+0.221$ \quad (0.220) & 0.32 \\
+  log salario hora     & $+0.042$ \quad (0.062) & 0.50 \\
+  horas semanales      & $-3.250$ \quad (1.852) & 0.08 \\
+  \bottomrule
+  \end{tblr}
+  \vfill
+  \normalsize
+  \textbf{Lectura literal:} ningún coeficiente al 95\%. Solo horas roza p $<$ 0.10.
+  \\
+  En aislamiento, esto sugeriría una replicación del nulo de \citet{HumlumVestergaard2025_llm}.
+  \\
+  \textbf{Pero el cuadro cambia.}
+\end{frame}
+
+% --- Slide R2: CS-2021 binario -----------------------------------------------
+\begin{frame}{Resultado 2 -- Callaway-Sant'Anna binario sí detecta efectos}
+  \small
+  Estimador secundario: \citet{CallawayS2021_did} con corte binario en mediana ponderada de 2021 ($\beta > 0.255$). Submuestra balanceada: 67 ocupaciones (33 tratadas, 34 no-tratadas).
+  \vfill
+  \begin{tblr}{
+    colspec = {l c c},
+    row{1} = {font=\bfseries},
+    rowsep = 3pt
+  }
+  \toprule
+  Outcome              & $\hat\tau^{\text{Per\'{u},\,bin}}$ (SE) & IC 95\% \\
+  \midrule
+  log empleo           & $\mathbf{+0.144^{***}}$ (0.025) & $[+0.10,\, +0.19]$ \\
+  log salario hora     & $+0.006$ \quad (0.011)          & $[-0.02,\, +0.03]$ \\
+  horas semanales      & $\mathbf{-0.801^{**}}$ (0.333)  & $[-1.45,\, -0.15]$ \\
+  \bottomrule
+  \end{tblr}
+  \vfill
+  \normalsize
+  \textbf{Lectura:} ocupaciones de alta exposición ganan $+14.4\%$ de empleo y pierden $0.80$ horas/semana.
+  \\
+  \textbf{Por qué difiere de TWFE:} TWFE pondera mal los ATT$(g, t)$ heterogéneos (\citet{DeChaisemartinH2020_twfe}). CS-2021 los agrega correctamente.
+\end{frame}
+
+% --- Slide R3: Heterogeneidad por formalidad (LO CLAVE) ---------------------
+\begin{frame}{Resultado 3 (clave) -- los canales formal e informal van en sentido opuesto}
+  \small
+  Pre-registrado como margen central. Especificación interactuada con $F_o^{2021}$ (formalidad de línea base, EPEN \texttt{seguro1} $\in \{1, 3\}$).
+  \vfill
+  \begin{tblr}{
+    colspec = {l c c c},
+    row{1} = {font=\bfseries},
+    rowsep = 3pt
+  }
+  \toprule
+  Outcome           & $\tau_F$ (formal)    & $\tau_I$ (informal) & Test $\tau_F = \tau_I$ \\
+  \midrule
+  log empleo        & $\mathbf{+0.567^{***}}$ (0.21) & $-0.222$ (0.29)       & $p = \mathbf{0.005}$ \\
+  log salario hora  & $\mathbf{-0.128^{**}}$  (0.06) & $\mathbf{+0.265^{***}}$ (0.08) & $p < \mathbf{0.001}$ \\
+  horas semanales   & $-1.92^{*}$ (1.03)             & $-5.11$ (3.82)        & $p = 0.41$ \\
+  \bottomrule
+  \end{tblr}
+  \vfill
+  \normalsize
+  \textbf{Hallazgo:} en empleo y salario, los dos canales se mueven con \emph{signos opuestos significativos}. El nulo agregado del TWFE viene de la cancelación mecánica entre ambos canales.
+\end{frame}
+
+% --- Slide R4: Sintesis (Narrativa D refinada) ------------------------------
+\begin{frame}{Síntesis -- Narrativa D refinada}
+  \small
+  El cuadro emergente para Lima Metropolitana:
+  \vfill
+  \begin{itemize}
+    \setlength\itemsep{0.4em}
+    \item \textbf{Sector formal} (alta $\beta$): \emph{expande} el empleo ($+57\%$ por unidad de $\beta$), \emph{reduce} las horas por trabajador ($-1.9$ a $-2.5$ hrs/sem), con presión bajista moderada en el salario hora ($-13\%$).
+    \\
+    Lectura: complementariedad sesgada por habilidad. Las firmas formales adoptan herramientas con LLM y crecen extensivamente, ajustan intensivamente.
+    \item \textbf{Sector informal} (alta $\beta$): contracción débil del empleo, pero los sobrevivientes ganan $+27\%$ de salario hora.
+    \\
+    Lectura: selección positiva. Solo los informales más productivos permanecen en ocupaciones expuestas.
+  \end{itemize}
+  \vfill
+  \normalsize
+  \textbf{Esto es la \emph{Narrativa D refinada}} preregistrada: ganancias estratificadas con asimetría formal-informal. La preregistración de la formalidad como margen central queda \emph{empíricamente vindicada}.
+\end{frame}
+
+% =============================================================================
 \section{Narrativas y estado}
 % =============================================================================
 
@@ -388,41 +488,42 @@
   \textbf{Compromiso \emph{ex ante}:} la narrativa enfatizada queda determinada por el patrón observado, no por búsqueda \emph{ex post} de especificación.
 \end{frame}
 
-% --- Slide 18: Estado del proyecto ------------------------------------------
+% --- Slide Estado del proyecto (actualizado) --------------------------------
 \begin{frame}{Estado actual del proyecto}
+  \small
   \begin{itemize}
-    %\setlength\itemsep{0.45em}
-    
-    \item \textbf{Hecho.}
+    \item \textbf{Completado para Perú.}
       \begin{itemize}
-        \item Estrategia de identificación finalizada y validada.
-        \item Crosswalk O*NET $\to$ ISCO-08 construido (98.2\% match).
-        \item Datos crudos de los seis países descargados, descomprimidos y normalizados (127 GB).
-        \item Borrador del paper en español: introducción, marco teórico, metodología.
+        \item Pipeline de armonización CO-1995 $\to$ CIUO-08 a 4d, validado con dos diagnósticos (composición en el corte y estabilidad temporal de pesos posteriores).
+        \item Crosswalk O*NET $\to$ ISCO-08 (tasa de coincidencia 98.2\%), exposición $\beta$ mergeada al panel.
+        \item Estimación principal: TWFE continuo, CS-2021 binario, event study Sun-Abraham (pre-trends OK), cotas Honest-DiD.
+        \item Heterogeneidad por formalidad de línea base estimada y reportada.
+        \item Borrador del paper en español: intro, literatura, marco teórico, metodología, datos, resultados, conclusión preliminar.
       \end{itemize}
     \item \textbf{En curso.}
       \begin{itemize}
-        \item Armonización de microdatos: 6 encuestas con esquema común.
-        \item Imputación de exposición $\beta$ a microdatos por país.
+        \item Validación con ENAHO nacional (módulo 500) para contrastar el resultado limeño.
       \end{itemize}
     \item \textbf{Pendiente.}
       \begin{itemize}
-        \item Estimación principal país por país.
-        \item Robustez: Honest-DiD, Bartik, Oster, alternative exposures.
-        \item Sección de resultados, sección de robustez, conclusión.
+        \item Replicación del pipeline para Costa Rica, Colombia, Ecuador, México y Uruguay.
+        \item Robustez del clasificador en cinco columnas (\cref{tab:peru_classifier_ladder} del paper).
+        \item Medidas alternativas de exposición ($\alpha$, $\zeta$, Webb, Felten, GBB-Pizzinelli) y donut DiD.
       \end{itemize}
   \end{itemize}
 \end{frame}
 
-% --- Slide 19: Preguntas para el asesor -------------------------------------
+% --- Slide Preguntas (actualizado) ------------------------------------------
 \begin{frame}{Preguntas para discutir}
+  \small
   \begin{enumerate}
-    \setlength\itemsep{0.5em}
-    \item \textbf{Estimador principal:} ¿continuous DiD (CGBS 2024) o TWFE simple? Trade-off entre frontera metodológica y comparabilidad con la literatura cercana.
-    \item \textbf{Caveat de Perú:} ¿incluir Perú con representatividad solo de Lima, o relegarlo a robustez? La justificación está en el diseño de la EPEN.
-    \item \textbf{Cutoff binario para la especificación secundaria:} mediana ($p50$) por comparabilidad con \citet{Liu2025_generate_future} vs.\ cutoff teórico de $\beta > 0.5$.
-    \item \textbf{Posicionamiento del paper:} ¿énfasis en contraste con Dinamarca o en las cuatro narrativas como contribución metodológica?
-    \item \textbf{Journal objetivo:} JLE, JHR, AEJ:Applied. Calendario de presentaciones previas (LACEA, NEUDC, IZA).
+    \setlength\itemsep{0.45em}
+    \item \textbf{Definición de formalidad en Perú.} La EPEN solo permite la definición basada en \texttt{seguro1} (afiliación a ESSALUD). ¿Vale la pena bajar el módulo 400 (Salud) de la ENAHO para validar con la definición OIT estándar (pensiones)?
+    \item \textbf{Replicación a los otros cinco países.} ¿Qué orden recomienda? Mi propuesta es Costa Rica primero (encuesta más simple, ECE ya trimestral) y Uruguay al final (separación por mes de entrevista en ECH).
+    \item \textbf{Pre-registro OSF.} Ahora que tengo el resultado de Perú, ¿pre-comprometo las narrativas en OSF antes de tocar los otros cinco países, o espero a tener uno o dos países más?
+    \item \textbf{Posicionamiento del paper.} ¿La Narrativa D refinada (selección informal positiva como hallazgo nuevo) justifica un nuevo canal teórico, o lo dejo como evidencia empírica sin modelar?
+    \item \textbf{Calendario realista.} ¿Es plausible tener los seis países antes de NEUDC o LACEA 2026?
+    \item \textbf{Posicionamiento contra \citet{LiuWangYu2025_labor_demand}}. Su paper del Banco Mundial cubre US/UK/DE con job postings (demanda). El mío cubre LAC con LFS (equilibrio realizado) y formal/informal. ¿Compañía o competencia?
   \end{enumerate}
 \end{frame}
 
