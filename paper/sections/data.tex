@@ -139,65 +139,7 @@ La distribuci\'{o}n de la exposici\'{o}n $\beta$ ponderada por empleo en 2021 ti
 \label{fig:peru_beta_dist}
 \end{figure}
 
-La \cref{tab:peru_top10} y la \cref{tab:peru_bottom10} ilustran qu\'{e} ocupaciones definen las dos colas de la distribuci\'{o}n. En la cola de alta exposici\'{o}n predominan ocupaciones cognitivas profesionales (relaciones p\'{u}blicas, traductores, programadores de aplicaciones, escritores, matem\'{a}ticos, oficiales de cr\'{e}dito), todas concentradas en oficios cognitivos no rutinarios donde la sustituci\'{o}n parcial mediante software construido sobre LLM es plausible. En la cola de baja exposici\'{o}n predominan ocupaciones manuales y operativas (limpiadores de veh\'{i}culos, obreros de construcci\'{o}n, pintores, ayudantes de cocina), donde el contenido de tarea es f\'{i}sico y la complementariedad con LLM es estructuralmente baja.
-
-\begin{table}[H]
-\centering
-\small
-\begin{threeparttable}
-\caption{Diez ocupaciones m\'{a}s expuestas a LLMs (CIUO-08 4d), Lima Metropolitana}
-\label{tab:peru_top10}
-\begin{tabular}{c c l}
-\toprule
-C\'{o}digo CIUO & $\beta$ & Ocupaci\'{o}n \\
-\midrule
-2432 & 0.806 & Profesionales en relaciones p\'{u}blicas \\
-2643 & 0.741 & Traductores, int\'{e}rpretes y otros ling\"{u}istas \\
-2514 & 0.706 & Programadores de aplicaciones \\
-2641 & 0.689 & Autores y escritores \\
-2120 & 0.682 & Matem\'{a}ticos, actuarios y estad\'{i}sticos \\
-3312 & 0.662 & Oficiales de cr\'{e}dito y pr\'{e}stamos \\
-2431 & 0.661 & Profesionales de publicidad y marketing \\
-3512 & 0.656 & T\'{e}cnicos de soporte de usuarios de TIC \\
-4323 & 0.654 & Empleados de transporte \\
-2513 & 0.638 & Desarrolladores web y multimedia \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\footnotesize
-\item \emph{Notas:} Ranking por valor de $\beta$ de \citet{Eloundou2023_gpt_exposure} sobre las ocupaciones presentes en la EPEN 2021.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-
-\begin{table}[H]
-\centering
-\small
-\begin{threeparttable}
-\caption{Diez ocupaciones menos expuestas a LLMs (CIUO-08 4d), Lima Metropolitana}
-\label{tab:peru_bottom10}
-\begin{tabular}{c c l}
-\toprule
-C\'{o}digo CIUO & $\beta$ & Ocupaci\'{o}n \\
-\midrule
-3421 & 0.000 & Atletas y deportistas \\
-9122 & 0.000 & Limpiadores de veh\'{i}culos \\
-9312 & 0.000 & Pe\'{o}nes de obras p\'{u}blicas \\
-9313 & 0.002 & Pe\'{o}nes de la construcci\'{o}n de edificios \\
-7214 & 0.007 & Montadores de estructuras met\'{a}licas \\
-8211 & 0.008 & Ensambladores de maquinaria mec\'{a}nica \\
-7131 & 0.013 & Pintores y empapeladores \\
-7133 & 0.015 & Limpiadores de fachadas y deshollinadores \\
-9412 & 0.016 & Ayudantes de cocina \\
-7132 & 0.017 & Pintores con pistola y barnizadores \\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}[flushleft]
-\footnotesize
-\item \emph{Notas:} Ranking inverso por $\beta$. C\'{o}digo CIUO 9313 (pe\'{o}nes de construcci\'{o}n) concentra una masa de empleo expandido sustancial en Lima Metropolitana, ilustrando que la cola de baja exposici\'{o}n no es residual.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+Las dos colas de la distribuci\'{o}n est\'{a}n descritas en el \cref{app:peru_extremes}. La cola de alta exposici\'{o}n agrupa ocupaciones cognitivas profesionales (relaciones p\'{u}blicas, traductores, programadores de aplicaciones, escritores, matem\'{a}ticos, oficiales de cr\'{e}dito), todas concentradas en oficios cognitivos no rutinarios donde la sustituci\'{o}n parcial mediante software construido sobre LLM es plausible. La cola de baja exposici\'{o}n agrupa ocupaciones manuales y operativas (limpiadores de veh\'{i}culos, obreros de construcci\'{o}n, pintores, ayudantes de cocina), donde el contenido de tarea es f\'{i}sico y la complementariedad con LLM es estructuralmente baja.
 
 La \cref{tab:peru_beta_formal} cruza los cuartiles de exposici\'{o}n con la share de formalidad para 2021 y entrega el hallazgo descriptivo m\'{a}s relevante para la estrategia de identificaci\'{o}n del art\'{i}culo: la formalidad se duplica entre el cuartil m\'{a}s expuesto y el menos expuesto. Las ocupaciones de alta exposici\'{o}n son sistem\'{a}ticamente m\'{a}s formales en la l\'{i}nea base.
 

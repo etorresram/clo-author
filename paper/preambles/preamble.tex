@@ -122,4 +122,19 @@
             urlcolor=citationcolor]{hyperref}
 
 % ====== Cleveref (after hyperref) ======
-\usepackage[nameinlink]{cleveref}
+\usepackage[nameinlink,spanish]{cleveref}
+% Forzar nombres en espanol (cleveref a veces deja ingles aun con la opcion).
+\crefname{section}{secci\'{o}n}{secciones}
+\Crefname{section}{Secci\'{o}n}{Secciones}
+\crefname{subsection}{subsecci\'{o}n}{subsecciones}
+\Crefname{subsection}{Subsecci\'{o}n}{Subsecciones}
+\crefname{subsubsection}{subsecci\'{o}n}{subsecciones}
+\Crefname{subsubsection}{Subsecci\'{o}n}{Subsecciones}
+\crefname{table}{tabla}{tablas}
+\Crefname{table}{Tabla}{Tablas}
+\crefname{figure}{figura}{figuras}
+\Crefname{figure}{Figura}{Figuras}
+\crefname{equation}{ecuaci\'{o}n}{ecuaciones}
+\Crefname{equation}{Ecuaci\'{o}n}{Ecuaciones}
+\crefname{appendix}{ap\'{e}ndice}{ap\'{e}ndices}
+\Crefname{appendix}{Ap\'{e}ndice}{Ap\'{e}ndices}
