@@ -395,9 +395,9 @@
   \normalsize
   \textbf{Lectura literal:} ningún coeficiente al 95\%. Solo horas roza p $<$ 0.10.
   \\
-  En aislamiento, esto sugeriría una replicación del nulo de \citet{HumlumVestergaard2025_llm}.
+  Las cotas Honest-DiD (\citet{RambachanRoth2023_honest}) entregan $\bar M^{\text{Per\'{u}}} = 0$ para los tres outcomes: el IC original ya cruza cero. La especificación continua TWFE \emph{no} pasa el criterio de robustez ($\bar M \geq 2$) que el propio paper pre-registra.
   \\
-  \textbf{Pero el cuadro cambia.}
+  \textbf{Pero el cuadro cambia con un estimador distinto.}
 \end{frame}
 
 % --- Slide R2: CS-2021 binario -----------------------------------------------
@@ -448,23 +448,26 @@
   \textbf{Hallazgo:} en empleo y salario, los dos canales se mueven con \emph{signos opuestos significativos}. El nulo agregado del TWFE viene de la cancelación mecánica entre ambos canales.
 \end{frame}
 
-% --- Slide R4: Sintesis (Narrativa D refinada) ------------------------------
-\begin{frame}{Síntesis -- Narrativa D refinada}
+% --- Slide R4: Sintesis honesta (Patron peruano P) --------------------------
+\begin{frame}{Síntesis -- ninguna de las cuatro narrativas pre-registradas encaja}
   \small
-  El cuadro emergente para Lima Metropolitana:
+  Honestamente, ninguna de A--D reproduce el patrón peruano:
   \vfill
   \begin{itemize}
-    \setlength\itemsep{0.4em}
-    \item \textbf{Sector formal} (alta $\beta$): \emph{expande} el empleo ($+57\%$ por unidad de $\beta$), \emph{reduce} las horas por trabajador ($-1.9$ a $-2.5$ hrs/sem), con presión bajista moderada en el salario hora ($-13\%$).
-    \\
-    Lectura: complementariedad sesgada por habilidad. Las firmas formales adoptan herramientas con LLM y crecen extensivamente, ajustan intensivamente.
-    \item \textbf{Sector informal} (alta $\beta$): contracción débil del empleo, pero los sobrevivientes ganan $+27\%$ de salario hora.
-    \\
-    Lectura: selección positiva. Solo los informales más productivos permanecen en ocupaciones expuestas.
+    \setlength\itemsep{0.25em}
+    \item Narrativa A requería $\tau_I < \tau_F < 0$. Lima muestra $\tau_F^{\text{empleo}}$ \emph{positivo}.
+    \item Narrativa B requería nulo en ambos canales. Aquí se rechaza la igualdad.
+    \item Narrativa C requería $\tau_F \approx 0$. Lima muestra $\tau_F$ grande y significativo.
+    \item Narrativa D predecía $\tau_F^{\text{salario}} > 0$. Lima muestra $\tau_F^{\text{salario}} = -0.128$, signo \emph{opuesto}.
   \end{itemize}
   \vfill
+  \textbf{Articulo entonces un quinto patrón, exploratorio y post-hoc:}
+  \begin{quote}
+    \footnotesize\emph{Patrón peruano (P).} Las ocupaciones formales-dominantes expuestas a LLMs expanden empleo y reducen horas por trabajador con presión bajista en salario; las informales-dominantes contraen débilmente el empleo con salarios al alza entre los presentes.
+  \end{quote}
+  \vfill
   \normalsize
-  \textbf{Esto es la \emph{Narrativa D refinada}} preregistrada: ganancias estratificadas con asimetría formal-informal. La preregistración de la formalidad como margen central queda \emph{empíricamente vindicada}.
+  El Patrón P se añadirá al pre-registro formal antes de mirar el dato post-tratamiento de los cinco países restantes. La preregistración del análisis de formalidad como margen central queda vindicada; la mapeo a una narrativa específica queda como hipótesis a contrastar.
 \end{frame}
 
 % =============================================================================
@@ -496,7 +499,7 @@
       \begin{itemize}
         \item Pipeline de armonización CO-1995 $\to$ CIUO-08 a 4d, validado con dos diagnósticos (composición en el corte y estabilidad temporal de pesos posteriores).
         \item Crosswalk O*NET $\to$ ISCO-08 (tasa de coincidencia 98.2\%), exposición $\beta$ mergeada al panel.
-        \item Estimación principal: TWFE continuo, CS-2021 binario, event study Sun-Abraham (pre-trends OK), cotas Honest-DiD.
+        \item Estimación principal: TWFE continuo, CS-2021 binario, event study TWFE con interacción dosis-tiempo (pre-trends OK), cotas Honest-DiD.
         \item Heterogeneidad por formalidad de línea base estimada y reportada.
         \item Borrador del paper en español: intro, literatura, marco teórico, metodología, datos, resultados, conclusión preliminar.
       \end{itemize}
@@ -521,7 +524,7 @@
     \item \textbf{Definición de formalidad en Perú.} La EPEN solo permite la definición basada en \texttt{seguro1} (afiliación a ESSALUD). ¿Vale la pena bajar el módulo 400 (Salud) de la ENAHO para validar con la definición OIT estándar (pensiones)?
     \item \textbf{Replicación a los otros cinco países.} ¿Qué orden recomienda? Mi propuesta es Costa Rica primero (encuesta más simple, ECE ya trimestral) y Uruguay al final (separación por mes de entrevista en ECH).
     \item \textbf{Pre-registro OSF.} Ahora que tengo el resultado de Perú, ¿pre-comprometo las narrativas en OSF antes de tocar los otros cinco países, o espero a tener uno o dos países más?
-    \item \textbf{Posicionamiento del paper.} ¿La Narrativa D refinada (selección informal positiva como hallazgo nuevo) justifica un nuevo canal teórico, o lo dejo como evidencia empírica sin modelar?
+    \item \textbf{Patrón peruano (P) y pre-registro.} Ninguna de las narrativas A--D pre-registradas encaja; articulé un quinto patrón post-hoc. ¿Es buena estrategia añadirlo al pre-registro OSF antes de mirar los otros cinco países, o conviene mantener las cuatro originales y reportar honestamente que Lima Metropolitana no se mapea a ninguna?
     \item \textbf{Calendario realista.} ¿Es plausible tener los seis países antes de NEUDC o LACEA 2026?
     \item \textbf{Posicionamiento contra \citet{LiuWangYu2025_labor_demand}}. Su paper del Banco Mundial cubre US/UK/DE con job postings (demanda). El mío cubre LAC con LFS (equilibrio realizado) y formal/informal. ¿Compañía o competencia?
   \end{enumerate}
