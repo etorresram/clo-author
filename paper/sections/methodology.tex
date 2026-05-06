@@ -6,36 +6,36 @@ La estrategia de identificación es un diseño de diferencias en diferencias (Di
 \subsection{Muestra y datos}
 \label{subsec:method_sample}
 
-La muestra son seis bases de datos de encuestas de fuerza laboral armonizadas a nivel de país que cubren 2021T1 a 2025T4. Los países, encuestas y frecuencias nativas se resumen en la \cref{tab:surveys}.
+La muestra son seis bases de datos de encuestas de fuerza laboral armonizadas a una frecuencia trimestral común. Los trimestres se definen siguiendo el calendario móvil estándar: $\text{T1} = $ enero--febrero--marzo, $\text{T2} = $ abril--mayo--junio, $\text{T3} = $ julio--agosto--septiembre, $\text{T4} = $ octubre--noviembre--diciembre. La armonización temporal opera bajo una sola regla: si la encuesta nativa es trimestral, se usa tal cual; si es mensual, los tres meses correspondientes a cada trimestre calendario se agregan en una sola celda; si la encuesta se publica anualmente pero su trabajo de campo es continuo a lo largo del año, los registros se separan en cuatro trimestres por mes de entrevista. La \cref{tab:surveys} resume las encuestas nativas y la regla de armonización aplicada a cada país, en una ventana muestral común de 2021T1 a 2025T4.
 
 \begin{table}[H]
 \centering
 \small
 \begin{threeparttable}
-\caption{Encuestas de fuerza laboral y armonización}
+\caption{Encuestas de fuerza laboral y armonización temporal}
 \label{tab:surveys}
 \begin{tabular}{llll}
 \toprule
-País & Encuesta & Frecuencia nativa & Armonización \\
+País & Encuesta & Frecuencia nativa & Armonización a trimestre m\'{o}vil \\
 \midrule
-Colombia    & GEIH   & Mensual                     & Agregar tres meses por trimestre \\
+Colombia    & GEIH   & Mensual                     & Agregar 3 meses $\to$ 1 trimestre \\
 Costa Rica  & ECE    & Trimestral                  & Tal cual \\
-Ecuador     & ENEMDU & Mensual (continua)          & Agregar tres meses por trimestre \\
-México      & ENOE   & Trimestral                  & Tal cual; panel rotativo usado en el Paper 2 \\
-Perú        & EPEN   & Trimestral                  & Tal cual; Lima Metropolitana \\
-Uruguay     & ECH    & Anual                       & Frecuencia anual \\
+Ecuador     & ENEMDU & Mensual (continua)          & Agregar 3 meses $\to$ 1 trimestre \\
+México      & ENOE   & Trimestral                  & Tal cual \\
+Perú        & EPEN   & Trimestral; Lima Metro      & Tal cual \\
+Uruguay     & ECH    & Anual (campo continuo)      & Separar por mes de entrevista $\to$ 4 trimestres \\
 \bottomrule
 \end{tabular}
 \begin{tablenotes}[flushleft]
 \footnotesize
-\item \emph{Notas:} Cada país se analiza a su frecuencia (armonizada) nativa. Trimestral para Colombia, Costa Rica, Ecuador, México y Perú (vía la EPEN, restringida a Lima Metropolitana); anual para Uruguay. La ventana muestral es 2021T1--2025T4. El trimestre 2022T4 se descarta de la especificación primaria como período de transición y se incluye como tratado en una especificación de robustez. El módulo trimestral del Perú (EPEN) cubre solo Lima Metropolitana; la estimación peruana $\hat\tau^{\text{Perú}}$ debe leerse, por tanto, como específica de Lima Metropolitana y no como nacionalmente representativa. Véase \cref{subsec:method_sample} para los criterios de selección de países.
+\item \emph{Notas:} Trimestres definidos como T1 = enero-febrero-marzo, T2 = abril-mayo-junio, T3 = julio-agosto-septiembre y T4 = octubre-noviembre-diciembre. La ventana muestral cubre 2021T1 a 2025T4. El trimestre 2022T4 se descarta de la especificación primaria como período de transición y se incluye como tratado en una especificación de robustez. La EPEN del Perú cubre únicamente Lima Metropolitana; la estimación peruana $\hat\tau^{\text{Perú}}$ debe leerse, por tanto, como específica de Lima Metropolitana y no como nacionalmente representativa. Para Uruguay, la ECH se publica anualmente pero el trabajo de campo se distribuye a lo largo del año, lo que permite asignar cada hogar a un trimestre según su mes de entrevista. Para Colombia, México y Ecuador, los tres meses calendario que componen cada trimestre se agregan ponderando por el factor de expansión de cada mes. Véase \cref{subsec:method_sample} para los criterios de selección de países.
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
 
 Los seis países se seleccionaron bajo dos criterios. Primero, compatibilidad de codificación ocupacional. Cinco (Costa Rica, Colombia, Ecuador, Perú, Uruguay) publican microdatos codificados directamente en ISCO-08 a nivel de cuatro dígitos. México publica en SINCO (Sistema Nacional de Clasificación de Ocupaciones), que mapeo a ISCO-08 usando el crosswalk oficial del INEGI. Otros países de ALC usan clasificadores nacionales sin crosswalks publicados a ISCO (la CIUO-CL de Chile, la CBO de Brasil) o publican a un nivel más grueso de detalle. Segundo, representatividad muestral. Las seis encuestas son nacionalmente representativas a frecuencia trimestral, con una excepción: el módulo trimestral del Perú (EPEN) cubre solo Lima Metropolitana, porque el rediseño de 2023 del ENAHO eliminó el módulo trimestral nacional de empleo y migró la publicación trimestral de empleo al EPEN, geográficamente restringido. La estimación peruana $\hat\tau^{\text{Perú}}$ debe leerse, por tanto, como específica de Lima Metropolitana, no nacionalmente representativa. Vuelvo a marcar esta salvedad cuando discuto los resultados específicos de cada país.
 
-La ventana temporal es una decisión de diseño deliberada. Se excluyen los períodos previos a 2020 incluso donde existen datos. La COVID-19 afectó de forma diferencial a las ocupaciones cognitivas de alta exposición (migración al trabajo remoto, reasignación sectorial) en relación con las ocupaciones manuales y de servicios de baja exposición, de modo que combinar años pre-COVID y post-COVID compararía mercados laborales en dos equilibrios estructuralmente distintos. La fecha de inicio en 2021T1 asegura que los períodos pre-tratamiento y post-tratamiento se extraigan ambos del estado estacionario post-COVID. La contraparte es un pre-período corto, de siete trimestres en los países trimestrales y dos años en los países anuales. Lo mitigo elevando las cotas Honest-DiD de \citet{RambachanRoth2023_honest} de robustez a identificación principal, sustituyendo las fechas de placebo temporal (2019, 2021) por placebos transversales sobre ocupaciones con $\beta = 0$, y aprovechando un post-período más largo (doce trimestres o tres años) para compensar el pre-período más corto en el tamaño muestral agregado.
+La ventana temporal es una decisión de diseño deliberada. Se excluyen los períodos previos a 2020 incluso donde existen datos. La COVID-19 afectó de forma diferencial a las ocupaciones cognitivas de alta exposición (migración al trabajo remoto, reasignación sectorial) en relación con las ocupaciones manuales y de servicios de baja exposición, de modo que combinar años pre-COVID y post-COVID compararía mercados laborales en dos equilibrios estructuralmente distintos. La fecha de inicio en 2021T1 asegura que los períodos pre-tratamiento y post-tratamiento se extraigan ambos del estado estacionario post-COVID. La contraparte es un pre-período corto: siete trimestres entre 2021T1 y 2022T3 para los seis países, ya que todos comparten la misma frecuencia trimestral móvil tras la armonización descrita en la \cref{tab:surveys}. Lo mitigo elevando las cotas Honest-DiD de \citet{RambachanRoth2023_honest} de robustez a identificación principal, sustituyendo las fechas de placebo temporal (2019, 2021) por placebos transversales sobre ocupaciones con $\beta = 0$, y aprovechando un post-período más largo de doce trimestres para compensar el pre-período más corto en el tamaño muestral agregado.
 
 La unidad de observación en el país $c$ es el trabajador individual $i$ en el momento $t$, con la ocupación ISCO-08 a 4 dígitos $o(i)$ registrada en la encuesta. Para las especificaciones agregadas de estudio de eventos y dosis-respuesta, los microdatos se agregan a la celda (ocupación, tiempo) dentro de cada país.
 
