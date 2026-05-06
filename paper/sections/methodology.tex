@@ -1,0 +1,174 @@
+\section{Estrategia Empírica}
+\label{sec:method}
+
+La estrategia de identificación es un diseño de diferencias en diferencias (DiD) con tratamiento continuo y una única fecha de adopción, estimado \emph{país por país}. Cada uno de los seis países (Costa Rica, Colombia, Ecuador, México, Perú y Uruguay) se analiza por separado. No se trata de un panel agrupado entre países: los datos son seis cortes transversales repetidos independientes a nivel de país, y cada uno se analiza en su propia regresión. Las ocupaciones dentro de un país están expuestas a distintas intensidades de capacidad LLM, medidas por el puntaje de exposición complementaria de Eloundou $\beta$. El lanzamiento de ChatGPT el 30 de noviembre de 2022 es la fecha de tratamiento común. Es la misma fecha calendario para los seis países, un único evento global y no un despliegue escalonado de política, de modo que las regresiones país por país comparten la misma $t^* = 2022$T4 (descartada como buffer; el tratamiento es efectivo a partir de 2023T1). La identificación dentro de cada país proviene de la variación intra-ocupación en cómo la exposición interactúa con el indicador post-lanzamiento. La comparación entre países surge de la presentación lado a lado de los seis valores estimados $\hat\tau^c$. Esta sección detalla la muestra, la variable de tratamiento, las especificaciones primaria y secundarias, los supuestos identificadores, el análisis de heterogeneidad intra-país centrado en la formalidad de línea base, la capa de robustez y las cuatro narrativas preregistradas.
+
+\subsection{Muestra y datos}
+\label{subsec:method_sample}
+
+La muestra son seis bases de datos de encuestas de fuerza laboral armonizadas a una frecuencia trimestral común. Los trimestres se definen siguiendo el calendario móvil estándar: $\text{T1} = $ enero--febrero--marzo, $\text{T2} = $ abril--mayo--junio, $\text{T3} = $ julio--agosto--septiembre, $\text{T4} = $ octubre--noviembre--diciembre. La armonización temporal opera bajo una sola regla: si la encuesta nativa es trimestral, se usa tal cual; si es mensual, los tres meses correspondientes a cada trimestre calendario se agregan en una sola celda; si la encuesta se publica anualmente pero su trabajo de campo es continuo a lo largo del año, los registros se separan en cuatro trimestres por mes de entrevista. La \cref{tab:surveys} resume las encuestas nativas y la regla de armonización aplicada a cada país, en una ventana muestral común de 2021T1 a 2025T4.
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Encuestas de fuerza laboral y armonización temporal}
+\label{tab:surveys}
+\begin{tabular}{llll}
+\toprule
+País & Encuesta & Frecuencia nativa & Armonización a trimestre m\'{o}vil \\
+\midrule
+Colombia    & GEIH   & Mensual                     & Agregar 3 meses $\to$ 1 trimestre \\
+Costa Rica  & ECE    & Trimestral                  & Tal cual \\
+Ecuador     & ENEMDU & Mensual (continua)          & Agregar 3 meses $\to$ 1 trimestre \\
+México      & ENOE   & Trimestral                  & Tal cual \\
+Perú        & EPEN   & Trimestral; Lima Metro      & Tal cual \\
+Uruguay     & ECH    & Anual (campo continuo)      & Separar por mes de entrevista $\to$ 4 trimestres \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} Trimestres definidos como T1 = enero-febrero-marzo, T2 = abril-mayo-junio, T3 = julio-agosto-septiembre y T4 = octubre-noviembre-diciembre. La ventana muestral cubre 2021T1 a 2025T4. El trimestre 2022T4 se descarta de la especificación primaria como período de transición y se incluye como tratado en una especificación de robustez. La EPEN del Perú cubre únicamente Lima Metropolitana; la estimación peruana $\hat\tau^{\text{Perú}}$ debe leerse, por tanto, como específica de Lima Metropolitana y no como nacionalmente representativa. Para Uruguay, la ECH se publica anualmente pero el trabajo de campo se distribuye a lo largo del año, lo que permite asignar cada hogar a un trimestre según su mes de entrevista. Para Colombia, México y Ecuador, los tres meses calendario que componen cada trimestre se agregan ponderando por el factor de expansión de cada mes. Véase \cref{subsec:method_sample} para los criterios de selección de países.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+Los seis países se seleccionaron bajo dos criterios. Primero, compatibilidad de codificación ocupacional. Cinco (Costa Rica, Colombia, Ecuador, Perú, Uruguay) publican microdatos codificados directamente en ISCO-08 a nivel de cuatro dígitos. México publica en SINCO (Sistema Nacional de Clasificación de Ocupaciones), que mapeo a ISCO-08 usando el crosswalk oficial del INEGI. Otros países de ALC usan clasificadores nacionales sin crosswalks publicados a ISCO (la CIUO-CL de Chile, la CBO de Brasil) o publican a un nivel más grueso de detalle. Segundo, representatividad muestral. Las seis encuestas son nacionalmente representativas a frecuencia trimestral, con una excepción: el módulo trimestral del Perú (EPEN) cubre solo Lima Metropolitana, porque el rediseño de 2023 del ENAHO eliminó el módulo trimestral nacional de empleo y migró la publicación trimestral de empleo al EPEN, geográficamente restringido. La estimación peruana $\hat\tau^{\text{Perú}}$ debe leerse, por tanto, como específica de Lima Metropolitana, no nacionalmente representativa. Vuelvo a marcar esta salvedad cuando discuto los resultados específicos de cada país.
+
+La ventana temporal es una decisión de diseño deliberada. Se excluyen los períodos previos a 2020 incluso donde existen datos. La COVID-19 afectó de forma diferencial a las ocupaciones cognitivas de alta exposición (migración al trabajo remoto, reasignación sectorial) en relación con las ocupaciones manuales y de servicios de baja exposición, de modo que combinar años pre-COVID y post-COVID compararía mercados laborales en dos equilibrios estructuralmente distintos. La fecha de inicio en 2021T1 asegura que los períodos pre-tratamiento y post-tratamiento se extraigan ambos del estado estacionario post-COVID. La contraparte es un pre-período corto: siete trimestres entre 2021T1 y 2022T3 para los seis países, ya que todos comparten la misma frecuencia trimestral móvil tras la armonización descrita en la \cref{tab:surveys}. Lo mitigo elevando las cotas Honest-DiD de \citet{RambachanRoth2023_honest} de robustez a identificación principal, sustituyendo las fechas de placebo temporal (2019, 2021) por placebos transversales sobre ocupaciones con $\beta = 0$, y aprovechando un post-período más largo de doce trimestres para compensar el pre-período más corto en el tamaño muestral agregado.
+
+La unidad de observación en el país $c$ es el trabajador individual $i$ en el momento $t$, con la ocupación ISCO-08 a 4 dígitos $o(i)$ registrada en la encuesta. Para las especificaciones agregadas de estudio de eventos y dosis-respuesta, los microdatos se agregan a la celda (ocupación, tiempo) dentro de cada país.
+
+\subsection{Variable de tratamiento}
+\label{subsec:method_treatment}
+
+El tratamiento es la exposición ocupacional continua a los LLM, medida por el puntaje de exposición complementaria de Eloundou $\beta_o$ \citep{Eloundou2023_gpt_exposure}. El puntaje es la participación de las tareas de una ocupación en las que al menos el 50 por ciento del tiempo requerido puede reducirse mediante software \emph{construido sobre LLM} (aplicaciones aumentadas con LLM), distinta de $\alpha_o$ (sustitución directa por LLM) y de $\zeta_o = \alpha_o + \beta_o$ (la cota superior); véase la Tabla 1 de \citet{Eloundou2023_gpt_exposure}. En todo el documento, $E_{o} \equiv \beta_o$ es la variable operativa de exposición en la ecuación de estimación.
+
+La elección de $\beta$ y no de $\zeta$ está motivada teóricamente. El canal complementario ($\beta$) captura la difusión de software aumentado con LLM (aplicaciones de terceros, herramientas de productividad, plataformas de relación con clientes, sistemas de contabilidad, chatbots de atención al cliente y asistentes de código construidos sobre APIs de LLM) a través del cual los trabajadores experimentan la capacidad LLM sin necesariamente escribir en una interfaz de chat. En América Latina, el uso directo de ChatGPT está rezagado respecto a los niveles de la OCDE, pero las firmas multinacionales despliegan software empresarial aumentado con LLM, de modo que $\beta$ es la intensidad de tratamiento correcta para este contexto. También es más conservador que $\zeta$. El puntaje se mapea desde O*NET a ISCO-08 (el pipeline interno enruta vía SOC-2010 como puente, pero el crosswalk visible al usuario es O*NET-a-ISCO-08). Tras aplicar el crosswalk, el 98.2 por ciento de los códigos ISCO de 4 dígitos con empleo positivo en alguno de los seis países coincide con al menos una ocupación de O*NET; los códigos sin coincidencia se asignan a nivel de 3 dígitos. El crosswalk se construye sobre y extiende el piloto Chile-México-Perú validado en \citet{Azuara2024_idb_ai}.
+
+%Como medidas alternativas de exposición, la \cref{sec:robustness} reporta estimaciones usando $\alpha_o$ (sustitución directa por LLM), $\zeta_o = \alpha_o + \beta_o$ (la cota superior), la medida basada en patentes de Webb \citep{Webb2020_ai_exposure} y el índice AIOE de Felten \citep{Felten2023_ai_exposure}. \citet{Handa2025_economic_tasks} aportan evidencia complementaria sobre el uso realizado al mapear conversaciones con Claude a tareas de O*NET.
+
+El indicador post-tratamiento es $\text{Post}_t = \mathbb{1}[t \geq 2023\text{T1}]$. El trimestre 2022T4 se descarta de la especificación primaria porque los promedios de T4 son dos tercios pre-lanzamiento, lo que sesgaría $\tau$ hacia cero si el trimestre se codificara como tratado. Una especificación de robustez incluye 2022T4 como tratado para entregar una cota inferior conservadora; esto coincide con la convención en \citet{HumlumVestergaard2025_llm} y \citet{Hartley2024_labor_effects}.
+
+\subsection{Especificación primaria: DiD continuo país por país}
+\label{subsec:method_primary}
+
+El estimador primario es el DiD de tratamiento continuo de \citet{CallawayCGBS2024_continuous}, aplicado por separado a cada uno de los seis países. La fecha de tratamiento es idéntica entre países: $t^* = 2022$T4 en todos los casos, porque el lanzamiento de ChatGPT en noviembre de 2022 fue un único evento global. El parámetro objetivo es la Respuesta Causal Promedio sobre los Tratados (ACRT, por sus siglas en inglés) específica del país a lo largo de la dimensión de dosis, promediada sobre la distribución de exposición del país. Bajo el caso de cohorte tratada única que aplica aquí (todas las ocupaciones de un país comparten la misma $t^\ast$), la implementación operativa coincide con un TWFE ponderado con la interacción $\beta_o \cdot \text{Post}_t$; reporto el coeficiente con errores estándar agrupados a nivel ocupacional. Tras agregar los microdatos a la celda (ocupación, tiempo), la especificación estimada dentro del país $c$ es
+\begin{equation}
+Y_{ot}^{c} \;=\; \tau^{c} \cdot \bigl(E_{o} \cdot \text{Post}_t\bigr) \;+\; \alpha_{o}^{c} \;+\; \alpha_{t}^{c} \;+\; \varepsilon_{ot}^{c},
+\label{eq:did_main}
+\end{equation}
+donde $Y_{ot}^c$ es uno de tres resultados primarios (logaritmo del empleo expandido por la encuesta, horas semanales promedio o logaritmo del salario por hora promedio) en la celda (ocupación, tiempo) del país $c$, $E_{o} \equiv \beta_o \in [0,1]$ es el puntaje de exposición complementaria de Eloundou para la ocupación ISCO de 4 dígitos, $\text{Post}_t = \mathbb{1}[t \geq 2023\text{T1}]$, $\alpha_{o}^c$ es un efecto fijo de ocupación (dentro del país), $\alpha_{t}^c$ es un efecto fijo de tiempo (dentro del país) y $\varepsilon_{ot}^c$ es un error idiosincrático. Los controles a nivel del trabajador (edad, edad al cuadrado, género, categoría educativa, indicador urbano, jefatura de hogar) se absorben en la etapa de construcción de celdas al agregar los resultados dentro de celdas demográficas antes de la regresión.
+
+El coeficiente $\tau^c$ es el parámetro ACRT del país $c$. El efecto fijo de ocupación $\alpha_{o}^c$ absorbe el nivel de $E_o$ (que es invariante en el tiempo dentro de una ocupación) y la estructura salarial ocupacional de línea base específica del país. El efecto fijo de tiempo $\alpha_{t}^c$ absorbe los shocks macroeconómicos específicos del país, incluyendo la recuperación post-COVID y la inflación. Lo que queda es la variación intra-ocupación en cómo el resultado responde al indicador post-lanzamiento, ponderada por la intensidad de exposición. La \cref{tab:fe_identification} aclara qué identifica cada estructura de efectos fijos dentro de un único país.
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Estructuras de efectos fijos intra-país y qué identifican}
+\label{tab:fe_identification}
+\begin{tabular}{lll}
+\toprule
+Efectos fijos & $\tau^c$ identificado a partir de & Interpretación \\
+\midrule
+$\alpha_{o}^c + \alpha_{t}^c$ & Variación temporal intra-ocupación & \textbf{DiD primario (intra-país)} \\
+$\alpha_{ot}^c$ & No identificado (tratamiento absorbido) & No estimado \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} Dentro del país $c$, el DiD primario compara el cambio temporal intra-ocupación ponderado por $\beta$. La comparación entre países ocurre al nivel de los seis valores estimados $\hat\tau^c$, no dentro de una sola regresión.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+El resultado principal del artículo es la comparación lado a lado de $\{\hat\tau^c\}_{c=1}^6$ entre los seis países, reportada en la Tabla~1 de la \cref{sec:results} con una columna por país, y cada fila mostrando la estimación puntual específica del país, el error estándar y la cota de quiebre Honest-DiD. La variación entre países en $\hat\tau^c$ es el objeto empírico de interés.
+
+También estimo la curva dosis-respuesta de manera no paramétrica dentro de cada país particionando la exposición en quintiles y estimando el ATT para cada quintil relativo al más bajo:
+\begin{equation}
+Y_{ot}^c \;=\; \sum_{q=2}^{5} \tau_q^c \cdot \mathbb{1}[E_{o} \in Q_q^c] \cdot \text{Post}_t \;+\; \alpha_{o}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{ot}^c,
+\label{eq:dose_response}
+\end{equation}
+donde $Q_q^c$ son los quintiles de exposición ponderados por empleo del país $c$. La monotonicidad de $\{\tau_2^c, \ldots, \tau_5^c\}$ es una implicancia contrastable de una relación dosis-respuesta limpia dentro del país $c$.
+
+Las celdas se ponderan por el empleo expandido por la encuesta para representatividad poblacional, con estimaciones no ponderadas reportadas como robustez siguiendo a \citet{SolonHW2015_weight}. Los errores estándar se agrupan al nivel de la ocupación ISCO de 4 dígitos dentro del país, la unidad a la que varía $E_o$ \citep{AbadieAIW2023_cluster}. Para especificaciones con menos de cincuenta clusters (análisis de celdas de heterogeneidad dentro de países más pequeños), uso el bootstrap wild cluster vía \texttt{fwildclusterboot}.
+
+\subsection{Estimadores secundarios}
+\label{subsec:method_secondary}
+
+Dos estimadores secundarios triangulan el resultado primario dentro de cada país. El primero es el DiD con corte binario de \citet{CallawayS2021_did}:
+\begin{equation}
+Y_{ot}^c \;=\; \tau^{c,\text{bin}} \cdot (D_o \cdot \text{Post}_t) \;+\; \alpha_{o}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{ot}^c,\qquad D_o = \mathbb{1}[E_o > \text{mediana}^c(E)].
+\label{eq:did_binary}
+\end{equation}
+Esta especificación se reporta porque es el diseño de identificación usado por \citet{Hartley2024_labor_effects}, \citet{Hui2024_online_labor} y \citet{Liu2025_generate_future}, lo que permite una comparación directa de magnitudes. El corte es la mediana ponderada por empleo específica de cada país ($p50$). Uso la mediana específica del país en lugar del umbral teórico $>50\%$ porque $\beta$ de Eloundou tiene una larga cola izquierda; solo entre 5 y 10 por ciento de las ocupaciones ISCO-08 supera 0.5, de modo que un corte $>50\%$ produce grupos extremadamente desbalanceados y errores estándar grandes. El corte mediano, usado por \citet{Liu2025_generate_future}, entrega celdas balanceadas preservando la interpretación binaria. La especificación continua (la primaria del artículo) no se ve afectada por esta elección. La robustez reporta cortes alternativos en el umbral teórico $>50\%$, en los percentiles 25 y 75, y en la mediana agrupada entre países.
+
+El segundo estimador secundario es un estudio de eventos TWFE con interacción dosis-tiempo, estimado dentro de cada país. Cuando la cohorte tratada es única, como en este diseño donde las seis muestras comparten la misma fecha global $t^\ast = 2022\text{T4}$, los problemas de contaminación entre cohortes que motivan a \citet{SunAbraham2021_eventstudy} no aplican; la versión de \citet{DeChaisemartinHPVB2022_continuous} formaliza el caso continuo. La interacción de \citet{SunAbraham2021_eventstudy} se invoca como diagnóstico complementario donde el desbalance ocupacional lo justifica. La especificación es:
+\begin{equation}
+Y_{ot}^c \;=\; \sum_{\substack{k=-K \\ k \neq -1}}^{K} \theta_k^c \cdot \bigl(E_{o} \cdot \mathbb{1}[t - t^\ast = k]\bigr) \;+\; \alpha_{o}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{ot}^c,
+\label{eq:event_study}
+\end{equation}
+donde $t^\ast = 2023\text{T1}$ es la fecha de tratamiento y $k = -1$ es el período de referencia. Tras la armonización temporal a trimestre móvil descrita en la \cref{tab:surveys}, los seis países comparten una ventana común de eventos $k \in [-7, +12]$ trimestres en torno al lanzamiento, con $k = -1$ (2022T3) como referencia y $k = 0$ (2022T4) excluido como buffer. El patrón esperado es $\theta_k^c$ plano para $k < -1$ (tendencias previas paralelas) y un cambio de escalón en $k = +1$ que persiste o crece.
+
+Una especificación shift-share específica por país sigue a \citet{GoldsmithPinkham2020_bartik} y \citet{BorusyakHJ2022_shiftshare}. Para cada mercado laboral local $\ell$ en el país $c$, construyo un índice de exposición por participación ocupacional predeterminada $Z_{\ell c} = \sum_o \text{emp}_{o, \ell c, 2021} \cdot E_o$ usando las participaciones de empleo de 2021 (el primer año post-COVID, predeterminado respecto a ChatGPT por dos años) y estimo
+\begin{equation}
+Y_{\ell t}^c \;=\; \gamma^c \cdot (Z_{\ell c} \cdot \text{Post}_t) \;+\; \alpha_{\ell}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{\ell t}^c.
+\label{eq:bartik}
+\end{equation}
+El shift en este diseño es específico del país (el shock de adopción del país en la era de ChatGPT); las shares también son específicas del país (la composición local del empleo de 2021 de cada país). Las ponderaciones de Rotemberg se reportan en una tabla del apéndice con una discusión narrativa de las ocupaciones más ponderadas dentro de cada país. La robustez re-estima descartando la ocupación con mayor ponderación y usando las shares promedio 2021--2022. La inferencia usa los errores estándar de Adão-Kolesár-Morales vía \texttt{ShiftShareSE}.
+
+\subsection{Supuestos identificadores}
+\label{subsec:method_assumptions}
+
+La especificación país por país identifica $\tau^c$ bajo cuatro supuestos, evaluados por separado dentro de cada país.
+
+\emph{Tendencias paralelas.} Dentro del país $c$, para cualquier nivel de exposición $e$, la trayectoria contrafactual del resultado para ocupaciones tratadas habría evolucionado en paralelo con la trayectoria de las ocupaciones de exposición cero en ausencia del shock de LLM. Formalmente, $\mathbb{E}[Y_{ot}^c(0) - Y_{o,t^\ast - 1}^c(0) \mid E_{o} = e] = \mathbb{E}[Y_{ot}^c(0) - Y_{o,t^\ast - 1}^c(0) \mid E_{o} = 0]$ para todo $e$ y todo $t \geq t^\ast$. Este supuesto se defiende dentro de cada país con el estudio de eventos de tendencias previas de Sun-Abraham, una prueba conjunta de que $\theta_k^c = 0$ para $k < -1$, placebos transversales sobre ocupaciones de exposición cero y cotas de identificación parcial siguiendo a \citet{RambachanRoth2023_honest}. Dado el pre-período corto, las cotas Honest-DiD se reportan como identificación principal dentro de cada país; las afirmaciones principales para el país $c$ requieren un valor de quiebre específico del país $\bar M^c \geq 2$. Sigo a \citet{Roth2022_pretest_caution} en interpretar las pruebas de tendencias previas con cautela: una prueba que no rechaza la hipótesis nula no es evidencia de tendencias paralelas, sino solo evidencia de que la prueba carece de poder contra alternativas relevantes. Reporto la potencia de las pruebas de tendencias previas frente a alternativas econ\'omicamente significativas usando el procedimiento de \citet{Roth2022_pretest_caution}.
+
+\emph{No anticipación.} Los trabajadores en el país $c$ no ajustaron oferta laboral o resultados de empleo en anticipación de ChatGPT antes de su lanzamiento. El lanzamiento fue exógeno a los mercados laborales de ALC: el acceso previo al lanzamiento estuvo restringido a empleados de OpenAI y testeadores externos seleccionados, ninguno de los cuales operaba en mercados laborales de ALC a la escala necesaria para mover los resultados agregados. Un canal residual débil de anticipación vía la API de GPT-3.5 (lanzada en marzo de 2022) queda acotado por los coeficientes del estudio de eventos $\theta_{-2}^c$ y $\theta_{-1}^c$ dentro de cada país.
+
+\emph{Exogeneidad de la exposición.} El puntaje de exposición $\beta$ se construye a partir del contenido de tareas de O*NET (EE.UU., 2022--2023) usando GPT-4 y una rúbrica humana. Ni el contenido de tareas ni el procedimiento de calificación son función de los resultados del mercado laboral del país $c$ en 2023. El contenido de tareas dentro de los códigos ISCO es estable entre países; esto fue validado en \citet{Azuara2024_idb_ai} para Chile, México y Perú. La robustez usando $\alpha$, $\zeta$, la medida basada en patentes de Webb y el AIOE de Felten confirma que los resultados intra-país no dependen del puntaje complementario específico de Eloundou.
+
+\emph{SUTVA.} El supuesto de valor de tratamiento estable por unidad descarta los derrames entre ocupaciones dentro de un país. Los derrames intra-firma sesgan hacia cero: si los colegas de alta exposición elevan la productividad de los colegas de baja exposición, el efecto desplazamiento estimado subestima la verdadera dosis-respuesta. Los efectos fijos de industria por tiempo dentro del país acotan la magnitud de los derrames en la robustez; la cota narrativa de \citet{BergBZ2018_ai_inequality} sugiere que con adopción inferior al 20 por ciento, los derrames de equilibrio general entre ocupaciones son modestos. SUTVA es el supuesto de mayor riesgo y se reconoce como tal para cada estimación por país.
+
+Las pruebas de placebo temporal en 2019 o 2021 son inviables dada la ventana muestral post-COVID. Las sustituyo por placebos transversales que restringen la estimación a ocupaciones con $\beta = 0$ dentro de cada país (el grupo de control de cero verdadero) y por resultados placebo que no deberían responder a la exposición a LLM (horas semanales de obreros agrícolas manuales).
+
+\subsection{Heterogeneidad intra-país: la formalidad de línea base como margen central}
+\label{subsec:method_heterogeneity}
+
+El estatus de formalidad de línea base $F_{i,2021}$ es la dimensión central de heterogeneidad intra-país preregistrada para cada país en el que la segmentación formal-informal es no trivial. Uso la formalidad \emph{de línea base} y no la contemporánea porque la $F_{ict}$ contemporánea es ella misma un resultado de la exposición a LLM: un trabajador puede transitar de formal a informal por causa del tratamiento, y condicionar sobre un resultado post-tratamiento es un mal control. La $F_{i,2021}$ de línea base es el estatus de formalidad del trabajador en la última observación previa a 2023 y es econométricamente predeterminada respecto al shock de ChatGPT.
+
+El protocolo de imputación depende de la estructura de la encuesta. Para la ENOE de México (un panel rotativo a nivel de hogar usado de forma agregada en este art\'{i}culo y de forma individual en el segundo art\'{i}culo del proyecto), $F_{i,2021}$ es el último estatus de formalidad observado del trabajador antes de 2023T1; los trabajadores que ingresaron después de 2023T1 se descartan del análisis de interacción con la formalidad. Para los cinco cortes transversales repetidos (GEIH de Colombia, EPEN de Perú, ECE de Costa Rica, ENEMDU de Ecuador, ECH de Uruguay), $F_{i,2021}$ se imputa por celda como la share de 2021 de trabajadores formales en la celda (ocupación ISCO de 4 dígitos, bin de edad de 5 años, género, nivel educativo, urbano) del trabajador dentro del país $c$. El análisis de sensibilidad usa celdas ISCO de 3 dígitos.
+
+La especificación de interacción intra-país (estimada por separado para cada país) es
+\begin{equation}
+Y_{ot}^c \;=\; \tau_F^c \cdot (E_{o} \cdot \text{Post}_t \cdot F_{o,2021}^c) \;+\; \tau_I^c \cdot (E_{o} \cdot \text{Post}_t \cdot (1 - F_{o,2021}^c)) \;+\; \alpha_{o}^c \;+\; \alpha_{t}^c \;+\; \varepsilon_{ot}^c,
+\label{eq:formality_interaction}
+\end{equation}
+donde $\tau_F^c$ y $\tau_I^c$ son los coeficientes ACRT para celdas formal e informal de línea base dentro del país $c$, y $F_{o,2021}^c$ es la share de formalidad de línea base imputada para la ocupación $o$ en el país $c$. Las cuatro narrativas de la \cref{subsec:method_narratives} se evalúan dentro de cada país en términos de los signos y magnitudes de $(\tau^c, \tau_F^c, \tau_I^c)$.
+
+Otras dimensiones de heterogeneidad intra-país preregistradas son género, educación (terciaria vs. menos que terciaria), edad (15--29, 30--49, 50+), sector ISIC de 1 dígito, nivel de calificación (ISCO de 1 dígito) y urbano/rural. Los bosques causales \citep{AtheyWager2018_forests} aportan un complemento exploratorio guiado por los datos, ejecutado dentro de cada país.
+
+\subsection{Capa de robustez}
+\label{subsec:method_robustness}
+
+La capa de robustez se ejecuta dentro de cada país. Reporto las cotas Honest-DiD de \citet{RambachanRoth2023_honest} con el valor de quiebre $\bar M^c$ para cada resultado principal por país. Los placebos transversales restringen la muestra del país a ocupaciones con $\beta = 0$. Las pruebas de resultados placebo usan variables que no deberían responder a la exposición a LLM (horas trabajadas por obreros agrícolas manuales). Se sustituyen medidas alternativas de exposición ($\alpha$, $\zeta$, Webb, Felten) por el puntaje $\beta$ dentro de cada país. Un retroceso a ISCO de 3 dígitos atiende preocupaciones de celdas pequeñas. Se reportan cortes binarios alternativos en los percentiles 25, 33, 66 y 75 dentro de cada país. El bootstrap wild cluster \citep{AbadieAIW2023_cluster} se usa para especificaciones con menos de cincuenta clusters vía \texttt{fwildclusterboot}. La especificación Bartik se reporta con ponderaciones de Rotemberg específicas del país y se re-estima descartando la ocupación con mayor ponderación. Las cotas de Oster \citep{Oster2019_unobservables} se reportan con $\delta = 1$ y $R^2_{\max} = 1.3 R^2$ vía \texttt{sensemakr} para cada resultado principal por país; si el conjunto identificado incluye al cero, el resultado principal del país se marca como no robusto y requiere Honest-DiD $\bar M^c \geq 2$ para ser retenido. Las correcciones por pruebas múltiples siguen a Romano-Wolf dentro de cada dimensión y a Bonferroni entre dimensiones, con un objetivo de tasa de error familywise del diez por ciento dentro de cada país.
+
+Como estimador alternativo, reporto el enfoque de \emph{local projections} DiD de \citet{DubeGJT2023_lpdiff}, que combina el estimador de proyecciones locales de Jord\`a (2005) con la imputaci\'on cohort-by-cohort. Tambi\'en reporto la extensi\'on de \citet{DeChaisemartinHPVB2022_continuous} al estimador de \citet{DeChaisemartinH2020_twfe} para tratamientos continuos, que sirve como verificaci\'on cruzada del estimador primario \citep{CallawayCGBS2024_continuous}. La convergencia entre ambos estimadores constituye evidencia adicional de que el resultado por país no depende de la elecci\'on espec\'ifica del estimador continuo.
+
+\paragraph{Implementaci\'on.} Toda la estimaci\'on se realiza en R. El estimador primario continuo emplea el paquete \texttt{did} (Callaway y Sant'Anna 2021); las cotas Honest-DiD usan \texttt{HonestDiD}; el an\'alisis de potencia de tendencias previas usa \texttt{pretrends} \citep{Roth2022_pretest_caution}; el bootstrap wild cluster usa \texttt{fwildclusterboot}; la especificaci\'on shift-share usa \texttt{ShiftShareSE}; las cotas de Oster usan \texttt{sensemakr}; el estudio de eventos de Sun-Abraham usa \texttt{fixest::sunab()}. El c\'odigo y los datos se distribuyen en el paquete de replicaci\'on que acompa\~na al art\'iculo.
+
+\subsection{Cuatro narrativas preregistradas, evaluadas por país}
+\label{subsec:method_narratives}
+
+La estrategia de identificación está diseñada para hablar a cuatro patrones empíricos, precomprometidos antes de ejecutar el análisis y \emph{evaluados dentro de cada uno de los seis países}. Cada país reporta cuál de los cuatro patrones soporta su $(\hat\tau^c, \hat\tau_F^c, \hat\tau_I^c)$. La contribución empírica principal son, por tanto, seis pruebas independientes del mismo conjunto de narrativas, con la variación entre países en la narrativa que se obtiene como hallazgo central.
+
+\textbf{Narrativa A} -- \emph{La informalidad amplifica}. En el país $c$: $|\hat\tau^c| > 2\%$ y $\tau_I^c < \tau_F^c < 0$. Los trabajadores informales absorben el shock más que los formales en el país $c$.
+
+\textbf{Narrativa B} -- \emph{Replicación del nulo}. En el país $c$: $|\hat\tau^c|$ es pequeño y estadísticamente indistinguible de cero en ambos canales. El país $c$ es una replicación del nulo de \citet{HumlumVestergaard2025_llm} en ALC.
+
+\textbf{Narrativa C} -- \emph{Nulo en formal, grande en informal}. En el país $c$: $\tau_F^c \approx 0$ y $\tau_I^c$ significativamente negativo. El país $c$ identifica un canal que los diseños daneses y estadounidenses no pueden detectar porque sus sectores informales son insignificantes.
+
+\textbf{Narrativa D} -- \emph{Ganancias estratificadas}. En el país $c$: $\tau^c > 0$ sobre log salarios para ocupaciones de alta exposición, concentrado en trabajadores formales urbanos con educación terciaria ($\tau_F^{c,\text{terciaria, urbana}} > 0$); efectos sobre el empleo cercanos a cero. Los LLM actúan como un potenciador de productividad sesgado por habilidad para el segmento protegido en el país $c$.
+
+Precomprometer las narrativas es en sí mismo una contribución metodológica. Cuál narrativa reporta el artículo para el país $c$ en la versión final está determinada por el patrón empírico realizado en el país $c$, no por una búsqueda de especificación. El plan de análisis previo se deposita en OSF antes de ejecutar las estimaciones para los cinco países restantes sobre los que aún no se ha mirado el dato post-tratamiento; las estimaciones para Perú reportadas en la \cref{sec:results} se ejecutaron antes del depósito formal y se identifican explícitamente como exploratorias en la mapeo a narrativas. Las seis aplicaciones independientes del mismo conjunto de narrativas afilan la prueba. Si una narrativa se obtiene en los seis países, esa es evidencia sobre la universalidad del mecanismo. Si distintos países soportan distintas narrativas, esa es evidencia sobre el papel de las instituciones específicas de cada país.

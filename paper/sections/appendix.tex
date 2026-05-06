@@ -1,0 +1,156 @@
+\appendix
+\section{Ap\'{e}ndices}
+\label{sec:appendices}
+
+% --------------------------------------------------------------------------
+% Apendice A: armonizacion del clasificador ocupacional para Peru
+% --------------------------------------------------------------------------
+
+\subsection{Armonizaci\'{o}n del clasificador ocupacional para Per\'{u}}
+\label{app:peru_imputation}
+
+Este ap\'{e}ndice documenta el procedimiento completo de armonizaci\'{o}n CO-1995 $\to$ CIUO-08 que sustenta la \cref{subsec:data_peru} del cuerpo principal. Se incluye la estructura de los cuatro Anexos del INEI, la ecuaci\'{o}n de los pesos posteriores emp\'{i}ricos, el supuesto identificador del crosswalk, y el detalle de las tres pruebas de validaci\'{o}n.
+
+\paragraph{Los cuatro Anexos del INEI.} La \cref{tab:peru_crosswalks} resume los cuatro mapeos oficiales que el INEI publica para sus dos clasificadores ocupacionales y la CIUO-08 de la OIT. Anexo~1 (CNO-2015 $\to$ CO-1995) se utiliza en la Robustez 2 para colapsar el post a granularidad CO-1995. Anexo~2 (CO-1995 $\to$ CNO-2015) es el primer paso del encadenamiento que asigna a cada trabajador del pre un conjunto de c\'{o}digos CNO-2015 hijos. Anexo~3 (CNO-2015 $\to$ CIUO-2008) es el mapeo final hacia CIUO-08 utilizado tanto en el pre encadenado como en el post directo. Anexo~4 (CIUO-2008 $\to$ CNO-2015) sirve como validaci\'{o}n cruzada del Anexo~3.
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Estructura de los cuatro Anexos de correspondencia ocupacional del INEI}
+\label{tab:peru_crosswalks}
+\begin{tabular}{cllc}
+\toprule
+Anexo & Mapeo & Tipo & Uso en este art\'{i}culo \\
+\midrule
+1 & CNO-2015 (4d) $\to$ CO-1995 (3d) & \emph{Many-to-one}\textsuperscript{a} & Robustez 2 (\cref{tab:peru_classifier_ladder}) \\
+2 & CO-1995 (3d) $\to$ CNO-2015 (4d) & One-to-many         & Esp. principal (per\'{i}odo pre) \\
+3 & CNO-2015 (4d) $\to$ CIUO-2008 (4d) & Cerca 1-a-1 & Esp. principal (per\'{i}odo post) \\
+4 & CIUO-2008 (4d) $\to$ CNO-2015 (4d) & Cerca 1-a-1 & Validaci\'{o}n cruzada del Anexo~3 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} El CO-1995 a tres d\'{i}gitos define 370 c\'{o}digos en el clasificador oficial del INEI, de los cuales 319 aparecen en la EPEN 2021T1--2022T3. El CNO-2015 a cuatro d\'{i}gitos define 473 c\'{o}digos. Los Anexos~3 y~4 cubren 425 y 426 c\'{o}digos CIUO-08 a cuatro d\'{i}gitos respectivamente; la versi\'{o}n oficial completa de la OIT contiene 436. \textsuperscript{a}~El Anexo~1 no es estrictamente \emph{many-to-one}: 86 c\'{o}digos CNO-2015 mapean a m\'{a}s de un c\'{o}digo CO-1995, reflejando que algunas familias ocupacionales del CO-1995 ten\'{i}an mayor detalle que la posterior consolidaci\'{o}n en CNO-2015. La implementaci\'{o}n resuelve estas ambig\"uedades al CO-1995 con valor num\'{e}rico m\'{i}nimo, con sensibilidad reportada en la Robustez~1 de la \cref{tab:peru_classifier_ladder}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\paragraph{Pesos posteriores emp\'{i}ricos condicionales.} En el per\'{i}odo pre, el primer paso del encadenamiento (CO-1995 $\to$ CNO-2015 v\'{i}a el Anexo~2) es \emph{one-to-many}: cada c\'{o}digo CO-1995 se desagrega en varios c\'{o}digos CNO-2015 hijos. La asignaci\'{o}n de un trabajador peruano del pre a un c\'{o}digo CNO-2015 espec\'{i}fico requiere, por tanto, un esquema de pesos. Adopto pesos posteriores estimados sobre el propio post de la EPEN, donde el c\'{o}digo CIUO-08 fino est\'{a} observado, en lugar de pesos uniformes. Para cada celda $(k, X)$ definida por un c\'{o}digo CO-1995 $k$ y un vector de caracter\'{i}sticas observables del trabajador $X$ (sexo, nivel educativo en cinco categor\'{i}as, sector ISIC a un d\'{i}gito y dominio urbano), la probabilidad estimada de que el trabajador pertenezca al c\'{o}digo CIUO-08 $c$ se calcula por
+\begin{equation}
+\widehat{\Pr}(c \mid k, X) \;=\; \frac{\sum_{i \in \text{post}} \mathbb{1}[c_i = c]\,\mathbb{1}[k_i = k, X_i = X]\,w_i}{\sum_{i \in \text{post}} \mathbb{1}[k_i = k, X_i = X]\,w_i},
+\label{eq:posterior_weights}
+\end{equation}
+donde $k_i$ es el c\'{o}digo CO-1995 obtenido al colapsar la observaci\'{o}n CNO-2015 del per\'{i}odo post v\'{i}a el Anexo~1 (operaci\'{o}n \emph{many-to-one} y por tanto sin imputaci\'{o}n), $c_i$ es el c\'{o}digo CIUO-08 observado v\'{i}a el Anexo~3 y $w_i$ es el factor de expansi\'{o}n de la EPEN. El denominador se computa s\'{o}lo sobre celdas con al menos cincuenta observaciones expandidas; las celdas con menos masa se colapsan a $X$ con menor dimensi\'{o}n (sin sector y sin dominio, en ese orden). Los pesos posteriores se aplican luego al per\'{i}odo pre, expandiendo cada observaci\'{o}n CO-1995 en hasta varias filas con probabilidades $\widehat{\Pr}(c \mid k, X)$ que suman la unidad.
+
+\paragraph{Supuesto identificador del crosswalk.} El procedimiento descansa en un \'{u}nico supuesto sobre la imputaci\'{o}n: la distribuci\'{o}n condicional $\Pr(\text{CIUO-08-4d} \mid \text{CO-1995-3d}, X)$ es estable a lo largo de toda la ventana muestral 2021T1--2025T4. La forma m\'{a}s d\'{e}bil de fallo de este supuesto, recomposici\'{o}n de la fuerza de trabajo dentro de un mismo $(k, X)$ en respuesta al shock de LLM, no afecta a la imputaci\'{o}n del per\'{i}odo pre, que es anterior al shock. La forma m\'{a}s severa, deriva temporal en la composici\'{o}n ocupacional independiente del shock, se acota emp\'{i}ricamente comparando $\widehat{\Pr}(c \mid k, X)$ entre los a\~{n}os 2023, 2024 y 2025 dentro del per\'{i}odo post.
+
+\paragraph{Las tres pruebas de validaci\'{o}n.} La validez de la estrategia se examina con tres pruebas que separan el efecto mec\'{a}nico de la armonizaci\'{o}n del efecto causal del shock.
+
+\emph{Prueba 1: estabilidad de la composici\'{o}n del empleo en el corte.} Se compara la distribuci\'{o}n del empleo expandido por CIUO-08 a cuatro d\'{i}gitos en 2022T3 (\'{u}ltimo trimestre con CO-1995, asignado v\'{i}a pesos posteriores) y 2022T4 (primer trimestre con CNO-2015, asignado v\'{i}a el Anexo~3). Bajo armonizaci\'{o}n correcta, las shares ocupacionales no deber\'{i}an exhibir saltos no atribuibles al shock. La diferencia mediana absoluta entre las shares CIUO-08 a cuatro d\'{i}gitos es 0.04 puntos porcentuales y la diferencia m\'{a}xima es 2.05 puntos porcentuales en el c\'{o}digo CIUO 9629 (vendedores ambulantes y otros vendedores callejeros), por debajo del umbral de cinco puntos porcentuales que define una armonizaci\'{o}n problem\'{a}tica. Ning\'{u}n c\'{o}digo CIUO supera ese umbral. La distribuci\'{o}n del valor absoluto entre los 335 c\'{o}digos CIUO presentes en la comparaci\'{o}n tiene mediana 0.04, percentil 90 igual a 0.24 y percentil 95 igual a 0.44 puntos porcentuales.
+
+\emph{Prueba 2: estabilidad temporal de los pesos posteriores.} Se calcula la divergencia de Kullback-Leibler promedio ponderada por empleo entre las distribuciones de los pesos posteriores estimadas separadamente en 2023, 2024 y 2025, con suavizado de Laplace ($\varepsilon = 10^{-4}$) para evitar logaritmos de cero. Una divergencia agregada inferior a 0.05 nats se considera consistente con el supuesto. Las divergencias agregadas observadas en la EPEN son 0.029 nats entre 2023 y 2024, 0.019 nats entre 2024 y 2025, y 0.046 nats entre 2023 y 2025, todas dentro del l\'{i}mite. La distancia de variaci\'{o}n total complementaria, m\'{e}trica acotada que no requiere suavizado, queda entre 0.04 y 0.05 entre todos los pares de a\~{n}os.
+
+\emph{Prueba 3: donut DiD.} La especificaci\'{o}n primaria descarta 2022T4 como per\'{i}odo de transici\'{o}n. Como verificaci\'{o}n adicional, se descartan adem\'{a}s 2022T3, eliminando los dos trimestres que cubren el corte de clasificador. Si la estimaci\'{o}n donut $\hat\tau^{\text{Per\'{u}, donut}}$ converge con la estimaci\'{o}n principal $\hat\tau^{\text{Per\'{u}}}$, ning\'{u}n efecto de identificaci\'{o}n est\'{a} siendo absorbido por el cruce de clasificador. Si las dos estimaciones divergen, la armonizaci\'{o}n est\'{a} contaminando el coeficiente y se reporta el donut como la estimaci\'{o}n preferida. La verificaci\'{o}n cuantitativa del donut DiD se reporta en la secci\'{o}n de robustez.
+
+% --------------------------------------------------------------------------
+% Apendice B: ocupaciones extremas en la distribucion de exposicion
+% --------------------------------------------------------------------------
+
+\subsection{Ocupaciones en las colas de la distribuci\'{o}n de exposici\'{o}n a LLMs}
+\label{app:peru_extremes}
+
+Las dos tablas a continuaci\'{o}n complementan la \cref{subsec:data_descriptives} y dan contenido sustantivo a las dos colas de la distribuci\'{o}n del puntaje $\beta$ de \citet{Eloundou2023_gpt_exposure} para las ocupaciones presentes en la EPEN 2021.
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Diez ocupaciones m\'{a}s expuestas a LLMs (CIUO-08 4d), Lima Metropolitana}
+\label{tab:peru_top10}
+\begin{tabular}{c c l}
+\toprule
+C\'{o}digo CIUO & $\beta$ & Ocupaci\'{o}n \\
+\midrule
+2432 & 0.806 & Profesionales en relaciones p\'{u}blicas \\
+2643 & 0.741 & Traductores, int\'{e}rpretes y otros ling\"{u}istas \\
+2514 & 0.706 & Programadores de aplicaciones \\
+2641 & 0.689 & Autores y escritores \\
+2120 & 0.682 & Matem\'{a}ticos, actuarios y estad\'{i}sticos \\
+3312 & 0.662 & Oficiales de cr\'{e}dito y pr\'{e}stamos \\
+2431 & 0.661 & Profesionales de publicidad y marketing \\
+3512 & 0.656 & T\'{e}cnicos de soporte de usuarios de TIC \\
+4323 & 0.654 & Empleados de transporte \\
+2513 & 0.638 & Desarrolladores web y multimedia \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} Ranking por valor de $\beta$ de \citet{Eloundou2023_gpt_exposure} sobre las ocupaciones presentes en la EPEN 2021.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Diez ocupaciones menos expuestas a LLMs (CIUO-08 4d), Lima Metropolitana}
+\label{tab:peru_bottom10}
+\begin{tabular}{c c l}
+\toprule
+C\'{o}digo CIUO & $\beta$ & Ocupaci\'{o}n \\
+\midrule
+3421 & 0.000 & Atletas y deportistas \\
+9122 & 0.000 & Limpiadores de veh\'{i}culos \\
+9312 & 0.000 & Pe\'{o}nes de obras p\'{u}blicas \\
+9313 & 0.002 & Pe\'{o}nes de la construcci\'{o}n de edificios \\
+7214 & 0.007 & Montadores de estructuras met\'{a}licas \\
+8211 & 0.008 & Ensambladores de maquinaria mec\'{a}nica \\
+7131 & 0.013 & Pintores y empapeladores \\
+7133 & 0.015 & Limpiadores de fachadas y deshollinadores \\
+9412 & 0.016 & Ayudantes de cocina \\
+7132 & 0.017 & Pintores con pistola y barnizadores \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} Ranking inverso por $\beta$. C\'{o}digo CIUO 9313 (pe\'{o}nes de construcci\'{o}n) concentra una masa de empleo expandido sustancial en Lima Metropolitana, ilustrando que la cola de baja exposici\'{o}n no es residual.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+% --------------------------------------------------------------------------
+% Apendice B: heterogeneidad por formalidad en submuestras
+% --------------------------------------------------------------------------
+
+\subsection{Heterogeneidad por formalidad estimada en submuestras}
+\label{app:peru_subsamples}
+
+La \cref{tab:peru_formality_split} reporta una verificaci\'{o}n alternativa del an\'{a}lisis interactuado de la \cref{tab:peru_formality}: el panel se divide en la mediana ponderada por empleo de $F_o^{2021}$ y la \cref{eq:did_main} se estima por separado en cada submuestra. El patr\'{o}n cualitativo coincide con la regresi\'{o}n interactuada del cuerpo principal y entrega coeficientes estimables sin imponer la restricci\'{o}n de aditividad entre canales.
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{$\hat\tau^{\text{Per\'{u}}}$ en submuestras divididas por formalidad de l\'{i}nea base}
+\label{tab:peru_formality_split}
+\begin{tabular}{l c c c}
+\toprule
+                                                & log empleo               & log salario hora       & horas semanales       \\
+\midrule
+\multicolumn{4}{l}{\emph{Submuestra A. Alta formalidad de l\'{i}nea base ($F_o^{2021} > 0.225$, $N = 1{,}446$)}} \\
+$\hat\tau^{\text{Per\'{u}}}$                    & $\mathbf{0.720^{***}}$    & $-0.077$               & $-2.480^{*}$          \\
+                                                & $(0.232)$                 & $(0.055)$              & $(1.262)$             \\
+\midrule
+\multicolumn{4}{l}{\emph{Submuestra B. Baja formalidad de l\'{i}nea base ($F_o^{2021} \leq 0.225$, $N = 632$)}} \\
+$\hat\tau^{\text{Per\'{u}}}$                    & $-0.545$                  & $\mathbf{0.254^{***}}$ & $-4.545$              \\
+                                                & $(0.339)$                 & $(0.091)$              & $(4.656)$             \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} Cada submuestra se estima con la misma especificaci\'{o}n de la \cref{eq:did_main}, ponderada por empleo, con efectos fijos de ocupaci\'{o}n y tiempo y errores est\'{a}ndar agrupados a nivel de ocupaci\'{o}n. La mediana de corte $F_o^{2021} = 0.225$ se calcula sobre 2021 ponderada por empleo. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

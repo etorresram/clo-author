@@ -1,0 +1,133 @@
+\section{Resultados}
+\label{sec:results}
+
+Esta secci\'{o}n presenta las estimaciones para Per\'{u}, organizadas en tres niveles de agregaci\'{o}n: el ACRT continuo a nivel de pa\'{i}s, la din\'{a}mica de evento y los canales formal e informal preregistrados. La estimaci\'{o}n se ejecuta sobre el panel armonizado descrito en la \cref{sec:data}, con el c\'{o}digo CIUO-08 a cuatro d\'{i}gitos como unidad de variaci\'{o}n del tratamiento y los errores est\'{a}ndar agrupados a ese mismo nivel siguiendo a \citet{AbadieAIW2023_cluster}. La muestra estimable es de 138 c\'{o}digos CIUO con al menos un trimestre pre y uno post-tratamiento; el panel resultante contiene 2{,}139 celdas (ocupaci\'{o}n, trimestre) sobre los 20 trimestres entre 2021T1 y 2025T4.
+
+\subsection{Estimaciones agregadas: continuo TWFE y binario Callaway--Sant'Anna}
+\label{subsec:results_aggregate}
+
+La \cref{tab:peru_main} reporta el coeficiente $\hat\tau^{\text{Per\'{u}}}$ de la \cref{eq:did_main} para los tres resultados primarios usando dos especificaciones complementarias: la principal con tratamiento continuo en TWFE y la secundaria con corte binario en la mediana ponderada por empleo de 2021 estimada v\'{i}a el procedimiento de \citet{CallawayS2021_did}.
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Estimaciones agregadas $\hat\tau^{\text{Per\'{u}}}$ para Lima Metropolitana, EPEN}
+\label{tab:peru_main}
+\begin{tabular}{l c c c}
+\toprule
+                                                & log empleo            & log salario hora       & horas semanales        \\
+\midrule
+\multicolumn{4}{l}{\emph{Panel A. TWFE continuo, ponderado por empleo (especificaci\'{o}n principal)}} \\
+$\hat\tau^{\text{Per\'{u}}}$                    & $0.221$               & $0.042$                & $-3.250$               \\
+                                                & $(0.220)$             & $(0.062)$              & $(1.852)$              \\
+$p$-valor                                       & $0.317$               & $0.498$                & $0.082$                \\
+\midrule
+\multicolumn{4}{l}{\emph{Panel B. Callaway-Sant'Anna binario (corte en mediana ponderada 2021), muestra balanceada}} \\
+$\hat\tau^{\text{Per\'{u},bin}}$              & $\mathbf{0.144^{***}}$ & $0.006$                & $\mathbf{-0.801^{**}}$ \\
+                                                & $(0.025)$             & $(0.011)$              & $(0.333)$              \\
+IC 95\%                                         & $[0.095,\, 0.192]$    & $[-0.016,\, 0.029]$    & $[-1.454,\, -0.148]$   \\
+\midrule
+N celdas                                        & $2{,}139$             & $2{,}139$              & $2{,}139$              \\
+N c\'{o}digos CIUO                              & \multicolumn{3}{c}{$138$ (Panel A) \quad / \quad $67$ (Panel B, balanced)}                       \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} Panel A estima la \cref{eq:did_main} sobre las 138 ocupaciones CIUO-08 a cuatro d\'{i}gitos del panel armonizado. Panel B aplica el estimador de \citet{CallawayS2021_did} sobre la submuestra de 67 ocupaciones plenamente balanceadas (20 trimestres observados); el agregado simple es el promedio de las ATT$(g{=}t^\ast,\,t)$ post-tratamiento. La mediana ponderada por empleo de la exposici\'{o}n $\beta$ en 2021 es $0.255$. Los errores est\'{a}ndar van entre par\'{e}ntesis y se agrupan a nivel de ocupaci\'{o}n CIUO-08 a cuatro d\'{i}gitos. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+La especificaci\'{o}n continua principal del Panel A entrega coeficientes peque\~{n}os y estad\'{i}sticamente indistinguibles de cero al 95 por ciento para los tres resultados. Solo la estimaci\'{o}n de horas semanales ($-3.25$) supera el umbral del 10 por ciento. Le\'{i}da en aislamiento, esta especificaci\'{o}n sugerir\'{i}a una replicaci\'{o}n del nulo dan\'{e}s de \citet{HumlumVestergaard2025_llm} en el contexto peruano.
+
+La metodolog\'{i}a (\cref{subsec:method_assumptions}) preregistra como criterio de robustez que las afirmaciones principales requieren una cota Honest-DiD $\bar M^{\text{Per\'{u}}} \geq 2$ \citep{RambachanRoth2023_honest}. Para los tres outcomes del Panel A, la cota $\bar M^{\text{Per\'{u}}}$ es cero: el intervalo de confianza original al 95 por ciento ya incluye el cero, de modo que el criterio de quiebre no separa la especificaci\'{o}n continua de la hip\'{o}tesis nula. Esto significa que los efectos del Panel A no superan el est\'{a}ndar de robustez que el propio art\'{i}culo se impuso, una conclusi\'{o}n que se reporta de manera transparente.
+
+La especificaci\'{o}n binaria de \citet{CallawayS2021_did} del Panel B entrega un cuadro distinto. Sobre la submuestra balanceada de 67 ocupaciones (33 tratadas, 34 nunca tratadas), el agregado simple de los ATT$(g,t)$ post-tratamiento devuelve un efecto de empleo positivo y significativo al 1 por ciento ($+0.144$, IC 95\% $[0.095,\,0.192]$) y un efecto sobre las horas semanales negativo y significativo al 5 por ciento ($-0.80$, IC $[-1.45,\,-0.15]$). El salario por hora permanece nulo. La discrepancia entre los dos paneles refleja un resultado conocido en la literatura: en presencia de heterogeneidad en la respuesta a la dosis, el TWFE pondera los ATT$(g,t)$ con pesos impl\'{i}citos que pueden ser negativos y diluyen el promedio. El estimador de Callaway-Sant'Anna agrega correctamente y entrega un cuadro m\'{a}s n\'{i}tido. A la luz del fallo del criterio Honest-DiD sobre el Panel A, la especificaci\'{o}n binaria del Panel B se trata como la lectura preferida del agregado peruano. La estimaci\'{o}n continua se mantiene como referencia comparable con la literatura previa que reporta TWFE.
+
+\subsection{Tendencias paralelas y din\'{a}mica del efecto}
+\label{subsec:results_event_study}
+
+La \cref{fig:peru_event_study} reporta el estudio de eventos de Sun-Abraham descrito en la \cref{eq:event_study} para los tres resultados. La fecha de tratamiento es $t^\ast = 2022\text{T4}$, el per\'{i}odo de referencia es $k = -1$ (2022T3, \'{u}ltimo trimestre limpio pre-shock) y el buffer $k = 0$ se descarta de la especificaci\'{o}n primaria. La ventana de eventos cubre $k \in [-7,\,+12]$ trimestres en torno al lanzamiento.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/peru/fig_event_study_3panel.pdf}
+\caption{\textit{Estudio de eventos por dosis de exposici\'{o}n LLM, Per\'{u} (Lima Metropolitana).} Coeficientes $\theta_k \cdot \beta$ del estimador Sun-Abraham para los tres resultados primarios, estimados sobre las 138 ocupaciones CIUO-08 a cuatro d\'{i}gitos del panel armonizado, ponderados por empleo expandido y con errores est\'{a}ndar agrupados a nivel de ocupaci\'{o}n. La l\'{i}nea vertical roja marca la transici\'{o}n entre el \'{u}ltimo trimestre pre-shock ($k = -1$) y el primer trimestre post-shock efectivo ($k = +1$). El trimestre buffer $k = 0$ se omite. IC 95 por ciento.}
+\label{fig:peru_event_study}
+\end{figure}
+
+La prueba conjunta de Wald sobre los seis coeficientes pre-tratamiento ($k \in [-7,\,-2]$) no rechaza la hip\'{o}tesis nula de tendencias paralelas para ninguno de los tres resultados: $F = 1.534$ ($p = 0.171$) para log empleo, $F = 1.298$ ($p = 0.262$) para log salario hora, y $F = 1.515$ ($p = 0.178$) para horas semanales. Las trayectorias visuales son consistentes con esta lectura formal en el caso del empleo (panel a) y de los salarios (panel b), donde los coeficientes pre-tratamiento oscilan en torno a cero sin tendencia detectable.
+
+El panel (a) revela una caracter\'{i}stica importante de la din\'{a}mica del empleo: los doce coeficientes post-tratamiento son positivos sin excepci\'{o}n, partiendo desde $+0.25$ en el primer trimestre y ascendiendo a $+0.52$ al cierre de la ventana. La consistencia de signo a lo largo de doce trimestres, aunque los intervalos de confianza individuales cubren cero, fortalece la lectura de un efecto positivo, gradual y persistente sobre el empleo en ocupaciones expuestas, en l\'{i}nea con el coeficiente significativo del Panel B de la \cref{tab:peru_main}.
+
+El panel (c), correspondiente a horas semanales, exhibe un patr\'{o}n que merece especial cuidado. Los coeficientes pre-tratamiento, aunque no rechazan tendencias paralelas en el sentido de Wald, son sistem\'{a}ticamente positivos en magnitud (con $\theta_{-5} \cdot \beta = +3.32$ significativo individualmente). Los coeficientes post-tratamiento son mayoritariamente negativos. Este perfil de inversi\'{o}n sugiere una posible reversi\'{o}n de tendencia que podr\'{i}a inflar mec\'{a}nicamente el coeficiente principal de horas. Sigo a \citet{Roth2022_pretest_caution} en interpretar esta evidencia con cautela y rebajo el peso interpretativo del coeficiente continuo de horas en favor del binario CS-2021 del Panel B, que es robusto a esta caracter\'{i}stica de los datos.
+
+\subsection{Heterogeneidad por formalidad de l\'{i}nea base}
+\label{subsec:results_formality}
+
+La preregistraci\'{o}n metodol\'{o}gica del art\'{i}culo identifica la formalidad de l\'{i}nea base como la dimensi\'{o}n central de heterogeneidad intra-pa\'{i}s. La \cref{tab:peru_formality} reporta los coeficientes $\hat\tau_F^{\text{Per\'{u}}}$ y $\hat\tau_I^{\text{Per\'{u}}}$ de la \cref{eq:formality_interaction}, donde la share de formalidad ocupacional $F_o^{2021}$ se construye como el promedio ponderado por empleo de la share trimestral de trabajadores formales en la ocupaci\'{o}n $o$ a lo largo de los cuatro trimestres de 2021, con la formalidad definida como afiliaci\'{o}n a ESSALUD o esquema combinado ESSALUD-privado (\texttt{seguro1} $\in \{1, 3\}$).
+
+\begin{table}[H]
+\centering
+\small
+\begin{threeparttable}
+\caption{Heterogeneidad de $\hat\tau^{\text{Per\'{u}}}$ por formalidad de l\'{i}nea base 2021}
+\label{tab:peru_formality}
+\begin{tabular}{l c c c}
+\toprule
+                                                & log empleo             & log salario hora        & horas semanales       \\
+\midrule
+$\hat\tau_F^{\text{Per\'{u}}}$ (canal formal)   & $\mathbf{0.567^{***}}$ & $\mathbf{-0.128^{**}}$  & $-1.920^{*}$          \\
+                                                & $(0.211)$              & $(0.056)$               & $(1.034)$             \\
+$\hat\tau_I^{\text{Per\'{u}}}$ (canal informal) & $-0.222$               & $\mathbf{0.265^{***}}$  & $-5.110$              \\
+                                                & $(0.286)$              & $(0.080)$               & $(3.819)$             \\
+\midrule
+$\hat\tau_F - \hat\tau_I$                       & $0.790$                & $-0.394$                & $3.190$               \\
+$z$ (test $H_0:\,\hat\tau_F = \hat\tau_I$)      & $2.80$                 & $-4.19$                 & $0.82$                \\
+$p$-valor                                       & $\mathbf{0.005}$       & $\mathbf{<0.001}$        & $0.410$               \\
+\midrule
+$F_o^{2021}$ mediana ponderada                  & \multicolumn{3}{c}{$0.225$}                                              \\
+N celdas                                        & \multicolumn{3}{c}{$2{,}078$}                                            \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}[flushleft]
+\footnotesize
+\item \emph{Notas:} Estimaciones de la \cref{eq:formality_interaction}. La regresi\'{o}n incluye efectos fijos de ocupaci\'{o}n y de tiempo, est\'{a} ponderada por el empleo expandido por la encuesta y emplea errores est\'{a}ndar agrupados a nivel de ocupaci\'{o}n CIUO-08 a cuatro d\'{i}gitos. El test de igualdad entre canales usa la aproximaci\'{o}n normal para la diferencia $\hat\tau_F - \hat\tau_I$ con la covarianza completa estimada a partir de la matriz robusta del modelo. *** $p<0.01$, ** $p<0.05$, * $p<0.10$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/peru/fig_heterogeneity_formal.pdf}
+\caption{\textit{Heterogeneidad de $\hat\tau^{\text{Per\'{u}}}$ por formalidad.} Coeficientes $\hat\tau_F$ (canal formal) y $\hat\tau_I$ (canal informal) de la \cref{eq:formality_interaction} para los tres resultados primarios, con intervalos de confianza al 95 por ciento. La diferencia entre canales es estad\'{i}sticamente significativa para empleo ($p = 0.005$) y para salario por hora ($p < 0.001$).}
+\label{fig:peru_heterogeneity}
+\end{figure}
+
+El cuadro emp\'{i}rico que emerge contradice la lectura agregada del nulo. El canal formal y el canal informal se mueven en direcciones opuestas y estad\'{i}sticamente significativas en dos de los tres resultados primarios.
+
+\emph{Empleo.} El canal formal entrega un coeficiente positivo grande y significativo al 1 por ciento ($\hat\tau_F = +0.567$), mientras que el canal informal exhibe un coeficiente negativo, no significativo individualmente pero con un punto estimado sustantivo ($\hat\tau_I = -0.222$). El test conjunto de igualdad entre los dos canales rechaza al 1 por ciento ($p = 0.005$). Las ocupaciones de Lima Metropolitana en las que la fuerza laboral de l\'{i}nea base era predominantemente formal expanden el empleo en respuesta a la exposici\'{o}n a LLMs, mientras que las ocupaciones de l\'{i}nea base predominantemente informal contraen el empleo. Estos dos efectos opuestos se cancelan en el coeficiente agregado de la \cref{tab:peru_main}, generando la apariencia de un nulo.
+
+\emph{Salario por hora.} El patr\'{o}n se invierte y se vuelve incluso m\'{a}s n\'{i}tido. El canal formal pierde salarios ($\hat\tau_F = -0.128$, $p < 0.05$), mientras que el canal informal los gana ($\hat\tau_I = +0.265$, $p < 0.01$). El test de igualdad rechaza al menos al uno por mil ($p < 0.001$). Dentro del sector formal, las ocupaciones expuestas experimentan presi\'{o}n bajista sobre el salario hora, posiblemente derivada del ajuste intensivo en horas que documenta el coeficiente correspondiente, o bien de la entrada de m\'{a}s trabajadores en ocupaciones expuestas. Dentro del sector informal, el aumento de salarios entre los presentes en ocupaciones expuestas admite m\'{u}ltiples interpretaciones: selecci\'{o}n positiva (los menos productivos salen de la ocupaci\'{o}n y los que permanecen tienen mayor productividad media), poder de negociaci\'{o}n heterog\'{e}neo, recomposici\'{o}n demogr\'{a}fica, o un canal de equilibrio general donde las firmas formales que adoptan compiten por trabajadores informales calificados, presionando el precio de mercado al alza. Los datos peruanos no permiten distinguir entre estas explicaciones porque la EPEN es un corte transversal repetido y no permite seguir individualmente a un mismo trabajador. La interpretaci\'{o}n de selecci\'{o}n positiva, aunque plausible, debe leerse como una lectura compatible con el patr\'{o}n y no como un mecanismo identificado.
+
+\emph{Horas semanales.} Los dos canales se mueven en la misma direcci\'{o}n negativa, con magnitudes que difieren ($\hat\tau_F = -1.92$, $p < 0.10$; $\hat\tau_I = -5.11$, no significativo) pero cuya igualdad no se rechaza ($p = 0.41$). El coeficiente formal es la fuente del agregado significativo al 5 por ciento del Panel B de la \cref{tab:peru_main}; el coeficiente informal apunta en la misma direcci\'{o}n pero con masa muestral menor y mayor varianza.
+
+El \cref{app:peru_subsamples} reporta una especificaci\'{o}n alternativa que divide la muestra en la mediana ponderada de la formalidad ocupacional ($F_o^{2021} = 0.225$). El patr\'{o}n cualitativo se replica: las ocupaciones de alta formalidad de l\'{i}nea base ganan empleo y pierden horas, mientras que las de baja formalidad ganan salario por hora.
+
+\paragraph{Selecci\'{o}n y m\'{a}rgenes ajenos al modelo.} Los tres outcomes del \cref{tab:peru_main} se calculan condicional en estar ocupado. Si la exposici\'{o}n a LLM induce salida del empleo en una direcci\'{o}n correlacionada con el efecto de tratamiento, los coeficientes contienen un componente de selecci\'{o}n no modelado. Tres canales son particularmente preocupantes. Primero, la migraci\'{o}n entre ocupaciones: un trabajador que sale de una CIUO de alta exposici\'{o}n hacia una de baja exposici\'{o}n contribuye a reducir el empleo de la primera y aumentar el de la segunda, sin que necesariamente cambie su productividad ni su salario. Segundo, la salida del empleo hacia la inactividad o el desempleo, que recortar\'{i}a la masa muestral de las ocupaciones expuestas. Tercero, la posible recomposici\'{o}n demogr\'{a}fica dentro de una CIUO entre 2021 y 2025, que el efecto fijo de ocupaci\'{o}n no captura. Las EPEN trimestrales son cortes transversales repetidos, no un panel de trabajadores, por lo que estos m\'{a}rgenes no son identificables directamente con la presente especificaci\'{o}n. La validaci\'{o}n complementaria con la ENAHO anual nacional, prevista para la secci\'{o}n de robustez, permitir\'{a} acotar la magnitud de la migraci\'{o}n ocupacional al comparar las shares de empleo CIUO entre 2021 y 2024 a nivel nacional.
+
+\subsection{S\'{i}ntesis: el patr\'{o}n peruano y las narrativas preregistradas}
+\label{subsec:results_narrative}
+
+Es importante ser honesto sobre la mapeo de los resultados peruanos a las cuatro narrativas preregistradas en la \cref{subsec:method_narratives}. Ninguna de las cuatro reproduce exactamente el patr\'{o}n observado en Lima Metropolitana.
+
+La Narrativa A (la informalidad amplifica) requer\'{i}a $\tau_I^c < \tau_F^c < 0$ con un agregado significativo. Lima muestra $\tau_F^{\text{empleo}}$ positivo, no negativo. La Narrativa B (replicaci\'{o}n del nulo) requer\'{i}a efectos indistinguibles de cero en ambos canales; el resultado peruano contradice esto al rechazar la igualdad entre canales en empleo y salario. La Narrativa C (nulo formal, grande informal) requer\'{i}a $\tau_F^c \approx 0$, lo cual tampoco coincide con la magnitud y significancia del canal formal observado. La Narrativa D, finalmente, predec\'{i}a ganancias salariales positivas en formales urbanos con educaci\'{o}n terciaria; el resultado peruano muestra el signo \emph{opuesto} sobre salarios formales ($\hat\tau_F^{\text{salario}} = -0.128$) aunque s\'{i} confirma la concentraci\'{o}n del efecto en el sector formal.
+
+Lo que los datos peruanos describen mejor es un quinto patr\'{o}n, articulado aqu\'{i} por primera vez tras observar la evidencia y, por tanto, identificado expl\'{i}citamente como exploratorio:
+\begin{quote}
+\emph{Patr\'{o}n peruano (P).} Las ocupaciones formales-dominantes expuestas a LLMs experimentan expansi\'{o}n del empleo y reducci\'{o}n de horas por trabajador, con presi\'{o}n bajista sobre el salario por hora; las ocupaciones informales-dominantes expuestas exhiben contracci\'{o}n d\'{e}bil del empleo combinada con salarios al alza entre los presentes en la ocupaci\'{o}n.
+\end{quote}
+Este patr\'{o}n es consistente con un canal de complementariedad sesgada por habilidad en el sector formal acompa\~{n}ado de ajuste intensivo (ya sea por sustituci\'{o}n parcial de tareas o por entrada de m\'{a}s trabajadores), m\'{a}s un canal de recomposici\'{o}n en el sector informal cuyo mecanismo subyacente no se identifica con cortes transversales repetidos. La contribuci\'{o}n del paper pasa, entonces, de "qu\'{e} narrativa apoya Per\'{u}" a "Per\'{u} sugiere un quinto patr\'{o}n que ninguna de las preregistradas anticipa". Este quinto patr\'{o}n se a\~{n}ade al conjunto de hip\'{o}tesis que ser\'{a}n preregistradas formalmente antes de mirar el dato post-tratamiento de los cinco pa\'{i}ses restantes.
+
+La lectura conjunta es que Lima Metropolitana no replica el nulo dan\'{e}s de \citet{HumlumVestergaard2025_llm} en el agregado, pero esa similitud agregada es un artefacto de la cancelaci\'{o}n entre canales formal e informal con signos opuestos. La estructura segmentada del mercado laboral peruano hace que el shock de los LLMs opere de manera materialmente distinta sobre los dos sectores, y este efecto diferencial es la contribuci\'{o}n emp\'{i}rica central del an\'{a}lisis para Lima Metropolitana.
