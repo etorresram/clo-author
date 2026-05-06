@@ -1,143 +1,81 @@
-# CLAUDE.MD -- Empirical Economics Research with Claude Code
+# CLAUDE.md — Estado del Proyecto
 
-<!-- HOW TO USE: Replace [BRACKETED PLACEHOLDERS] with your project info.
-     Customize Beamer environments for your talk preamble.
-     Keep this file under ~150 lines — Claude loads it every session.
-     See the guide at https://hugosantanna.github.io/clo-author/ for full documentation. -->
-
-**Project:** The Labor Market and Distributional Impact of Generative AI: Causal Evidence for Latin America
-**Institution:** PUCP (Pontificia Universidad Católica del Perú) — Programa Doctoral en Economía
-**Field:** Labor Economics (adjacent: Development Economics, Public Economics, AI & Technology)
-**Branch:** main
+**Proyecto:** IA Generativa y Mercados Laborales — Evidencia Causal y el Rol de la Informalidad en América Latina
+**Autor:** Eric Torres (PUCP, Doctorado en Economía)
+**Fecha:** 2026-05-06
 
 ---
 
-## Core Principles
+## 1. Objetivo
 
-- **Plan first** -- enter plan mode before non-trivial tasks; save plans to `quality_reports/plans/`
-- **Verify after** -- compile and confirm output at the end of every task
-- **Single source of truth** -- Paper `main.tex` is authoritative; talks and supplements derive from it
-- **Quality gates** -- weighted aggregate score; nothing ships below 80/100; see `quality.md`
-- **Worker-critic pairs** -- every creator has a paired critic; critics never edit files
-- **Auto-memory** -- corrections and preferences are saved automatically via Claude Code's built-in memory system
+Estimar el efecto causal del lanzamiento de ChatGPT (Nov-2022) sobre resultados laborales (empleo, horas, ingresos, formalidad) en **6 países LAC**: Costa Rica, Colombia, Ecuador, México, Perú y Uruguay.
 
----
-
-## Getting Started
-
-1. Fill in the `[BRACKETED PLACEHOLDERS]` in this file
-2. Run `/discover interview [topic]` to build your research specification
-3. Or run `/new-project [topic]` for the full orchestrated pipeline
+- **Diseño:** DiD con tratamiento continuo (CGBS 2024) usando exposición ocupacional β de Eloundou et al. (2023).
+- **Crosswalk:** O*NET SOC-2010 → SOC-2018 (bridge) → ISCO-08 → clasificadores nacionales.
+- **Robustez:** Sun-Abraham, LP-DiD (Dube et al. 2023), Roth (2022) pretest, dCDH (2022).
+- **Dos papers:** (1) efectos laborales agregados; (2) desigualdad y protección social (RIF, Oaxaca-Blinder).
 
 ---
 
-## Folder Structure
+## 2. Estado: Splicing Google Trends (pytrends)
 
-```
-gen-ai-lac-labor/
-├── CLAUDE.MD                    # This file
-├── .claude/                     # Rules, skills, agents, hooks
-├── Bibliography_base.bib        # Centralized bibliography
-├── paper/                       # Main LaTeX manuscript (source of truth)
-│   ├── main.tex                 # Primary paper file
-│   ├── sections/                # Section-level .tex files
-│   ├── figures/                 # Generated figures (.pdf, .png)
-│   ├── tables/                  # Generated tables (.tex)
-│   ├── talks/                   # Beamer presentations
-│   ├── quarto/                  # Quarto RevealJS presentations
-│   ├── preambles/               # LaTeX headers / shared preamble
-│   ├── supplementary/           # Online appendix and supplements
-│   └── replication/             # Replication package for deposit
-├── data/                        # Project data
-│   ├── raw/                     # Original untouched data (often gitignored)
-│   └── cleaned/                 # Processed datasets ready for analysis
-├── scripts/                     # Analysis code (R, Python, Julia)
-├── quality_reports/             # Plans, session logs, reviews, scores
-├── explorations/                # Research sandbox (see rules)
-├── templates/                   # Session log, quality report templates
-└── master_supporting_docs/      # Reference papers and data docs
-```
+**Propósito:** Figura 1 (motivación) — interés relativo por "ChatGPT" en los 6 países, 2020–2025.
+
+**Estado:** Completado e imputado.
+
+- Datos vía `pytrends` por bloques (límite Google: 5 términos por consulta).
+- **Splicing:** series por país reescaladas con país pivote común para una sola escala 0–100 comparable.
+- Imputación de huecos con interpolación lineal mensual.
+- Outputs:
+  - `data/cleaned/trends/trends_chatgpt_imputed.csv`
+  - `data/cleaned/trends/trends_others_imputed.csv`
+- Figura generada por `scripts/python/build_intro_trends_figure.py` → `paper/figures/descriptive/fig1_chatgpt_intro.pdf` (B&N, sobria).
 
 ---
 
-## Commands
+## 3. Archivos Clave
 
-```bash
-# Paper compilation (latexmk handles multi-pass + biber automatically)
-cd paper && latexmk main.tex
+### Paper
+- `paper/main.tex` — fuente principal (español, APA 7, biblatex+biber).
+- `paper/preambles/preamble.tex` — APA 7 (`maxbibnames=99, maxcitenames=2`), babel español.
+- `paper/sections/introduction.tex` — 6 países, β como exposición primaria.
+- `paper/sections/theoretical_framework.tex` — Acemoglu-Restrepo, P1–P4.
+- `paper/sections/methodology.tex` — DiD país por país, EPEN caveat (Lima Met.), pretests.
+- `paper/talks/asesor_presentation.tex` — Beamer B&N para asesor (entrega parcial).
+- `Bibliography_base.bib` (root y `paper/`, sincronizadas).
 
-# Talk compilation
-cd paper/talks && latexmk talk.tex
+### Datos Perú
+- `/Users/etorresram/Desktop/Thesis files/raw_data/Peru/Trimestral/` — 20 .sav (EPE 2021Q1–2022Q3, EPEN 2022Q4–2025Q4).
+- Programa Stata `epe2epen` (V3) — equivalencia Ficha Técnica + lowercase.
+- Programa Stata `build_clean` (V2) — base de ocupados con variables en inglés.
 
-# Clean auxiliary files
-cd paper && latexmk -c
-```
+### Crosswalks
+- `/tmp/co95_cno2015_raw.txt` — borrador parcial CO-95 → CNO-2015 (~400 filas).
+- `/Users/etorresram/Desktop/Thesis files/Tablas_de_correspondencia_CNO_CIUO_CO.xlsx` — fuente autoritativa (pendiente de leer).
+- `/Users/etorresram/Desktop/Thesis files/Clasificador_Nacional_de_Ocupaciones_9_de_febrero.pdf` — doc. técnico INEI.
 
-> **Note:** `paper/latexmkrc` configures XeLaTeX, TEXINPUTS, and BIBINPUTS.
-> On Overleaf, set compiler to XeLaTeX via Menu > Compiler — Overleaf reads `latexmkrc` automatically.
-
----
-
-## Quality Thresholds
-
-| Score | Gate | Applies To |
-|-------|------|------------|
-| 80 | Commit | Weighted aggregate (blocking) |
-| 90 | PR | Weighted aggregate (blocking) |
-| 95 | Submission | Aggregate + all components >= 80 |
-| -- | Advisory | Talks (reported, non-blocking) |
-
-See `quality.md` for weighted aggregation formula.
+### Scripts
+- `scripts/R/03_build_exposure.R` — bridge SOC-2010↔SOC-2018, scores Eloundou (92/100).
+- `scripts/python/build_intro_trends_figure.py` — Figura 1.
+- `/tmp/recover_peru_epe.py` — recuperación URLs INEI.
 
 ---
 
-## Skills Quick Reference
+## 4. Próximos Pasos
 
-| Command | What It Does |
-|---------|-------------|
-| `/new-project [topic]` | Full pipeline: idea → paper (orchestrated) |
-| `/discover [mode] [topic]` | Discovery: interview, literature, data, ideation |
-| `/strategize [question]` | Identification strategy or pre-analysis plan |
-| `/analyze [dataset]` | End-to-end data analysis |
-| `/write [section]` | Draft paper sections + humanizer pass |
-| `/review [file/--flag]` | Quality reviews (routes by target: paper, code, peer) |
-| `/revise [report]` | R&R cycle: classify + route referee comments |
-| `/talk [mode] [format]` | Create, audit, or compile Beamer presentations |
-| `/submit [mode]` | Journal targeting → package → audit → final gate |
-| `/tools [subcommand]` | Utilities: commit, compile, validate-bib, journal, etc. |
+1. **Procesar** `Tablas_de_correspondencia_CNO_CIUO_CO.xlsx` — extraer mapeo autoritativo CO-95 ↔ CNO-2015 ↔ CIUO-08.
+2. **Test empírico Perú** — verificar en Stata si EPE usa CO-95 (3 díg.) o ya CNO-2015; chequear `c308_cod` pre y post 2022Q4.
+3. **Aplicar crosswalk** a EPE (2021Q1–2022Q3) para alinear con CNO-2015 (4 díg.) de EPEN.
+4. **Construir panel limpio Perú** con códigos ocupacionales consistentes pre/post.
+5. **Re-descargar** raw data de los 5 países restantes (CO, CR, EC, MX, UY).
+6. **Mapear exposición β** a clasificador nacional de cada país (SOC-2018 → ISCO-08 → nacional).
+7. **Estimar DiD** país por país (CGBS continuo) + meta-análisis pooled.
+8. **Llenar abstract** (`XXX` placeholder en `main.tex`).
 
 ---
 
-<!-- CUSTOMIZE: Replace the example entries below with your own
-     Beamer environments for talks. -->
+## Notas operativas
 
-## Beamer Custom Environments (Talks)
-
-| Environment       | Effect        | Use Case       |
-|-------------------|---------------|----------------|
-| `exposuremap`     | Side-by-side map + coefficient table | Cross-country exposure variation |
-| `eventstudy`      | Full-width event study plot | Pre-trends and dynamic treatment effects |
-| `countrycomp`     | 5-panel layout (one per country) | Cross-country heterogeneity results |
-| `distplot`        | Wage distribution overlay (pre/post) | RIF regression results (Paper 2) |
-
----
-
-## Output Organization
-
-<!-- Options: by-script (default) or by-purpose -->
-Output organization: by-purpose
-
-<!-- by-script:  paper/figures/main_regression/figure1.pdf, paper/tables/main_regression/table1.tex -->
-<!-- by-purpose: paper/figures/estimation/coefplot_main.pdf, paper/tables/robustness/alt_controls.tex -->
-
----
-
-## Current Project State
-
-| Component | File | Status | Description |
-|-----------|------|--------|-------------|
-| Paper 1 | `paper/main.tex` | not started | Labor market effects of GenAI across 5 LAC countries (DiD) |
-| Paper 2 | `paper/paper2/main.tex` | not started | Distributional and social protection effects |
-| Data | `scripts/R/` | not started | Multi-country survey harmonization + exposure mapping |
-| Replication | `paper/replication/` | not started | Not yet packaged |
-| Job Market Talk | `paper/talks/jmt.tex` | -- | Not started |
+- Worktree activo: `/tmp/clo-paper-mods/` (no tocar `main` directamente).
+- Sin em-dashes (—). Sin primera persona plural (we/our → I/my).
+- `Bibliography_base.bib`: mantener sincronizado entre root y `paper/`.
