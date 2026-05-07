@@ -1,0 +1,403 @@
+% =============================================================================
+% Guion de la presentacion al asesor
+% Documento de apoyo para explicar paso a paso el beamer
+% Autor: Eric Torres (PUCP)
+% =============================================================================
+
+\documentclass[12pt]{article}
+
+% --- Layout ------------------------------------------------------------------
+\usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
+\usepackage{setspace}
+\onehalfspacing
+\usepackage{parskip}
+
+% --- Idioma y fuentes --------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish, es-noindentfirst]{babel}
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% --- Matematicas -------------------------------------------------------------
+\usepackage{amsmath, amssymb, mathtools}
+\usepackage{dsfont}
+
+% --- Listas ------------------------------------------------------------------
+\usepackage{enumitem}
+\setlist[itemize]{itemsep=2pt, topsep=4pt}
+\setlist[enumerate]{itemsep=2pt, topsep=4pt}
+
+% --- Encabezados y secciones -------------------------------------------------
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.6em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+
+% --- Cajas para resaltar -----------------------------------------------------
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\definecolor{cajagris}{HTML}{F2F2F2}
+\newtcolorbox{ideaclave}{colback=cajagris, colframe=black!60,
+  boxrule=0.4pt, arc=2pt, left=8pt, right=8pt, top=4pt, bottom=4pt}
+
+% --- Hyperlinks --------------------------------------------------------------
+\usepackage[hidelinks]{hyperref}
+
+% =============================================================================
+\title{Guion de la presentación al asesor\\
+\large Una explicación paso a paso del beamer}
+\author{Eric Torres \\ \small Pontificia Universidad Católica del Perú \\ \small Programa Doctoral en Economía}
+\date{Mayo 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+\noindent Este documento acompaña la presentación \emph{IA Generativa y Mercados Laborales: Evidencia Causal y el Rol de la Informalidad en América Latina} y explica, en lenguaje sencillo, qué se dice en cada lámina del beamer. Está pensado como guion de lectura: cada sección corresponde a un bloque de la presentación. La idea es que cualquier lector con formación básica en economía pueda seguir el argumento sin perderse en la notación.
+\end{abstract}
+
+\tableofcontents
+
+% =============================================================================
+\section{Motivación: ¿qué pregunta responde este paper?}
+% =============================================================================
+
+\subsection{La pregunta}
+
+ChatGPT salió al público el 30 de noviembre de 2022. Desde entonces ha sido el shock tecnológico más comentado de la década. La pregunta natural en economía laboral es directa: \emph{¿esta tecnología está cambiando el empleo y los salarios?}
+
+La literatura ha empezado a contestar esa pregunta, pero casi siempre con datos de países ricos. El estudio más citado es \textbf{Humlum y Vestergaard (2025)} para Dinamarca: encuentran que los efectos sobre salarios y horas de trabajo son \textbf{menores al 2 por ciento}. Es un nulo prácticamente.
+
+El problema es que toda la evidencia causal disponible viene de la OCDE: Estados Unidos, Dinamarca, plataformas de \emph{freelance}. Para los países en desarrollo, y en particular para América Latina, no existe ninguna estimación causal a la fecha. Solo hay estimaciones de exposición potencial.
+
+\begin{ideaclave}
+\textbf{Pregunta del paper:} ¿Cómo ha afectado la IA generativa al mercado laboral en América Latina, considerando que la región tiene una estructura económica muy distinta a la danesa?
+\end{ideaclave}
+
+\subsection{El shock llegó a la región}
+
+La primera lámina con datos muestra el interés de búsqueda en Google Trends para ``ChatGPT'' en seis países latinoamericanos: Costa Rica, Colombia, Ecuador, México, Perú y Uruguay. La gráfica deja claro dos cosas: antes del lanzamiento el interés era prácticamente cero, y después se estabiliza en niveles altos (entre 40 y 90 puntos del índice). El shock llegó.
+
+\subsection{¿Por qué América Latina?}
+
+América Latina no es Dinamarca. Tiene una configuración estructural \textbf{opuesta}:
+
+\begin{itemize}
+  \item \textbf{Informalidad alta:} en promedio 55 por ciento de los trabajadores son informales. Va desde el 25 por ciento en Uruguay hasta más del 70 por ciento en los países andinos. En Dinamarca esa cifra es marginal.
+  \item \textbf{Mercados laborales segmentados:} el sector formal y el informal tienen instituciones de fijación salarial muy distintas (negociación colectiva, salario mínimo, contratos vs. acuerdos de palabra).
+  \item \textbf{Adopción heterogénea:} las firmas multinacionales despliegan software empresarial aumentado con LLM, pero el uso directo de ChatGPT por parte de las personas está rezagado respecto a Estados Unidos o Europa.
+  \item \textbf{Exposición ya documentada:} \textbf{Azuara et al.\ (2024)} del BID, \textbf{Ciaschi (2025)} y \textbf{Egaña-del-Sol (2025)} estiman cuánto \emph{podrían} verse afectadas las ocupaciones latinoamericanas por la IA generativa. Pero eso es exposición \emph{potencial}; nadie ha medido el efecto \emph{realizado} sobre empleo y salarios.
+\end{itemize}
+
+\begin{ideaclave}
+\textbf{La brecha:} se ha medido la exposición; no se ha medido el efecto.
+\end{ideaclave}
+
+% =============================================================================
+\section{Contribución del paper}
+% =============================================================================
+
+El paper se compromete con cinco contribuciones explícitas:
+
+\begin{enumerate}
+  \item \textbf{Primera evidencia causal} de exposición a LLM sobre resultados laborales en América Latina. No hay otro estudio que haga esto a la fecha.
+  \item \textbf{DiD con tratamiento continuo} aplicado país por país. La literatura previa (Hartley 2024, Hui et al.\ 2024, Liu et al.\ 2025) usa cortes binarios (alto vs.\ bajo). Yo uso la dosis continua siguiendo a \textbf{Callaway et al.\ (2024)}.
+  \item \textbf{Formalidad de línea base} elevada de subgrupo a margen central de heterogeneidad. Y se evita el problema del \emph{bad control}: la formalidad contemporánea es ella misma un \emph{outcome} de la exposición; usar la formalidad de 2021 como variable predeterminada lo soluciona.
+  \item \textbf{Crosswalk y panel reproducible} para seis países (2021--2025). Es un insumo público para futura investigación regional.
+  \item \textbf{Cuatro narrativas pre-comprometidas} antes de correr el análisis. Esto significa que la narrativa que el paper enfatiza en cada país queda determinada por la evidencia y no por una búsqueda \emph{ex post} de especificación.
+\end{enumerate}
+
+\textbf{El contraste central:} Humlum y Vestergaard (Dinamarca) frente a seis estimaciones independientes en ALC. Si el resultado danés se replica seis veces, el nulo es robusto. Si no se replica, identificamos el rol de la informalidad.
+
+% =============================================================================
+\section{Marco teórico: ocupaciones como conjuntos de tareas}
+% =============================================================================
+
+\subsection{Ocupaciones como tareas}
+
+El marco teórico viene de \textbf{Acemoglu y Autor (2011)} y \textbf{Acemoglu y Restrepo (2018)}. La idea es simple: cada ocupación es un conjunto de tareas. Un contador hace tareas como ``leer estados financieros'', ``calcular impuestos'', ``hablar con clientes'', etc.
+
+Cada ocupación $o$ es entonces un conjunto de tareas $j$ con pesos $s_{oj}$ (cuánta importancia tiene cada tarea dentro de la ocupación). El salario de la ocupación es:
+
+\[
+w_o = \sum_j s_{oj} \cdot p_j,
+\]
+
+donde $p_j$ es el ``precio de la tarea'' (lo que paga el mercado por hacer esa tarea). Antes de los LLM, todas esas tareas las hacían humanos. Después de los LLM, un subconjunto de esas tareas se vuelve automatizable.
+
+\subsection{Dos fuerzas opuestas}
+
+\textbf{Eloundou et al.\ (2024)}, en \emph{Science}, construyen un puntaje $\beta_o$ que mide qué fracción de las tareas de la ocupación $o$ pueden hacerse con software construido sobre LLM. Ese puntaje es la variable de tratamiento del paper.
+
+Sobre el salario operan dos efectos en sentidos opuestos:
+
+\begin{itemize}
+  \item \textbf{Desplazamiento ($\tau_d$):} las tareas que se vuelven automatizables ahora se hacen con software, más barato. Esto reduce la demanda por trabajo humano. La magnitud del efecto es proporcional a $\beta_o$: ocupaciones con muchas tareas automatizables sufren más.
+  \item \textbf{Reposición ($\tau_r$):} las firmas crean tareas nuevas, complementarias al software (supervisión, ingeniería de \emph{prompts}, verificación, integración). Esos puestos los hacen humanos.
+\end{itemize}
+
+El efecto neto es la diferencia:
+
+\[
+\Delta w_o = (\tau_r - \tau_d) \cdot \beta_o.
+\]
+
+\begin{ideaclave}
+\textbf{El signo y la magnitud son empíricos.} La teoría no nos dice si gana el desplazamiento o gana la reposición. Hay que estimarlo.
+\end{ideaclave}
+
+\subsection{El canal de formalidad}
+
+Aquí entra la pieza latinoamericana. Adoptar software aumentado con LLM no es gratis: requiere licencias, integración con sistemas existentes, capacitación, soporte técnico. Eso es \textbf{inversión a nivel de firma}.
+
+\begin{itemize}
+  \item Las firmas \textbf{formales} tienen capital, crédito y procesos. \emph{Adoptan}.
+  \item Las firmas \textbf{informales} son pequeñas y descapitalizadas. \emph{No adoptan}.
+\end{itemize}
+
+La predicción inmediata es que los efectos directos del LLM se concentran en el sector formal. Pero hay un canal indirecto importante: las firmas formales que adoptan se vuelven más productivas y pueden ganar cuota de mercado a costa de las informales. Entonces el efecto neto sobre los trabajadores informales puede no ser cero, aunque ellos no usen LLM directamente.
+
+\subsection{Cuatro predicciones testables}
+
+El marco genera cuatro predicciones que se pueden contrastar para cada uno de los seis países por separado:
+
+\begin{itemize}
+  \item[\textbf{P1.}] El signo de $\partial Y_{ot}/\partial \beta_o$ es empírico. Si domina el desplazamiento el efecto es negativo; si domina la reposición es positivo.
+  \item[\textbf{P2.}] En el corto plazo, la magnitud del efecto en el sector formal es mayor que en el informal: $|\tau_F| > |\tau_I|$, porque la adopción se concentra en el formal.
+  \item[\textbf{P3.}] Países con mayor formalidad e infraestructura digital exhiben magnitudes mayores en valor absoluto.
+  \item[\textbf{P4.}] Dentro de una ocupación, los trabajadores con educación terciaria sufren menos desplazamiento que los de educación secundaria.
+\end{itemize}
+
+% =============================================================================
+\section{Datos: seis países, 2021T1--2025T4}
+% =============================================================================
+
+El paper usa seis encuestas de fuerza laboral, todas armonizadas a frecuencia trimestral móvil (T1 = enero a marzo, T2 = abril a junio, etc.).
+
+\begin{itemize}
+  \item Costa Rica: ECE (Encuesta Continua de Empleo), trimestral nativa.
+  \item Colombia: GEIH (Gran Encuesta Integrada de Hogares), mensual; agrego tres meses para formar trimestre.
+  \item Ecuador: ENEMDU, mensual; igual que Colombia.
+  \item México: ENOE, trimestral nativa.
+  \item \textbf{Perú: EPEN (Encuesta Permanente de Empleo Nacional), trimestral, Lima Metropolitana.}
+  \item Uruguay: ECH, anual con campo continuo; separo cada hogar al trimestre por su mes de entrevista.
+\end{itemize}
+
+\textbf{Nota importante sobre Perú:} la fuente principal es la EPEN, no la ENAHO. La EPEN es trimestral pero solo cubre Lima Metropolitana. La ENAHO es nacional pero anual. Como la unidad de análisis del paper es trimestre $\times$ ocupación, EPEN es la elección natural. La ENAHO se reserva para validación nacional en la sección de robustez.
+
+\subsection{Variable de tratamiento: la exposición $\beta$}
+
+De Eloundou et al.\ (2024) tomamos tres puntajes ocupacionales:
+
+\begin{itemize}
+  \item $\alpha_o$: sustitución directa por LLM, donde el modelo puede hacer al menos el 50 por ciento del tiempo de la tarea por sí solo.
+  \item $\beta_o$: alcanzable mediante software construido sobre LLM (CRM, contabilidad, atención al cliente automatizada, asistentes de código).
+  \item $\zeta_o = \alpha_o + \beta_o$: la cota superior, ambos canales sumados.
+\end{itemize}
+
+\textbf{Uso $\beta$ como tratamiento principal} y no $\zeta$. La razón es teórica: en América Latina el canal dominante no es la persona escribiendo en ChatGPT, sino la firma desplegando software empresarial aumentado con LLM. Eso es exactamente lo que captura $\beta$. Además, $\beta$ es más conservador que $\zeta$. Los puntajes $\alpha$ y $\zeta$ se reportan como exposiciones alternativas en la robustez.
+
+El crosswalk va de O*NET (clasificación ocupacional estadounidense, donde están los puntajes) a ISCO-08 a 4 dígitos (estándar internacional). La tasa de coincidencia es 98.2 por ciento.
+
+% =============================================================================
+\section{Estrategia de identificación}
+% =============================================================================
+
+\subsection{La especificación principal}
+
+Para cada país $c$ por separado, el paper estima:
+
+\[
+Y_{ot}^c = \tau^c \cdot (\beta_o \cdot \text{Post}_t) + \alpha_o^c + \alpha_t^c + \mathbf{X}_{ot}^{c\prime}\boldsymbol{\gamma}^c + \varepsilon_{ot}^c.
+\]
+
+Decodifico cada término en lenguaje sencillo:
+
+\begin{itemize}
+  \item $Y_{ot}^c$ es el resultado: logaritmo del empleo, logaritmo del salario por hora u horas semanales, en la ocupación $o$, en el trimestre $t$, en el país $c$.
+  \item $\beta_o \cdot \text{Post}_t$ es la \emph{variable de tratamiento}. $\beta_o$ es la dosis de exposición continua entre 0 y 1. $\text{Post}_t$ vale 1 a partir de 2023T1. La interacción dice: ``a las ocupaciones más expuestas, después del lanzamiento de ChatGPT''.
+  \item $\tau^c$ es el coeficiente de interés. Es el efecto promedio del tratamiento sobre los tratados, ponderado por la dosis (ACRT en la nomenclatura de Callaway et al.\ 2024).
+  \item $\alpha_o^c$ son efectos fijos de ocupación: absorben todo lo que es invariante en el tiempo dentro de cada ocupación (por ejemplo, la estructura salarial de base de los contadores).
+  \item $\alpha_t^c$ son efectos fijos de tiempo: absorben los shocks macroeconómicos comunes (recuperación post-COVID, inflación).
+  \item $\varepsilon_{ot}^c$ es el error.
+\end{itemize}
+
+La fecha de tratamiento es la misma para los seis países: lanzamiento de ChatGPT el 30 de noviembre de 2022. El trimestre 2022T4 se descarta como buffer (porque dos tercios del trimestre son pre-lanzamiento). El tratamiento ``efectivo'' arranca en 2023T1.
+
+\textbf{Estimador.} El primario es el de Callaway et al.\ (2024) para tratamiento continuo. \emph{Clustering} de errores estándar a nivel de ocupación CIUO-08 a 4 dígitos.
+
+\subsection{Supuestos de identificación}
+
+Para que $\hat\tau^c$ se interprete como un efecto causal y no como una correlación, tienen que cumplirse cuatro supuestos. El paper los lista y los defiende:
+
+\begin{itemize}
+  \item \textbf{Tendencias paralelas.} Si no hubiera ocurrido el shock, las ocupaciones expuestas y las no expuestas habrían evolucionado en paralelo. Esto se contrasta con un \emph{event study} (gráfico de coeficientes pre-tratamiento) y, sobre todo, con las cotas de \textbf{Honest-DiD de Rambachan y Roth (2023)}, que el paper eleva a criterio principal de robustez.
+  \item \textbf{No anticipación.} ChatGPT fue exógeno a los mercados laborales latinoamericanos. El acceso previo a su lanzamiento estuvo restringido a empleados de OpenAI.
+  \item \textbf{SUTVA (no \emph{spillovers}).} Asumimos que el tratamiento de una ocupación no contamina a otras. Las posibles excepciones (\emph{spillovers} dentro de una misma firma) se discuten y se acotan.
+  \item \textbf{Exogeneidad de la exposición $\beta$.} Los puntajes vienen de O*NET, una base estadounidense que mide atributos predeterminados de tareas. No son un \emph{outcome} de los mercados laborales latinoamericanos.
+\end{itemize}
+
+\textbf{Una limitación honesta:} no es factible hacer placebos temporales (correr el DiD usando 2019 o 2021 como ``falso lanzamiento'') porque toda esa muestra está en la pandemia o en su recuperación. En su lugar, el paper hace placebos transversales (ocupaciones con $\beta = 0$) y \emph{outcomes} placebo (horas de trabajadores agrícolas manuales, que no deberían responder al LLM).
+
+\subsection{Heterogeneidad por formalidad de línea base}
+
+El margen central de heterogeneidad es la formalidad. Aquí hay un problema técnico que el paper resuelve con cuidado: la formalidad contemporánea es ella misma un resultado del tratamiento (un \emph{bad control} en el sentido de \textbf{Abadie et al.\ 2023}). Si yo controlo por ``ser formal en 2024'', estoy controlando por una variable que el LLM puede haber cambiado.
+
+\textbf{La solución:} uso la formalidad de \emph{línea base}, es decir, la formalidad de 2021, antes del shock. Esa variable es predeterminada y no contaminada por el tratamiento. La especificación de interacción es:
+
+\[
+Y_{ot}^c = \tau_F^c \cdot (\beta_o \text{Post}_t F_{o,2021}^c) + \tau_I^c \cdot (\beta_o \text{Post}_t (1 - F_{o,2021}^c)) + \alpha_o^c + \alpha_t^c + \varepsilon_{ot}^c.
+\]
+
+Aquí $\tau_F^c$ es el efecto en el ``canal formal'' y $\tau_I^c$ es el efecto en el ``canal informal''. Los dos coeficientes son ACRT continuos en $\beta$, ponderados por la share de formalidad de la ocupación en 2021.
+
+Otras dimensiones de heterogeneidad pre-registradas: género, edad, educación, sector ISIC, urbano/rural. La formalidad es la primaria.
+
+\subsection{Capa de robustez}
+
+El paper pre-comprometió una lista larga de pruebas de robustez:
+
+\begin{itemize}
+  \item Cotas Honest-DiD de Rambachan y Roth (2023). El paper exige que el coeficiente sobreviva a un valor de quiebre $\bar M \geq 2$, es decir, hasta el doble de la peor desviación pre-tratamiento.
+  \item Especificaciones binarias alternativas: corte en mediana ponderada (siguiendo a Liu et al.\ 2025) y corte teórico $\beta > 0.5$.
+  \item Medidas de exposición alternativas: $\alpha$, $\zeta$, Webb (2020) basada en patentes, Felten (2023) índice AIOE.
+  \item Diseño Bartik / shift-share con shares de empleo de 2021 (Goldsmith-Pinkham et al.\ 2020, Borusyak et al.\ 2022).
+  \item Cotas de Oster (2019) para selección sobre no observables.
+  \item Múltiples comparaciones: Romano-Wolf intra-dimensión, Bonferroni entre dimensiones.
+  \item \emph{Drop-one ocupación}, \emph{drop-one país}, fallback a ISCO de 3 dígitos, \emph{wild cluster bootstrap}.
+\end{itemize}
+
+% =============================================================================
+\section{Las cuatro narrativas pre-registradas}
+% =============================================================================
+
+Antes de mirar los datos post-tratamiento, comprometí cuatro narrativas. La idea metodológica es importante: si miro el dato y \emph{después} cuento una historia que encaja, esa historia no es informativa (es una racionalización \emph{ex post}). En cambio, si me comprometo \emph{ex ante} con las cuatro únicas historias plausibles y digo cuál de ellas creo que apoya cada país, el ejercicio es disciplinado.
+
+Las cuatro narrativas son:
+
+\begin{itemize}
+  \item[\textbf{A.}] \textbf{Informalidad amplifica:} el efecto a nivel país supera el 2 por ciento en valor absoluto, impulsado por el canal informal con $\tau_I^c < \tau_F^c < 0$.
+  \item[\textbf{B.}] \textbf{Replicación del nulo ALC--Dinamarca:} los efectos no se distinguen de cero en ningún canal.
+  \item[\textbf{C.}] \textbf{Nulo en formal, grande en informal:} $\tau_F^c \approx 0$, $\tau_I^c$ negativo y significativo. Identifica un canal que los diseños daneses y estadounidenses no ven porque su sector informal es marginal.
+  \item[\textbf{D.}] \textbf{Ganancias estratificadas:} efectos salariales positivos en trabajadores formales urbanos con educación terciaria, sin efecto sobre la mayoría informal.
+\end{itemize}
+
+\textbf{Adelanto:} en Perú, ninguna de las cuatro encajó. Volveremos a este punto en la síntesis.
+
+% =============================================================================
+\section{Resultados (Perú, preliminar)}
+% =============================================================================
+
+\subsection{Resultado 1 -- TWFE continuo: el agregado parece nulo}
+
+La especificación principal sobre 138 ocupaciones CIUO-08 a 4 dígitos, 20 trimestres y 2,139 celdas, ponderada por empleo, da el siguiente cuadro:
+
+\begin{itemize}
+  \item Logaritmo de empleo: $+0.221$ (error estándar $0.220$, $p = 0.32$).
+  \item Logaritmo de salario hora: $+0.042$ (error $0.062$, $p = 0.50$).
+  \item Horas semanales: $-3.250$ (error $1.852$, $p = 0.08$).
+\end{itemize}
+
+\textbf{Lectura literal:} ningún coeficiente es significativo al 95 por ciento. Solo horas roza $p < 0.10$. Si me detuviera aquí, diría que el resultado peruano replica el nulo danés.
+
+\textbf{Pero hay una pieza adicional.} El paper pre-comprometió que las afirmaciones principales requieren una cota Honest-DiD $\bar M \geq 2$, es decir, el coeficiente debe sobrevivir a una violación de tendencias paralelas hasta el doble de la peor desviación pre-tratamiento. Para los tres outcomes la cota es $\bar M = 0$: el intervalo original ya cruza cero, así que el criterio de quiebre no separa la especificación de la nula. Es decir, el TWFE continuo \emph{no} pasa el estándar de robustez que el propio paper se impuso. Esto se reporta de manera transparente.
+
+\textbf{Pero el cuadro cambia con un estimador distinto.} Eso lleva al Resultado 2.
+
+\subsection{Resultado 2 -- Callaway-Sant'Anna binario sí detecta efectos}
+
+Como estimador secundario, el paper reporta \textbf{Callaway-Sant'Anna 2021} con un corte binario en la mediana ponderada de exposición de 2021 ($\beta > 0.255$). La submuestra balanceada tiene 67 ocupaciones (33 tratadas, 34 nunca tratadas).
+
+\begin{itemize}
+  \item Logaritmo de empleo: $+0.144$, IC 95 por ciento $[+0.10, +0.19]$, significativo al 1 por ciento.
+  \item Logaritmo de salario hora: $+0.006$, IC $[-0.02, +0.03]$, no significativo.
+  \item Horas semanales: $-0.801$, IC $[-1.45, -0.15]$, significativo al 5 por ciento.
+\end{itemize}
+
+\textbf{Lectura:} las ocupaciones de alta exposición ganan 14.4 por ciento de empleo y pierden 0.80 horas por semana.
+
+\textbf{¿Por qué difiere del TWFE?} \textbf{De Chaisemartin y D'Haultfoeuille (2020)} demostraron que el TWFE pondera mal los efectos heterogéneos por ocupación y por trimestre: algunos pesos pueden ser negativos y diluir el promedio. Callaway-Sant'Anna agrega correctamente los efectos $\text{ATT}(g, t)$. Esa es la razón teórica de la discrepancia.
+
+A la luz del fallo del criterio Honest-DiD sobre el TWFE, la especificación binaria de CS-2021 se trata como la \textbf{lectura preferida del agregado peruano}. La estimación continua se mantiene como referencia para comparar con la literatura previa.
+
+\subsection{Resultado 3 (clave) -- los canales formal e informal van en sentido opuesto}
+
+Este es el hallazgo central del paper para Perú. Aquí sí uso la especificación continua, con la interacción por formalidad de línea base $F_o^{2021}$.
+
+\begin{itemize}
+  \item \textbf{Empleo:} $\tau_F^{\text{empleo}} = +0.567$ (significativo al 1 por ciento), $\tau_I^{\text{empleo}} = -0.222$ (no significativo). Test de igualdad $\tau_F = \tau_I$: $p = 0.005$.
+  \item \textbf{Salario hora:} $\tau_F^{\text{salario}} = -0.128$ (significativo al 5 por ciento), $\tau_I^{\text{salario}} = +0.265$ (significativo al 1 por ciento). Test $p < 0.001$.
+  \item \textbf{Horas semanales:} $\tau_F = -1.92$ (significativo al 10 por ciento), $\tau_I = -5.11$ (no significativo). Test $p = 0.41$.
+\end{itemize}
+
+\textbf{Hallazgo:} en empleo y salario, los dos canales se mueven con \textbf{signos opuestos significativos}. El nulo agregado del TWFE viene de una cancelación mecánica entre los dos canales. No es que el shock no haya tenido efecto; es que tuvo dos efectos en sentidos contrarios que se cancelan al promediar.
+
+\begin{ideaclave}
+\textbf{Interpretación:} las ocupaciones formales-dominantes expuestas a LLM expandieron empleo y bajaron salarios por hora; las informales-dominantes contrajeron débilmente el empleo y subieron salarios entre los presentes. El agregado parece nulo, pero los canales internos no lo son.
+\end{ideaclave}
+
+\subsection{Resultado 4 -- síntesis honesta: ninguna narrativa pre-registrada encaja}
+
+Aquí toca ser honesto. Ninguna de las cuatro narrativas A--D que pre-comprometí reproduce el patrón peruano:
+
+\begin{itemize}
+  \item Narrativa A requería $\tau_I < \tau_F < 0$. Pero en Lima $\tau_F^{\text{empleo}}$ es \emph{positivo}. No encaja.
+  \item Narrativa B requería nulo en ambos canales. Pero la igualdad $\tau_F = \tau_I$ se rechaza al 1 por ciento. No encaja.
+  \item Narrativa C requería $\tau_F \approx 0$. Pero $\tau_F^{\text{empleo}} = +0.567$ y es significativo. No encaja.
+  \item Narrativa D predecía $\tau_F^{\text{salario}} > 0$. Pero $\tau_F^{\text{salario}} = -0.128$, signo \emph{opuesto}. No encaja.
+\end{itemize}
+
+Articulo entonces un quinto patrón, exploratorio y \emph{post-hoc}, que llamo \textbf{Patrón peruano (P)}:
+
+\begin{ideaclave}
+\textbf{Patrón P:} Las ocupaciones formales-dominantes expuestas a LLM expanden empleo y reducen horas por trabajador, con presión bajista en salario; las informales-dominantes contraen débilmente el empleo con salarios al alza entre los presentes.
+\end{ideaclave}
+
+El Patrón P se añadirá al pre-registro formal en OSF antes de mirar los datos post-tratamiento de los cinco países restantes. Esa es la disciplina: si surge una hipótesis nueva del primer país, se pre-comprometer antes de tocar el resto. La pre-registración del análisis por formalidad de línea base como margen central queda \emph{vindicada}; el mapeo a una narrativa específica queda como hipótesis a contrastar fuera de Lima.
+
+% =============================================================================
+\section{Estado del proyecto y discusión}
+% =============================================================================
+
+\subsection{Lo que está hecho}
+
+Para Perú está completo:
+
+\begin{itemize}
+  \item Pipeline de armonización CO-1995 a CIUO-08 a 4 dígitos, validado con dos diagnósticos (composición en el corte 2022T3--2022T4 y estabilidad temporal de los pesos posteriores).
+  \item Crosswalk O*NET a ISCO-08 (98.2 por ciento de coincidencia), exposición $\beta$ \emph{mergeada} al panel.
+  \item Estimación principal: TWFE continuo, CS-2021 binario, \emph{event study} TWFE con interacción dosis-tiempo (pre-trends OK), cotas Honest-DiD.
+  \item Heterogeneidad por formalidad de línea base estimada y reportada.
+  \item Borrador del paper en español: introducción, literatura, marco teórico, metodología, datos, resultados y conclusión preliminar.
+\end{itemize}
+
+\subsection{Lo que está en curso}
+
+Validación con la ENAHO nacional anual (módulo 500 ya descargado; el módulo 400 de salud está pendiente) para contrastar el resultado de Lima Metropolitana contra una muestra nacional.
+
+\subsection{Lo que falta}
+
+\begin{itemize}
+  \item Replicar el pipeline para Costa Rica, Colombia, Ecuador, México y Uruguay.
+  \item Robustez del clasificador en cinco columnas (la tabla \texttt{tab:peru\_classifier\_ladder} del paper).
+  \item Medidas alternativas de exposición ($\alpha$, $\zeta$, Webb, Felten, GBB-Pizzinelli).
+  \item Diseño \emph{donut DiD} excluyendo 2022T3 y 2022T4.
+\end{itemize}
+
+\subsection{Preguntas para discutir con el asesor}
+
+Las seis preguntas concretas que llevo a la reunión:
+
+\begin{enumerate}
+  \item \textbf{Definición de formalidad en Perú.} La EPEN solo permite la definición basada en \texttt{seguro1} (afiliación a ESSALUD). ¿Vale la pena bajar el módulo 400 de la ENAHO para validar con la definición OIT estándar (afiliación a pensiones)?
+  \item \textbf{Orden de los cinco países restantes.} Mi propuesta: empezar por Costa Rica (encuesta más simple, ECE ya trimestral) y dejar Uruguay para el final (separación por mes de entrevista en ECH).
+  \item \textbf{Pre-registro OSF.} ¿Pre-comprometo las narrativas en OSF ahora que tengo Perú, o espero a tener uno o dos países más?
+  \item \textbf{Patrón P y pre-registro.} Ninguna de A--D encajó; articulé el Patrón P \emph{post-hoc}. ¿Conviene añadirlo al pre-registro antes de tocar los otros cinco, o conservar las cuatro originales y reportar honestamente que Lima no se mapea a ninguna?
+  \item \textbf{Calendario realista.} ¿Es plausible tener los seis países antes de NEUDC o LACEA 2026?
+  \item \textbf{Posicionamiento contra Liu, Wang y Yu (2025) del Banco Mundial.} Ellos cubren US/UK/DE con \emph{job postings} (lado de la demanda). Yo cubro ALC con \emph{labor force surveys} (equilibrio realizado) y división formal/informal. ¿Es compañía o competencia?
+\end{enumerate}
+
+\vfill
+
+\end{document}
