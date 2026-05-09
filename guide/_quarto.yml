@@ -10,18 +10,18 @@ website:
         href: index.qmd
       - text: "User Guide"
         href: user-guide.qmd
-      - text: "Agents"
-        href: agents.qmd
+      - text: "Reference"
+        href: reference.qmd
       - text: "Architecture"
         href: architecture.qmd
+      - text: "Agents"
+        href: agents.qmd
       - text: "Rules"
         href: rules.qmd
       - text: "Hooks"
         href: hooks.qmd
       - text: "Customization"
         href: customization.qmd
-      - text: "Reference"
-        href: reference.qmd
       - text: "What's New"
         href: changelog.qmd
     right:

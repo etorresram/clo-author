@@ -219,7 +219,7 @@ The Coder agent reads the relevant standards file before writing any code. The c
 
 Two files, two steps.
 
-**Step 1.** Create `.claude/agents/[name].md` following the pattern of existing agent files. Define the agent's role, inputs, outputs, and review criteria.
+**Step 1.** Create `.claude/agents/[name].md` following the pattern of existing agent files. The agent file defines identity, voice, and constraints --- not operational knowledge. If the agent is paired with a skill, move checklists, templates, and rubrics into the skill's `templates/` folder. The agent file keeps only: who it is, how it reasons, and what rules it follows.
 
 **Step 2.** Add an entry to `.claude/rules/permissions.md` with all required fields:
 
@@ -235,6 +235,78 @@ Two files, two steps.
 ```
 
 No other files need to change. The Orchestrator reads `permissions.md` to discover available agents, their dependencies, and their dispatch rules.
+
+---
+
+# Adding a New Skill {#sec-new-skill}
+
+A skill earns its own folder when a workflow pattern recurs across projects and carries specific templates, gotchas, or configuration that no single agent should own. The test: if the same checklist or template would be copy-pasted into multiple agent files, it belongs in a skill folder.
+
+## The steps
+
+**1. Create the folder.** `.claude/skills/[name]/` with at minimum two files: `SKILL.md` and `gotchas.md`.
+
+**2. Write `SKILL.md` with frontmatter.** The frontmatter is Level 1 metadata --- always loaded, always visible in the skill index. Keep it under 100 tokens.
+
+```yaml
+---
+name: [skill-name]
+description: [One sentence. What does this skill do?]
+argument-hint: "[modes and arguments the user can pass]"
+allowed-tools: Read,Write,Edit,Bash,Grep,Glob
+user-invocable: true
+---
+```
+
+The body of SKILL.md is Level 2 --- loaded only when the user invokes the command. It contains workflow steps, dispatch logic, mode routing, and a Bundled Resources table that tells agents which templates to read.
+
+**3. Create `gotchas.md`.** Seed it with known failure points --- even two or three lines to start. This file accumulates over time as real pipeline runs surface edge cases. It is the fastest-appreciating asset in the folder.
+
+**4. Create `templates/`.** Reusable artifacts the agent loads during execution. A strategy skill carries memo templates and checklist structures. A review skill carries scoring rubrics and report templates. A write skill carries paragraph-move patterns and section templates. Each template is a separate file --- the agent reads only what it needs.
+
+**5. Optionally: `references/` and `config/`.** References hold domain material the agent consults (notation protocols, interview flows, design checklists). Config holds machine-readable settings (scoring weights, disposition pools, threshold mappings).
+
+**6. Wire it.** In SKILL.md's dispatch section, tell agents which templates to read. The agent's own file says "read the templates provided by the invoking skill" --- it does not hardcode template paths.
+
+## The three-level loading rule
+
+This constraint keeps context budgets predictable:
+
+- **Level 1 (frontmatter):** Loaded always, even when the skill is not triggered. Under 100 tokens. Name, description, argument-hint.
+- **Level 2 (SKILL.md body):** Loaded when the user invokes the skill. Under 5k tokens. Workflow, routing, dispatch.
+- **Level 3 (bundled files):** Loaded on demand by agents during execution. No token limit. Templates, gotchas, references, config.
+
+The budget discipline matters. If SKILL.md exceeds 5k tokens, split operational detail into templates. If frontmatter exceeds 100 tokens, the skill index bloats and the system pays the cost on every session --- even sessions that never invoke the skill.
+
+## Example: a minimal custom skill
+
+A `/data-diary` skill that logs data decisions as the project evolves:
+
+```
+data-diary/
+├── SKILL.md
+├── gotchas.md
+└── templates/
+    └── diary-entry.md
+```
+
+The `SKILL.md` frontmatter:
+
+```yaml
+---
+name: data-diary
+description: Log data decisions --- variable constructions, sample restrictions, merge choices --- with rationale and alternatives considered.
+argument-hint: "[decision summary]"
+allowed-tools: Read,Write,Edit
+user-invocable: true
+---
+```
+
+The body dispatches no agent --- it appends a structured entry to `quality_reports/data_diary.md` using the template in `templates/diary-entry.md`. The gotchas file warns: "Don't log trivial renames. Log decisions where a different choice would change results."
+
+## When NOT to create a skill
+
+Not every workflow needs a folder. A one-off task with no templates, no gotchas, no reusable structure is just a task --- handle it with an existing skill or directly. The threshold: if we would benefit from the same structure on the next project, it deserves a skill folder. If it is project-specific and unlikely to recur, it does not.
 
 ---
 

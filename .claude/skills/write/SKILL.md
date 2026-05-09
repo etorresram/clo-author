@@ -172,6 +172,24 @@ Strips 24 patterns across 4 categories:
 
 ---
 
+## Bundled Resources (Level 3)
+
+Loaded on demand by the writer agent:
+
+| Resource | Path | When |
+|----------|------|------|
+| Section templates | `templates/section-templates.md` | Always -- defines section structure |
+| Paragraph moves | `templates/paragraph-moves.md` | Always -- defines argument types |
+| Cleanup patterns | `templates/cleanup-patterns.md` | After drafting -- cleanup pass |
+| Style extraction | `templates/style-extraction-protocol.md` | `/write style-guide` mode |
+| Drafting gates | `templates/drafting-gates.md` | Full draft mode |
+| Claim-source map | `templates/claim-source-map.md` | After results section |
+| Notation protocol | `references/notation-protocol.md` | Strategy + results sections |
+
+See also: `gotchas.md` for known failure points and edge cases.
+
+---
+
 ## Principles
 - **This is the user's paper, not Claude's.** Match their voice and style.
 - **Never fabricate results.** Use TBD placeholders.

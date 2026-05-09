@@ -158,6 +158,14 @@ Step 5: REPORT
 
 ---
 
+## Bundled Resources (Level 3)
+
+| Resource | Path | When |
+|----------|------|------|
+| Gotchas | `gotchas.md` | Always — known failure points |
+
+---
+
 ## Principles
 - **Each subcommand is lightweight.** No multi-agent orchestration needed.
 - **Compile uses latexmk.** Handles multi-pass and biber automatically.

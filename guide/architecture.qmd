@@ -12,11 +12,65 @@ The system is configured through six layers, loaded in order of precedence.
 | `CLAUDE.md` | Project root | Every session | Project identity, folder structure, commands, output organization |
 | Rules | `.claude/rules/` | Every session | Quality gates, invariants, permissions, lifecycle, workflow |
 | References | `.claude/references/` | On demand | Domain profile, journal profiles, coding standards |
-| Skills | `.claude/skills/` | When invoked | Slash commands (`/analyze`, `/write`, `/review`, etc.) |
-| Agents | `.claude/agents/` | When dispatched | Agent prompts --- one file per agent |
+| Skills | `.claude/skills/` | When invoked | Rich folders --- routing logic, templates, gotchas, config. The knowledge layer. |
+| Agents | `.claude/agents/` | When dispatched | Lean identity files --- role, voice, constraints. The execution layer. |
 | Hooks | `.claude/hooks/` | Event-driven | Pre-commit lint, pre-compact checklist |
 
 `CLAUDE.md` and rules are always in context. Everything else loads on demand. For the full layer-by-layer breakdown, see the [Customization Guide](customization.qmd).
+
+---
+
+# The Skill-Folder Architecture {#sec-skill-folders}
+
+Skills used to be thin dispatchers --- a single SKILL.md file (~100 lines) that routed a command to an agent. All the real knowledge lived inside agent files: checklists, templates, scoring rubrics, reference protocols, packed into monolithic prompts that ran 200--474 lines. Adding knowledge meant editing a massive agent file. Knowledge was locked inside agents, not reusable across contexts. Loading an agent meant loading all its templates even when we needed one.
+
+The architecture inverted. Skills are now rich folders. Agents are lean identity files.
+
+## Three-level progressive loading
+
+The system loads context in three stages, each gated by need:
+
+| Level | Trigger | Contents | Budget |
+|-------|---------|----------|--------|
+| 1 --- Metadata | Always (skill index) | Name, description, argument-hint | ~100 tokens |
+| 2 --- SKILL.md body | User invokes the skill | Workflow steps, dispatch logic, modes | < 5k tokens |
+| 3 --- Bundled files | Agent reads on demand | Templates, gotchas, checklists, references | Unlimited |
+
+Level 1 costs almost nothing --- every skill's frontmatter is visible in the skill index, so the system knows what commands exist without loading their bodies. Level 2 activates only when the user types the slash command. Level 3 loads only the specific files the agent needs for the task at hand.
+
+## Skill folder structure
+
+Every skill follows the same layout:
+
+```
+skill-name/
+├── SKILL.md          # Routing + dispatch logic (Level 2)
+├── gotchas.md        # Known failure points, edge cases
+├── templates/        # Reusable artifacts the agent loads
+├── references/       # Domain-specific reference material
+└── config/           # Machine-readable configuration
+```
+
+Not every skill uses every subfolder. The `/write` skill has `templates/` (paragraph moves, section templates, cleanup patterns) and `references/` (notation protocol). The `/review` skill has `templates/` (scoring rubrics, referee report template) and `config/` (disposition pool weights). The `/strategize` skill has `templates/` (strategy memo structure, PAP templates, theory memo) and `references/` (PAP interview flow). Each skill carries exactly the knowledge its agents need.
+
+## The wiring
+
+When a skill dispatches an agent, it tells the agent which templates to read. The agent file says "read the templates provided by the invoking skill." This separation means:
+
+- **Skills own the WHAT** --- what to produce, what structure to follow, what pitfalls to avoid.
+- **Agents own the HOW** --- voice, reasoning approach, quality standards.
+
+The same agent can serve multiple skills. The coder-critic reviews output from both `/analyze` and `/review --code`, loading different checklists each time. The strategist produces both strategy memos and pre-analysis plans, guided by different templates from the same skill folder.
+
+## Gotchas as first-class content
+
+Every skill has a `gotchas.md` --- the highest-signal file in the folder. These are known failure modes, accumulated from real pipeline runs. The strategist's gotchas warn that "staggered adoption does not automatically mean DiD is the right choice." The writer's gotchas note that "the cleanup pass can over-correct domain-specific hedging that's actually appropriate." The review skill's gotchas document when cold-read critics produce false positives.
+
+Gotchas are the fastest path to quality improvement. When a failure recurs, it gets a line in `gotchas.md`. The agent reads it before execution. The failure stops recurring.
+
+## What this means in practice
+
+Adding a new template no longer requires editing a 400-line agent prompt. We create a file in `templates/`, reference it from SKILL.md, and the agent picks it up on next invocation. Knowledge accumulates in skill folders without bloating agent context. Agents stay lean enough to load fast and focused enough to execute well.
 
 ---
 

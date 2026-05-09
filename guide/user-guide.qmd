@@ -5,7 +5,7 @@ subtitle: "Common workflows and what to expect"
 
 ## A Typical Workflow
 
-You describe what you want in plain English. Claude plans, dispatches agents, and presents results for your approval. For complex tasks, it may ask 3--5 clarifying questions first.
+**Every interaction follows the same loop: you describe, agents execute, critics score, you approve.** Claude plans the work, dispatches specialized agents, and presents results for your sign-off. For complex tasks, it asks 3--5 clarifying questions before committing to a plan.
 
 ```{mermaid}
 %%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#f0eee6', 'primaryTextColor': '#141413', 'primaryBorderColor': '#d1cfc5', 'lineColor': '#d97757', 'secondaryColor': '#faf9f5', 'tertiaryColor': '#e6e3da', 'edgeLabelBackground': '#faf9f5', 'clusterBkg': '#f0eee6', 'clusterBorder': '#d1cfc5'}}}%%
@@ -27,6 +27,8 @@ You can enter at any stage. Each phase produces structured output saved to `qual
 ---
 
 ## Your First Review
+
+**Simulated peer review catches fatal problems before real referees do.** One command dispatches two independent reviewers calibrated to your target journal.
 
 **What you type:** `/review --peer JHR paper/main.tex`
 
@@ -122,13 +124,27 @@ A cleanup pass then strips 24 known AI writing patterns (hedging, filler phrases
 
 ## Creating a Talk
 
-**What you type:** `/talk create seminar beamer`
+**A talk is not a paper read aloud --- it is a narrative with a different arc.** The storyteller agent builds format-aware slide decks that respect this distinction.
+
+**What you type:** `/talk create seminar`
 
 **What happens behind the scenes:** The storyteller reads your paper and builds a slide deck in the specified format (seminar: 25--35 slides, 30--45 min). It applies format-specific narrative arcs --- reduced-form talks lead with the policy question, structural talks build the model step by step, descriptive talks open with the data innovation. The storyteller-critic reviews for overflow, content fidelity, and narrative flow.
 
-**What you see:** A Beamer `.tex` file in `paper/talks/` with speaker notes on every slide, plus a critic review report. Talk scores are advisory --- they do not block commits.
+**What you see:** A Quarto RevealJS `.qmd` file in `paper/quarto/` with speaker notes on every slide, plus a critic review report. Talk scores are advisory --- they do not block commits.
 
-**What to do next:** Review the slides against your paper. Run `/talk audit` to catch text overflow and sizing issues. Run `/talk compile` to build the PDF. For Quarto RevealJS output, add `--quarto`. For all format options, see the [Command Reference](reference.qmd).
+**What to do next:** Review the slides against your paper. Run `/talk audit` to catch text overflow and sizing issues. Run `/talk compile` to build the HTML presentation. For Beamer LaTeX output, add `--beamer` --- that produces a `.tex` file in `paper/talks/` instead. For all format options, see the [Command Reference](reference.qmd).
+
+---
+
+## Session Guards
+
+**Two commands protect you from expensive mistakes.** Both are session-scoped --- they reset when the conversation ends.
+
+`/freeze paper/` locks a directory from edits for the rest of the session. Use it when you are reviewing code but jotting notes about the paper --- the system will refuse to modify frozen paths, preventing accidental overwrites while your attention is elsewhere.
+
+`/careful` activates confirmation prompts before every file write. Use it before working on a critical branch, during final pre-submission edits, or any time the cost of a wrong edit exceeds the cost of an extra confirmation step.
+
+Neither command persists across sessions. Start a new conversation and all guards are cleared.
 
 ---
 

@@ -3,7 +3,9 @@ title: "Quick Start"
 subtitle: "Get running in 5 minutes"
 ---
 
-An open-source [Claude Code](https://docs.anthropic.com/en/docs/claude-code) scaffold for empirical economics research --- from literature review to journal submission. Can be adapted to adjacent fields (finance, accounting, marketing, management) by customizing the domain profile and journal profiles.
+**Research papers have a production function: identify, estimate, write, submit.** This scaffold automates each stage with specialized agents that create, review, and gate-check every artifact before it advances. One [Claude Code](https://docs.anthropic.com/en/docs/claude-code) configuration handles the full pipeline --- from literature review to journal submission.
+
+Works for empirical economics out of the box. Adapts to finance, accounting, marketing, and management by customizing the domain profile and journal profiles.
 
 **Built on** [Pedro Sant'Anna's claude-code-my-workflow](https://github.com/pedrohcgs/claude-code-my-workflow), reoriented for empirical research publication.
 
@@ -44,7 +46,7 @@ Fill in the **bolded placeholders** with your project details:
 
 > I am starting a new empirical research project in **[YOUR FIELD]** on **[YOUR TOPIC]**.
 > Read CLAUDE.md and help me set up the project structure.
-> Start with `/discover --lit [YOUR TOPIC]`.
+> Start with `/discover lit [YOUR TOPIC]`.
 
 Claude reads the configuration, fills in your project details, and begins planning --- it will present a plan for your approval before doing anything.
 
@@ -85,7 +87,7 @@ Everything else is optional --- explore when you're ready.
 - [ ] Paste the starter prompt (fill in your project details)
 - [ ] Wait for Claude to customize `CLAUDE.md` for your project
 - [ ] Approve the configuration plan
-- [ ] Ask Claude to do something: "Review my paper" or `/discover --lit [topic]`
+- [ ] Ask Claude to do something: "Review my paper" or `/discover lit [topic]`
 - [ ] Approve the task plan, watch it work, review the output
 
 That's it. Everything else --- agents, hooks, rules --- runs automatically in the background.

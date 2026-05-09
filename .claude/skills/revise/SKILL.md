@@ -58,6 +58,17 @@ When DISAGREE: open with acknowledgment, provide evidence, offer partial concess
 
 ---
 
+## Bundled Resources (Level 3)
+
+| Resource | Path | When |
+|----------|------|------|
+| Response tracker | `templates/response-tracker.md` | Step 3 — tracking document |
+| Response letter | `templates/response-letter.tex` | Step 5 — LaTeX boilerplate |
+| Diplomatic disagreement | `templates/diplomatic-disagreement.md` | Step 6 — DISAGREE phrasing |
+| Gotchas | `gotchas.md` | Always — known failure points |
+
+---
+
 ## Principles
 - **The response letter is the user's voice.** Match their tone.
 - **Never fabricate results.** Mark NEW ANALYSIS items as TBD.

@@ -57,7 +57,7 @@ The environment variable `$CLAUDE_PROJECT_DIR` resolves to the project root at r
 
 ---
 
-# The Six Hooks
+# The Seven Hooks
 
 ## 1. protect-files.sh {#protect-files}
 
@@ -65,7 +65,9 @@ The environment variable `$CLAUDE_PROJECT_DIR` resolves to the project root at r
 
 ### What it does
 
-Prevents Claude from editing files that should only be changed manually. When Claude attempts an Edit or Write operation, this hook extracts the target file path from the tool input, checks the filename against a list of protected patterns, and blocks the operation if there is a match.
+Some files should never be touched by an agent. Strategy memos after approval, referee reports from real journals, the hook configuration itself --- these are inputs or infrastructure, not outputs. This hook enforces that boundary.
+
+When Claude attempts an Edit or Write operation, the hook extracts the target file path from the tool input, checks the filename against a list of protected patterns, and blocks the operation if there is a match.
 
 ### Protected patterns (default)
 
@@ -114,13 +116,94 @@ fi
 
 ---
 
-## 2. post-edit-lint.sh {#post-edit-lint}
+## 2. session-guard.py {#session-guard}
+
+**Event:** `PreToolUse` (matcher: `Edit|Write|Bash`) | **Timeout:** 5s | **Blocking:** Yes
+
+### What it does
+
+Two guards in one hook, both session-scoped and both opt-in. When neither guard is active, the hook reads a single JSON file, finds nothing, and exits --- zero overhead in the common case.
+
+**Freeze** locks edits to a set of allowed directories. Invoke `/freeze paper/` and every Write or Edit targeting a file outside `paper/` gets blocked. The `.claude/` directory is always exempt (we cannot freeze ourselves out of configuration changes).
+
+**Careful** blocks destructive Bash commands. Invoke `/careful` and patterns like `rm -rf`, `git reset --hard`, and `git push --force` are intercepted before they execute. Non-destructive Bash commands pass through untouched.
+
+### Guard state
+
+Both guards read from a single file: `.claude/state/session-guards.json`. The `/freeze` and `/careful` skills write this file; the hook only reads it.
+
+```json
+{
+  "freeze": {
+    "active": true,
+    "allowed_paths": ["paper/", "scripts/"],
+    "activated_at": "2026-05-09T14:30:00",
+    "reason": "User invoked /freeze"
+  },
+  "careful": {
+    "active": true,
+    "activated_at": "2026-05-09T14:30:00",
+    "reason": "User invoked /careful"
+  }
+}
+```
+
+### Freeze logic
+
+When `freeze.active` is `true` and the tool is Edit or Write:
+
+1. Extract the target `file_path` from tool input
+2. If the path is inside `.claude/`, allow (always editable)
+3. Check against each entry in `allowed_paths` (resolved relative to project root)
+4. If the file matches an allowed path prefix, allow
+5. Otherwise, block with: `"FREEZE ACTIVE: Edit blocked. File '<name>' is outside allowed paths: [<paths>]. Run /freeze off to deactivate."`
+
+### Careful logic
+
+When `careful.active` is `true` and the tool is Bash:
+
+1. Extract the `command` string from tool input
+2. Test against a list of destructive regex patterns:
+
+| Pattern | What It Catches |
+|---------|----------------|
+| `rm -(r\|f\|rf\|fr)` | Recursive/force delete |
+| `git reset --hard` | Discard all uncommitted changes |
+| `git push --force` / `git push -f` | Overwrite remote history |
+| `git clean -f` | Delete untracked files |
+| `git checkout -- .` | Discard all working tree changes |
+| `git branch -D` | Force-delete branch |
+| `DROP TABLE` / `DROP DATABASE` | SQL destruction |
+| `chmod 777` | Overly permissive permissions |
+
+3. If any pattern matches, block with: `"CAREFUL MODE: Blocked '<description>'. Run /careful off to deactivate, or rephrase the command."`
+4. If no pattern matches, allow
+
+### Exit behavior
+
+The hook always exits 0. Blocking is communicated through stdout JSON (`{"decision": "block", "reason": "..."}`) rather than exit codes --- this is the newer Claude Code hook protocol for Python hooks.
+
+### Activating and deactivating
+
+| Command | Effect |
+|---------|--------|
+| `/freeze paper/` | Only allow edits in `paper/` |
+| `/freeze scripts/ data/` | Only allow edits in `scripts/` and `data/` |
+| `/freeze off` | Deactivate freeze |
+| `/careful` | Block destructive commands |
+| `/careful off` | Deactivate careful mode |
+
+Both guards are session-scoped. They reset when the conversation ends.
+
+---
+
+## 3. post-edit-lint.sh {#post-edit-lint}
 
 **Event:** `PostToolUse` (matcher: `Edit|Write`) | **Timeout:** 10s | **Blocking:** No (advisory)
 
 ### What it does
 
-Runs an automated linter on R, Python, or Julia scripts immediately after Claude edits or writes them. Catches prohibited patterns from the coding standards before the coder-critic reviews.
+The coder-critic catches prohibited patterns, but it runs later in the pipeline. This hook gives Claude immediate feedback on violations --- `setwd()`, missing `set.seed()`, `sapply()` --- so it can fix them in the same editing pass rather than waiting for a review cycle.
 
 ### How it works
 
@@ -133,13 +216,9 @@ Runs an automated linter on R, Python, or Julia scripts immediately after Claude
 
 Always exits 0. Lint findings appear in Claude's context as advisory information --- they inform the agent but do not block the edit.
 
-### Why it exists
-
-The coder-critic catches these same issues, but it runs later in the pipeline. This hook gives Claude immediate feedback on prohibited patterns (like `setwd()` or missing `set.seed()`) so it can fix them in the same editing pass rather than waiting for a review cycle.
-
 ---
 
-## 3. lint-scripts.sh {#lint-scripts}
+## 4. lint-scripts.sh {#lint-scripts}
 
 **Not a hook itself** --- this is the linter that `post-edit-lint.sh` calls. It can also be run standalone via `/tools lint`.
 
@@ -224,13 +303,13 @@ Always exits 0, even when issues are found. The linter is advisory --- it report
 
 ---
 
-## 4. pre-compact.py {#pre-compact}
+## 5. pre-compact.py {#pre-compact}
 
 **Event:** `PreCompact` | **Timeout:** 10s | **Blocking:** No (message only)
 
 ### What it does
 
-Captures the current session state before context compaction destroys it. Context compaction summarizes the conversation history to free up token space, but it can lose important details about what you were working on. This hook preserves that context so it can be restored afterward.
+Compaction is the single biggest source of context loss in long sessions. This hook captures the current state before context compaction destroys it --- the active plan, recent decisions, and a timestamp --- so `post-compact-restore.py` can bring it back afterward.
 
 ### What it captures
 
@@ -260,13 +339,13 @@ Always exits 2, which makes the message visible in the transcript. This is inten
 
 ---
 
-## 5. post-compact-restore.py {#post-compact-restore}
+## 6. post-compact-restore.py {#post-compact-restore}
 
 **Event:** `SessionStart` (matcher: `compact|resume`) | **Timeout:** 5s | **Blocking:** No (advisory)
 
 ### What it does
 
-Restores context after compaction by reading the state saved by `pre-compact.py` and printing it into the new session. This gives Claude immediate awareness of what was happening before compaction.
+Restores context after compaction by reading the state saved by `pre-compact.py` and printing it into the new session. Claude resumes with immediate awareness of the active plan, the current task, and the last three decisions made before compaction.
 
 ### How it works
 
@@ -294,11 +373,11 @@ Always exits 0. The restoration message appears in Claude's context as informati
 
 ### Why the pair exists
 
-Compaction is the biggest source of context loss in long sessions. Without these hooks, Claude resumes after compaction with no memory of the active plan, current task, or recent decisions. The pre-compact/post-compact pair ensures continuity --- the first hook captures state, the second restores it.
+Without these hooks, Claude resumes after compaction with no memory of the active plan, current task, or recent decisions. The pre-compact/post-compact pair ensures continuity --- the first hook captures state, the second restores it.
 
 ---
 
-## 6. post-merge.sh {#post-merge}
+## 7. post-merge.sh {#post-merge}
 
 **Event:** Git post-merge (not a Claude Code hook) | **Timeout:** N/A | **Blocking:** No
 
@@ -337,6 +416,16 @@ The full hooks section of `.claude/settings.json` for this project:
           {
             "type": "command",
             "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/protect-files.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$CLAUDE_PROJECT_DIR\"/.claude/hooks/session-guard.py",
             "timeout": 5
           }
         ]
@@ -393,7 +482,7 @@ The full hooks section of `.claude/settings.json` for this project:
 
 ### Matcher behavior
 
-- **`PreToolUse` / `PostToolUse`**: the matcher tests against the tool name (`Edit`, `Write`, `Bash`, etc.). `"Edit|Write"` matches either tool.
+- **`PreToolUse` / `PostToolUse`**: the matcher tests against the tool name (`Edit`, `Write`, `Bash`, etc.). `"Edit|Write"` matches either tool. `"Edit|Write|Bash"` matches all three.
 - **`SessionStart`**: the matcher tests against the session type. `"compact|resume"` fires only after compaction or session resumption, not on fresh starts.
 - **`PreCompact`**: no matcher needed --- there is only one compaction event.
 - **Omitting the matcher** means the hook fires on every event of that type.

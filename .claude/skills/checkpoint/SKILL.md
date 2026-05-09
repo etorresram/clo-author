@@ -218,6 +218,17 @@ Do NOT run this on every checkpoint — only when the user explicitly opts in.
 
 ---
 
+## Bundled Resources
+
+| Resource | Path | What It Contains |
+|----------|------|-----------------|
+| Session report entry | `checkpoint/templates/session-report-entry.md` | Append format for SESSION_REPORT.md |
+| Research journal entry | `checkpoint/templates/research-journal-entry.md` | Append format for research_journal.md |
+| Memory entry types | `checkpoint/templates/memory-entry-types.md` | 4 memory types with when-to-save guidance |
+| Gotchas | `checkpoint/gotchas.md` | Known failure points and edge cases |
+
+---
+
 ## Rules
 
 - **Never invent progress.** Only log what actually happened — from git, conversation, or user confirmation.

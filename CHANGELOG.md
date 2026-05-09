@@ -6,6 +6,50 @@ All notable changes to the Clo-Author are documented here.
 
 ---
 
+## [26.05.2] — 2026-05-09 — Skill-Centric Restructure
+
+### Skill-Folder Architecture
+
+Skills are now rich directories — not thin SKILL.md dispatchers. Each skill folder contains templates, gotchas, references, and config. Agents slimmed from 200-474 lines to 50-140 lines (identity + voice + constraints only). Operational knowledge moved to skill templates loaded on demand.
+
+- **76 new template/reference/config files** across 13 skill folders
+- **15 agents slimmed** (total agent lines: 4,454 → 1,898, −57%)
+- **Three-level progressive loading:** metadata (always) → SKILL.md (on trigger) → templates (on demand)
+- **Gotchas as first-class content** — every skill has known failure points documented
+
+### Session-Scoped Guards
+
+Two new user-invocable skills backed by a PreToolUse hook:
+
+- `/freeze [dirs]` — blocks Edit/Write outside specified directories for the session
+- `/careful` — blocks destructive bash commands (rm -rf, git reset --hard, git push --force) for the session
+- `session-guard.py` hook enforces both; zero overhead when inactive
+
+### Quarto-First Talks
+
+`/talk create` now defaults to Quarto RevealJS. Beamer available via `--beamer` flag. Added `quarto-scaffold.qmd` template.
+
+### Guide Site Rewrite
+
+All 9 pages rewritten with guide-writer voice (bold openings, problem-solution arcs, progressive disclosure). Key changes:
+
+- **agents.qmd:** 603 → 205 lines. Catalog replaced with principles + skill-centric model explanation.
+- **architecture.qmd:** Added skill-folder architecture section.
+- **customization.qmd:** Added "Adding a New Skill" section.
+- **hooks.qmd:** 6 → 7 hooks. Session-guard documented.
+- **reference.qmd:** `/freeze`, `/careful` added. `/talk` polarity fixed.
+- **Nav reordered:** Reference moved up (Quick Start → User Guide → Reference → Architecture → ...).
+
+### Rewind Strategy
+
+Added to workflow.md: Rewind (remove failed approach from context) vs Correct (fix a detail) vs Compact (reduce bloat) vs Clear (fresh start).
+
+### Bug Fix
+
+- `pre-compact.py`: exit code 2 → 0 (was blocking compaction)
+
+---
+
 ## [26.05.1] — 2026-05-09 — MAS Evolution v2 + Guide Overhaul
 
 ### MAS Evolution v2

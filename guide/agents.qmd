@@ -1,15 +1,15 @@
 ---
 title: "Agents"
-subtitle: "What each agent does, checks, and assumes"
+subtitle: "Twenty specialists that never edit each other's work"
 ---
 
-# How Agents Work {#how-agents-work}
+# Four Architectural Rules {#how-agents-work}
 
-The system uses 19 specialized agents organized into worker-critic pairs. Understanding four architectural rules explains most of the system's behavior.
+The system uses 20 specialized agents organized into worker-critic pairs. Four rules explain most of the system's behavior.
 
 ## Worker-Critic Pairing
 
-Every agent that creates an artifact (bibliography, code, manuscript, slides) has a paired critic that evaluates it. The critic reads but never edits --- so it has no incentive to go easy. If the critic scores the work below 80, the worker revises and the critic re-evaluates. This cycle repeats up to 3 rounds.
+**Every creator has a paired destroyer.** The critic reads the artifact, scores it against a rubric, and lists what must change --- but never edits the file itself. If the score falls below 80, the worker revises and the critic re-evaluates. This cycle repeats up to 3 rounds.
 
 | Worker | Critic | What's Reviewed |
 |--------|--------|-----------------|
@@ -22,561 +22,150 @@ Every agent that creates an artifact (bibliography, code, manuscript, slides) ha
 | writer | writer-critic | Manuscript polish, claims-evidence, LaTeX format |
 | storyteller | storyteller-critic | Talk structure, visual quality, content fidelity |
 
-Three agents have no paired critic because they are either infrastructure (orchestrator, verifier) or already serve as reviewers (editor).
+Three agents have no paired critic because they are infrastructure (orchestrator, verifier) or already serve as reviewers (editor, domain-referee, methods-referee).
 
 ## Separation of Powers
 
-Critics never create. Creators never self-score. If a critic invocation produces a file in `scripts/`, `paper/`, or `paper/talks/`, the orchestrator flags it as a violation. If a creator reports its own score, the orchestrator discards it and dispatches the critic.
+**Critics never create. Creators never self-score.** If a critic invocation produces a file in `scripts/`, `paper/`, or `paper/talks/`, the orchestrator flags it as a violation. If a creator reports its own score, the orchestrator discards it and dispatches the critic.
 
-This prevents the system from rubber-stamping its own output.
+This prevents the system from rubber-stamping its own output. A critic who fixes their own findings has incentive to find only fixable issues. Separation keeps criticism honest.
 
 ## Cold-Read Protocol
 
-Critics evaluate blind. On every round, the critic receives only the artifact, its scoring rubric, the severity level, and the content invariants. It does not receive: what round this is, what the worker struggled with, prior critic reports, or the research journal. This prevents the critic from softening its evaluation because it knows the worker has already tried twice.
+**Critics evaluate blind.** On every round, the critic receives only the artifact, its scoring rubric, the severity level, and the content invariants. It does not receive: what round this is, what the worker struggled with, prior critic reports, or the research journal. A critic that knows the worker has already tried twice will soften its evaluation. The cold-read protocol prevents this drift.
 
 ## Three-Round Limit and Escalation
 
-If a worker-critic pair cannot converge after 3 rounds, the orchestrator escalates to a different agent or to the user. Escalation targets are declared per agent --- for example, when the coder and coder-critic cannot converge, the issue escalates to the strategist-critic to re-evaluate whether the strategy memo is implementable. When the strategist and strategist-critic deadlock, it escalates to the user. This prevents infinite loops while ensuring fundamental design questions get human judgment.
+**Three strikes, then escalation.** If a worker-critic pair cannot converge after 3 rounds, the orchestrator routes the problem elsewhere --- either to a different agent or to the user. Escalation targets are declared per agent in `permissions.md`. When the coder and coder-critic deadlock, the issue escalates to the strategist-critic (is the memo implementable?). When the strategist and strategist-critic deadlock, it escalates to the user (fundamental design question). This prevents infinite loops while ensuring hard problems get human judgment.
 
 ---
 
-# Discovery Phase {#discovery}
+# The Skill-Centric Model {#skill-centric}
 
-These agents find the literature and data before any strategy is designed. They run in parallel --- the librarian and explorer can be dispatched simultaneously because neither depends on the other.
+**Agents used to be monolithic.** Each agent file contained identity, checklists, templates, rubrics, and scoring tables --- 200 to 474 lines of coupled operational knowledge. Updating a checklist meant editing an agent. Adding a paper type meant editing every agent that touches paper types.
 
-## Librarian
+**The problem:** operational knowledge evolved faster than identity. A new estimator package required updating checklists, not changing who the coder *is*. Coupling them meant agent files churned constantly.
 
-**Phase:** Discovery
-**Paired with:** librarian-critic
-**Paper-type aware:** No
+**Now agents are lean identity files.** Each one is 50--140 lines declaring: role, voice, constraints, tool access, paper-type awareness, and pointers to where the operational knowledge lives. The coder file says "read `analyze/templates/pre-code-report.md` before writing code" --- it does not contain the pre-code report template itself.
 
-**What it does:** Searches top-5 general-interest journals (AER, Econometrica, JPE, QJE, REStud), field journals, NBER working papers, SSRN, and RePEc for papers related to a research question. For each paper, it produces a one-paragraph summary, identifies the identification strategy and data source, assigns a proximity score (1--5, where 5 = directly competes), and categorizes the paper (directly related, same method different context, same context different method, theoretical foundation, or methods paper). It follows citation chains and cross-references data sources. It flags scooping risks from recent working papers.
+The operational knowledge --- checklists, rubrics, scoring tables, templates, gotchas --- lives in **skill folders**. When the orchestrator dispatches an agent, it tells the agent which skill invoked it and the agent reads the relevant templates from that skill's directory. This means:
 
-**What it produces:**
+- Agent files change rarely (identity is stable)
+- Skill folders evolve freely (knowledge improves every project)
+- The same agent can serve multiple skills with different templates
+- Adding a new paper type means adding templates, not rewriting agents
 
-- `annotated_bibliography.md` --- organized by category with summaries
-- `references.bib` --- BibTeX entries
-- `frontier_map.md` --- what has been done, what the gap is, where the paper fits
-- `positioning.md` --- suggested contribution statement and differentiation
+A concrete example: the coder agent file (136 lines) declares its role, tool access, workflow stages, engineering standards, and output expectations. But when `/analyze` dispatches it, the coder reads `analyze/templates/pre-code-report.md` for the pre-code report format, `analyze/templates/r-script-structure.R` for the scaffold, and `analyze/gotchas.md` for known pitfalls. None of that lives in the agent file. If we learn a new gotcha tomorrow, we add one line to `analyze/gotchas.md` --- the agent file never changes.
 
-**Blind spots:** Cannot verify whether papers actually exist or whether summaries are accurate. May hallucinate papers or misattribute findings. The user must verify key citations against actual papers. Does not evaluate paper quality --- it collects and organizes.
+The strategist-critic works the same way. Its identity file (62 lines) says: "You are a top-5 journal referee. Run 4 sequential phases. Read the causal audit template." The 4-phase audit protocol, the design-specific checklists, and the scoring rubric all live in `review/templates/` and `review/config/`. Updating how we evaluate RDD papers means editing a template, not touching the critic's identity.
 
-**Escalation target:** User --- scope disagreement (user decides breadth vs. depth).
-
-## Librarian-Critic
-
-**Phase:** Discovery
-**Paired with:** librarian (evaluates librarian output)
-**Paper-type aware:** No
-
-**What it does:** Evaluates the librarian's bibliography for completeness and balance. Checks five categories: coverage gaps (missing subfields, seminal papers, or methods literature), journal quality (over-reliance on working papers, missing top journals), scope calibration (too narrow or too broad for the paper's contribution), recency (missing papers from the last 2 years, scooping risks), and categorization quality (reasonable proximity scores, accurate frontier map).
-
-**Top deductions:**
-
-| Issue | Deduction | Severity |
-|-------|-----------|----------|
-| Missing seminal paper in the field | -20 | Critical |
-| No coverage of methods literature | -15 | Critical |
-| Over-reliance on working papers (>50%) | -10 | Major |
-| Missing recent papers (last 2 years) | -10 | Major |
-| Scope too narrow | -10 | Major |
-| No frontier map or gap identification | -10 | Major |
-| Proximity scores inconsistent | -5 | Minor |
-| Missing BibTeX entries | -5 per paper | Minor |
-
-**Blind spots:** Cannot verify whether papers actually exist. If the librarian hallucinated a citation, the critic may not catch it --- it evaluates structure and coverage, not factual accuracy.
-
-**Escalation target:** User --- scope disagreement.
-
-## Explorer
-
-**Phase:** Discovery
-**Paired with:** explorer-critic
-**Paper-type aware:** No
-
-**What it does:** Searches for public, administrative, and survey datasets relevant to a research question. For each data source, it documents coverage (time period, geographic scope, sample size), key variables (treatment, outcome, controls), access requirements (public, restricted, application timeline, cost), format (panel vs. cross-section), known issues (attrition, measurement error, top-coding), and prior usage (papers from the bibliography that used this data). Each source receives a feasibility grade: A (public, accessible now, good coverage), B (needs application or has limitations), C (restricted access or partial coverage), D (very restricted, poor fit).
-
-**What it produces:**
-
-- `data_sources.md` --- ranked list with feasibility grades and fit assessment
-- `data_dictionary.md` --- key variables for top candidates
-- `access_instructions.md` --- how to get each dataset, timeline estimates
-
-**Blind spots:** Does not download or clean data. Cannot verify current access status --- application processes and data availability change. The user must confirm access feasibility.
-
-**Escalation target:** User --- data feasibility deadlock (user decides resource trade-offs).
-
-## Explorer-Critic
-
-**Phase:** Discovery
-**Paired with:** explorer (evaluates explorer output)
-**Paper-type aware:** No
-
-**What it does:** Evaluates the explorer's data assessment with a skeptical eye. Checks six categories: measurement validity (does the proposed variable actually capture the concept?), sample selection (who is in the sample and who is missing?), external validity (can you generalize from this sample?), alternative data sources (better dataset missed?), practical feasibility (access timeline realistic?), and identification compatibility (does this data support the likely empirical design?).
-
-**Top deductions:**
-
-| Issue | Deduction | Severity |
-|-------|-----------|----------|
-| Proposed variable does not measure the concept | -25 | Critical |
-| Major sample selection issue unaddressed | -20 | Critical |
-| Better dataset exists and was missed | -15 | Major |
-| No discussion of measurement error | -10 | Major |
-| Access timeline unrealistic | -10 | Major |
-| Missing identification compatibility check | -10 | Major |
-| No discussion of external validity | -5 | Minor |
-
-**Blind spots:** Cannot verify data access claims or download data to check variable availability. Flags concerns but does not suggest specific alternative datasets (separation of powers).
-
-**Escalation target:** User --- data feasibility deadlock.
+For full agent specifications, see the `.claude/agents/` directory --- each file is self-contained and authoritative.
 
 ---
 
-# Strategy Phase {#strategy}
+# Agent Groups {#agent-groups}
 
-These agents design and validate the empirical approach before any code is written. The strategist requires at least one discovery input (literature review or data assessment). The theorist requires an approved strategy memo.
+Rather than profiling each agent individually (those profiles live in `.claude/agents/`), we organize by function. Each group activates at a specific pipeline phase, produces specific artifacts, and has specific quality gates.
 
-## Strategist
+## Discovery Pair
 
-**Phase:** Strategy
-**Paired with:** strategist-critic
-**Paper-type aware:** Yes
+The **librarian** searches top-5 general-interest journals, field journals, NBER working papers, and citation chains to produce an annotated bibliography, a BibTeX file, a frontier map (what has been done), and a positioning statement (where the new paper fits). The **explorer** searches for datasets --- public, administrative, survey --- and grades each by feasibility: variable coverage, access requirements, panel structure, and known data issues.
 
-**What it does:** Given a research idea, literature review, and data assessment, designs the empirical strategy. First classifies the paper type (reduced-form, structural, theory+empirics, descriptive), then applies the corresponding strategy template.
+Both run in parallel from the start of a project. Neither depends on the other. The librarian-critic checks for coverage gaps (missing seminal papers, missing methods literature, over-reliance on working papers). The explorer-critic checks measurement validity (does the proposed variable actually capture the concept?) and identification compatibility (does this data support the likely design?).
 
-**Paper-type adaptations:**
+Together they answer a single question: *what has been done, and what data could let us do something new?*
 
-- **Reduced-form:** Assesses the identification landscape (ideal experiment vs. available data), proposes strategies ranked by credibility (DiD, IV, RDD, SC, event study), specifies design-specific estimation guidance. For staggered DiD, recommends a modern estimator (Callaway-Sant'Anna, Sun-Abraham, Borusyak-Jaravel-Spiess, de Chaisemartin-D'Haultfoeuille) and recommends against naive TWFE. For IV, specifies the first stage, weak-instrument diagnostics, and LATE characterization. Anticipates the top 5 referee objections.
-- **Structural:** Justifies why reduced-form cannot answer the question, specifies the model environment (agents, timing, information, market structure), defines the decision problem and equilibrium concept, maps each parameter to its identifying data variation, specifies the estimation method (MLE, GMM, SMM, indirect inference), and designs counterfactual simulations with welfare metrics.
-- **Theory + empirics:** Derives numbered testable predictions that are sharp (rule out some patterns) and distinct (at least one that competing models do not generate), maps each prediction to a specific empirical test with expected results under both confirmation and rejection, and assesses power.
-- **Descriptive:** Defines the concept, justifies why existing measures are inadequate, specifies construction methodology with key decisions documented, designs internal and external validation, and plans decomposition analysis.
+**Activates:** From a research idea or spec. No prerequisites.
+**Produces:** `quality_reports/literature/` and `quality_reports/data-assessment/`
+**Quality gate:** Both critics must score >= 80 before Strategy activates.
 
-Can also produce Pre-Analysis Plans in AEA/OSF/EGAP format when invoked via `/strategize --pap`.
+## Strategy Pair
 
-**What it produces:**
+The **strategist** is paper-type aware. Given the literature and data assessment, it classifies the paper type (reduced-form, structural, theory+empirics, descriptive) and applies the corresponding strategy template. For reduced-form papers, it assesses the identification landscape, proposes designs ranked by credibility, and specifies design-specific estimation guidance (modern DiD estimators for staggered treatment, effective F for IV, MSE-optimal bandwidth for RDD). For structural papers, it specifies the model environment, decision problem, equilibrium concept, identification of each parameter, and counterfactual design. It always anticipates the top 5 referee objections.
 
-- `strategy_memo.md` --- full specification (primary output)
-- `pseudo_code.md` --- specification-level pseudo-code for main estimation
-- `robustness_plan.md` --- all robustness checks to implement
-- `falsification_tests.md` --- falsification or validation tests
+The **theorist** activates conditionally --- only for papers that need formal proofs. It drafts assumptions, definitions, propositions, and proofs at journal-publication rigor, with every theorem linked to the empirical strategy. Its critic runs a 4-phase proof review with early stopping on logical gaps.
 
-**Blind spots:** Cannot evaluate whether your institutional setting actually generates the exogenous variation you claim. The Strategist tells you what to check and what estimator to use, but the credibility of the natural experiment is yours to evaluate. Does not run code or write the paper.
+The **strategist-critic** is the system's most important gatekeeper. It runs a 4-phase sequential audit: identify the design, check whether the core assumptions hold (design-specific checklists), evaluate inference and code-theory alignment, then check robustness. Critical finding in Phase 2 stops the review --- no point checking robustness if parallel trends are violated.
 
-**Escalation target:** User --- fundamental design question requiring human judgment.
+**Activates:** After at least one Discovery output (literature OR data assessment).
+**Produces:** `quality_reports/strategy/` and (when activated) `quality_reports/theory/`
+**Quality gate:** Strategist-critic score >= 80 before Execution activates.
 
-## Strategist-Critic
+## Execution Trio
 
-**Phase:** Strategy
-**Paired with:** strategist (evaluates strategist output)
-**Paper-type aware:** Yes
+The **data-engineer** takes raw data and produces clean, analysis-ready datasets. It documents every sample restriction with counts, constructs variables per strategy memo definitions, merges datasets with documented merge rates, and produces publication-quality figures (custom themes, colorblind-safe palettes, no titles inside plots).
 
-**What it does:** The gatekeeper for empirical claims. Reviews the strategy memo through 4 sequential phases with early stopping when critical issues are found. Phase 1 identifies the paper type and the specific design. Phase 2 checks whether the core design holds using design-specific assumption checklists and mandatory sanity checks. Phase 3 evaluates inference (clustering, multiple testing, code-theory alignment including package-specific checks for `fixest`, `did`, `rdrobust`, `Synth`, etc.). Phase 4 checks robustness and citation fidelity.
+The **coder** translates the strategy memo into numbered analysis scripts (`00_master.R` through `07_tables.R`) with engineering discipline: numerical guards, pre-allocation, a single seed, `here()` for all paths, and a paper-to-code naming map linking every $\beta$ and $Y_{it}$ to its code variable. It implements the main specification, all robustness checks from the memo, and exports bare `tabular` environments for tables.
 
-**Paper-type adaptations:**
+The **writer** drafts the manuscript after code is approved. It refuses to write Results without actual output files in `paper/tables/` --- this gate exists because the distinction between "the strategy predicts X" and "the data shows X" is the difference between a proposal and a paper. It maintains a claim-source map tracing every numerical claim to a specific script line and output file.
 
-- **Reduced-form (DiD):** Checks parallel trends stated and evidenced, no-anticipation discussed, appropriate estimator for staggered treatment, aggregation scheme explicit, negative weights discussed if TWFE.
-- **Reduced-form (IV):** Checks first-stage F (effective F preferred), exclusion restriction argued (not just stated), LATE vs. ATE distinction, monotonicity, overidentification if multiple instruments.
-- **Reduced-form (RDD):** Checks continuity assumption, McCrary density test, bandwidth selection, covariate balance at cutoff, donut-hole robustness.
-- **Structural:** Checks functional forms justified economically (not just "tractable"), each parameter has identified source of variation, functional form vs. data identification distinguished, convergence diagnostics, counterfactual credibility (within data support, Lucas critique, sensitivity to parameters).
-- **Theory + empirics:** Checks predictions are sharp (rule out patterns), at least one distinguishing prediction, tests have power to reject, post-hoc rationalization risk flagged.
-- **Descriptive:** Checks concept clearly defined, measure maps to concept, measurement error discussed, no causal language without a design.
+The **coder-critic** reviews both the data-engineer and coder across 16 categories: strategic alignment (does the code match the memo?), code quality (reproducibility, numerics, function design), and infrastructure (checkpointing, error handling, prohibited patterns). The **writer-critic** runs 8 checks: structure, claims-evidence, identification fidelity, AI-pattern detection, LaTeX format, compilation, voice fidelity, and notation consistency.
 
-**Key principle:** Verify the core design holds before checking robustness details. A paper with violated parallel trends does not need Oster bounds feedback.
+**Activates:** Data-engineer and coder after strategist-critic score >= 80. Writer after coder-critic score >= 80.
+**Produces:** `data/cleaned/`, `scripts/R/`, `paper/tables/`, `paper/figures/`, `paper/sections/`
+**Quality gate:** Coder-critic and writer-critic both >= 80 before Peer Review.
 
-**Top deductions:** Not a fixed table --- deductions are proportional to severity. CRITICAL = identification is wrong or unsupported. MAJOR = missing important check or wrong inference. MINOR = could strengthen but paper works without it.
+## Review Team
 
-**Blind spots:** Assumes the data assessment is sound --- does not re-evaluate whether the data actually exists or is accessible. Checks the design on paper, not the implementation in code (that is the coder-critic's job).
+The **editor** performs desk review: reads the abstract and introduction, skims the contribution, verifies novelty, and decides whether to send to referees or desk reject. When it sends, it assigns each referee a contrasting intellectual disposition --- STRUCTURAL ("where's the mechanism?"), CREDIBILITY ("show me the pre-trends"), MEASUREMENT ("how is this measured?"), POLICY ("does this generalize?"), THEORY ("what does the model predict?"), or SKEPTIC ("what would make this go away?"). Each referee also receives randomized pet peeves drawn from pools of critical and constructive tendencies.
 
-**Escalation target:** User --- fundamental design question.
+The **domain-referee** evaluates substance: contribution and novelty (30%), literature positioning (25%), substantive arguments (20%), external validity (15%), and journal fit (10%). The **methods-referee** evaluates methods with paper-type-specific weights: identification strategy, estimation, inference, robustness, and replication readiness. Neither sees the other's report.
 
-## Theorist
+After both reports arrive, the editor classifies each concern as FATAL (cannot be fixed), ADDRESSABLE (fixable with revision), or TASTE (referee preference), resolves disagreements with explicit reasoning, and issues a decision.
 
-**Phase:** Strategy
-**Paired with:** theorist-critic
-**Paper-type aware:** Yes (activates conditionally)
+**Activates:** After writer-critic and coder-critic both >= 80. Invoked via `/review --peer`.
+**Produces:** `quality_reports/reviews/`
+**Quality gate:** Editorial decision of Accept or Minor Revisions to proceed to Submission.
 
-**What it does:** Drafts formal theoretical content --- assumptions, definitions, lemmas, propositions, theorems, and proofs --- at the rigor level expected by *Econometrica*, *Journal of Econometrics*, or *Annals of Statistics*. Before writing, it classifies the theoretical object (identification result, consistency, asymptotic normality, convergence rate, influence function, efficiency bound, uniform validity, debiasing, bootstrap validity, test properties, or comparative statics). It fixes notation to match the paper's conventions, states assumptions minimally with interpretations, and links every theorem to the empirical strategy.
+## Presentation Pair
 
-**When it activates:** Primarily for econometric methods papers, theory+empirics papers, structural identification papers, and methodological reduced-form papers. Rarely central for descriptive or applied reduced-form papers using off-the-shelf estimators. If dispatched to such a paper, it flags this and asks before proceeding.
+The **storyteller** creates talks from the paper in four formats (job market 40--50 slides, seminar 25--35, short 10--15, lightning 3--5) and two output types (Beamer PDF, Quarto RevealJS HTML). Paper-type aware: reduced-form talks lead with the policy question and show variation; structural talks build the model step by step with progressive reveal and pay off with the counterfactual; theory+empirics talks present competing explanations and a distinguishing prediction; descriptive talks lead with what is missing in current measures.
 
-**What it produces:**
+The **storyteller-critic** checks narrative flow (does the hook work?), visual quality (text overflow, font sizes, one idea per slide), content fidelity (numbers match the paper), and compilation. Presentation scores are advisory --- they do not block commits or PRs.
 
-- `theory_memo.md` --- what is proved, under what assumptions, what remains open
-- `assumptions.tex` --- numbered assumption block
-- `results.tex` --- definitions, lemmas, propositions, theorems
-- `proofs.tex` --- proofs with each step justified
-- `notation_glossary.md` --- every symbol, its type, and its meaning
+**Activates:** After writer-critic score >= 80. Can run parallel with Peer Review.
+**Produces:** `paper/talks/` or `paper/quarto/`
+**Quality gate:** Advisory only.
 
-**Blind spots:** Does not design the empirical strategy, implement simulations, or write non-technical prose. Cannot verify whether the paper's application actually satisfies the stated assumptions --- it proves results under stated conditions.
+## Infrastructure
 
-**Escalation target:** User --- proof-level disagreement (user adjudicates whether the result holds).
+The **orchestrator** is the project manager. It reads `permissions.md` to determine which agents can activate, validates pre-dispatch (do REQUIRES artifacts exist?) and post-completion (do PRODUCES artifacts exist with required sections?), launches worker-critic pairs in parallel when independent, tracks strike counts, computes weighted overall scores, and maintains structured pipeline state in `pipeline_state.json`. It makes no research decisions --- when judgment is needed, it escalates to the user with a clear question.
 
-## Theorist-Critic
+The **verifier** checks mechanical correctness in two modes. Standard mode (between phases): LaTeX compilation, script execution, file integrity, output freshness. Submission mode (before journal deposit): package inventory, dependency verification, data provenance, end-to-end execution, output cross-reference, and AEA-format README completeness. It scores binary --- 0 or 100, contributing 5% weight to the overall project score.
 
-**Phase:** Strategy
-**Paired with:** theorist (evaluates theorist output)
-**Paper-type aware:** Yes
-
-**What it does:** Reviews formal theory through 4 sequential phases with early stopping on critical errors. Phase 1 identifies the claim (object type, target parameter, estimator, assumptions, data structure, paper-type fit). Phase 2 checks proof validity --- logical validity, measurability and integrability (limit/expectation interchanges justified via DCT/MCT/Fubini), expansions and remainders (Taylor order stated, remainder shown to be the claimed rate), design-specific identification checks, and asymptotic distribution checks. Phase 3 evaluates assumption quality (minimality, primitiveness, non-redundancy, interpretation) and statement quality (over-claiming vs. under-claiming, pointwise vs. uniform). Phase 4 checks citation fidelity and linkage to empirical claims.
-
-**Top deductions:**
-
-| Issue | Deduction | Severity |
-|-------|-----------|----------|
-| Step does not follow / gap in logic | -20 per gap | Critical |
-| Circular argument | -25 | Critical |
-| Identification substitution unjustified | -20 | Critical |
-| Over-claim (conclusion exceeds proof) | -15 | Critical |
-| Rate arithmetic wrong | -15 | Critical |
-| Design invariant invoked but never stated | -15 | Major |
-| Unjustified limit/expectation interchange | -10 per instance | Major |
-| Uniform convergence without Donsker/VC/bracketing | -10 | Major |
-| Orphan claim (in paper, not supported by theorem) | -10 | Major |
-| Assumption never used in proof | -5 per assumption | Minor |
-
-**Authorship-aware calibration:** Reads the paper's author team from `domain-profile.md`. If the authors are themselves among the reference literature on the topic under review, the critic avoids lecturing them on their own contributions and focuses on whether this specific proof holds.
-
-**Blind spots:** Does not check whether the empirical implementation correctly reflects the theory. That is the coder-critic's job (code-theory alignment). Checks the proof on its own terms --- cannot verify whether the assumptions are satisfied in the application.
-
-**Escalation target:** User --- proof-level disagreement.
+**Activates:** Orchestrator runs throughout. Verifier runs between phases and at submission.
+**Produces:** `quality_reports/pipeline_state.json`, `quality_reports/verification_report.md`
+**Quality gate:** Verifier must PASS (100) for submission.
 
 ---
 
-# Execution Phase {#execution}
+# Phase Flow {#phase-flow}
 
-These agents produce the analysis code, data pipelines, and paper manuscript. The data-engineer and coder can run in parallel after an approved strategy memo. The writer requires approved code output.
+**Research is not a waterfall, but it has a direction.** Agents activate by dependency, not by sequence number. If you already have data and a draft, you can enter at Peer Review. If a referee says "control for X," the orchestrator routes back to the coder alone --- not through the entire pipeline.
 
-## Data-Engineer
+The dependency chain:
 
-**Phase:** Execution
-**Paired with:** coder-critic
-**Paper-type aware:** No
+```
+Discovery ──→ Strategy ──→ Execution ──→ Peer Review ──→ Submission
+(librarian,    (strategist,   (data-engineer,  (editor,         (verifier)
+ explorer)      theorist)      coder, writer)   referees)
 
-**What it does:** Takes raw data and produces clean, analysis-ready datasets and publication-quality figures. Responsibilities split into three areas. First, data cleaning and wrangling: loading and inspecting raw data, handling missing data, constructing variables per strategy memo definitions, merging datasets with documented merge rates (flags merges below 80%), applying sample restrictions with counts at each stage, and creating panel structures. Second, publication-quality figures: custom ggplot2 themes (never default gray), colorblind-safe palettes, serif fonts for paper figures, no titles inside plots (titles go in LaTeX captions), explicit dimensions in `ggsave()`. Third, data documentation: codebooks with variable descriptions and summary statistics, summary statistics tables in LaTeX format.
+                                                    ↕
+                                              Presentation
+                                              (storyteller)
+```
 
-**What it produces:** Cleaned datasets (`.rds` or `.parquet`), figures in `paper/figures/`, summary statistics tables in `paper/tables/`, and data codebooks.
+Each arrow is gated by a critic score. The orchestrator checks `permissions.md` before every dispatch: are the REQUIRES artifacts present? Has the prerequisite critic scored >= 80? If not, the agent does not activate.
 
-**Blind spots:** Does not run regressions or estimate models. Does not design the identification strategy. Does not choose which variables to analyze --- follows the strategy memo.
+Re-entry is allowed at any phase except Submission (terminal). A Major Revisions decision from Peer Review triggers re-entry at whatever phase the referee comments require --- sometimes just the writer (clarification), sometimes back to the coder (new analysis), sometimes back to the strategist (fundamental design challenge).
 
-**Escalation target:** strategist-critic --- re-evaluates whether the data specification is tractable.
-
-## Coder
-
-**Phase:** Execution
-**Paired with:** coder-critic
-**Paper-type aware:** Yes
-
-**What it does:** Translates the strategy memo into working analysis scripts. Before writing code, produces a Pre-Code Report with a paper-to-code naming map (paper notation to code variable names). Uses a numbered script layout (`00_master.R` through `07_tables.R`) with a `functions/` directory (one function per file, file name matches function name). Enforces engineering discipline: numerical guards (no float comparison with `==`, CDF clamping, inverse link guards), integer discipline (`1L`, `seq_len(n)`), single `set.seed()` at top, `here()` for all paths, pre-allocated containers, prohibited pattern enforcement.
-
-**Paper-type adaptations:**
-
-- **Reduced-form:** Uses modern DiD estimators (`did`, `fixest::sunab()`, `did2s`, `didimputation`), implements IV with first-stage F and effective F, uses `rdrobust` with MSE-optimal bandwidth and manipulation tests, implements event studies with proper normalization.
-- **Structural:** Defines model primitives as functions, solves decision problems numerically, writes log-likelihood or moment functions, uses `optim()` with multiple starting values, implements counterfactual simulations that re-solve the model.
-- **Theory + empirics:** Implements prediction-by-prediction empirical tests, stores prediction, test, and result together.
-- **Descriptive:** Implements construction methodology step by step, runs validation tests, implements decomposition analysis.
-
-**What it produces:** Scripts in `scripts/R/` (or `scripts/python/`, `scripts/julia/`), tables in `paper/tables/`, figures in `paper/figures/`, and `results_summary.md` for the writer.
-
-**Blind spots:** Does not evaluate whether results make sense --- that is the coder-critic's job. Does not modify the identification strategy. Does not write the paper.
-
-**Escalation target:** strategist-critic --- re-evaluates whether the strategy memo is implementable.
-
-## Coder-Critic
-
-**Phase:** Execution
-**Paired with:** coder and data-engineer (evaluates both)
-**Paper-type aware:** Yes
-
-**What it does:** Reviews all code from the coder and data-engineer across 16 check categories, organized into four groups.
-
-**Strategic alignment (categories 1--4):** Code-strategy alignment (does the code implement exactly what the memo specifies?), paper-to-code naming map (does it exist and is it consistent?), sanity checks (sign, magnitude, dynamics), and robustness completeness (all checks from the memo implemented?).
-
-**Code quality (categories 5--12):** Project layout (numbered scripts, master runner, function directory), script headers (purpose, inputs, outputs), console output hygiene (`message()` not `print()`), reproducibility (`set.seed()`, `here()`, `library()` not `require()`), numerical discipline (float comparison, CDF clamping, inverse link guards, pre-allocation), function design (naming, docs, preconditions, no global assignment), figure quality (custom theme, no titles, readable labels), and table quality (bare `tabular`, booktabs, human-readable labels).
-
-**Infrastructure (categories 13--16):** RDS/checkpoint pattern (every computed object saved), comment quality (explains why, not what), error handling (`stopifnot()`, no silent `NULL`), and prohibited patterns (`setwd()`, absolute paths, `T`/`F`, `sapply()`, `attach()`).
-
-**Paper-type-specific checks:** For structural code, checks optimization with multiple starting values, convergence diagnostics, counterfactual re-solving, and welfare computation. For simulation code, checks DGP function isolation, seed management, and coverage/bias/RMSE computation.
-
-**Top deductions:**
-
-| Issue | Deduction | Severity |
-|-------|-----------|----------|
-| Domain-specific bugs (clustering, estimand) | -30 | Critical |
-| Code does not match strategy memo | -25 | Critical |
-| Scripts do not run | -25 | Critical |
-| Hardcoded absolute paths | -20 | Critical |
-| Sign of main result implausible | -20 | Critical |
-| Missing robustness checks from memo | -15 | Major |
-| Wrong clustering level | -15 | Major |
-| Optimizer did not converge (structural) | -15 | Major |
-| No paper-to-code naming map | -10 | Major |
-| Float comparison with `==` | -10 | Major |
-| No `set.seed()` / not reproducible | -10 | Major |
-
-**Blind spots:** Assumes the strategy memo is sound --- does not re-evaluate identification. Cannot run the code to verify output --- evaluates by reading. Checks code quality and strategic alignment, not whether the results are economically interesting.
-
-**Escalation target:** strategist-critic --- the specification cannot be implemented as designed.
-
-## Writer
-
-**Phase:** Execution
-**Paired with:** writer-critic
-**Paper-type aware:** Yes
-
-**What it does:** Drafts paper sections using paragraph-level argument moves. Each paragraph has one job --- motivation, result statement, mechanism, robustness narration, literature positioning, identification preview, or qualification. Before drafting, loads two voice calibration files: `domain-profile.md` for field conventions and `personal-style-guide.md` for the user's extracted writing voice. If the personal style guide is still a template, the writer stops and asks for prior papers to calibrate against.
-
-**Artifact prerequisites:** Before drafting Results or Conclusion, verifies that `paper/tables/` contains `.tex` files with actual numbers and `paper/figures/` contains figures. It reads every output file and narrates from actual numbers, never from the strategy memo's predictions. Maintains a claim-source map tracing every numerical claim to a specific script line and output file.
-
-**Paper-type adaptations:**
-
-- **Reduced-form:** Introduction follows motivation, question, stakes, identification preview, result statement, literature positioning. Strategy section includes design-specific moves (parallel trends for DiD, exclusion restriction for IV, bandwidth for RDD). Results lead with the number, compare to prior estimates, narrate event study plots.
-- **Structural:** Introduction includes model preview and counterfactual result. Strategy section splits into Model (environment, preferences, decision, equilibrium, predictions) and Estimation (identification argument, estimation method, computational details). Results present parameter estimates with economic interpretation, model fit, counterfactual simulations, and welfare.
-- **Theory + empirics:** Introduction includes theory preview and empirical preview. Results are prediction-by-prediction with honest assessment of where the model works and fails.
-- **Descriptive:** Data section is the core contribution (1200--1800 words). No separate strategy section. Results present numbered key facts with magnitude and units.
-
-**Cleanup pass:** After drafting, strips 24 AI writing patterns across content (significance inflation, promotional language), language (AI vocabulary like "delve" and "underscore"), style (em dash overuse, uniform sentence length), and communication (filler phrases, section announcements).
-
-**Blind spots:** Does not evaluate its own writing quality. Does not modify the identification strategy or change code results.
-
-**Escalation target:** Orchestrator --- structural rewrite, not just polish.
-
-## Writer-Critic
-
-**Phase:** Execution
-**Paired with:** writer (evaluates writer output)
-**Paper-type aware:** Yes
-
-**What it does:** Reviews the manuscript draft across 8 check categories.
-
-1. **Structure and flow:** Standard section order for the paper type, single argument move per paragraph, contribution statement in first 2 pages.
-2. **Claims and evidence:** Every empirical claim supported by a table, figure, or citation. Numbers in text match tables exactly (INV-11). Effect sizes stated with units. Claim-source map verified.
-3. **Identification fidelity:** Strategy section accurately describes the design. No overclaiming --- causal language only with causal designs (INV-8). Assumptions named and stated formally.
-4. **Writing quality:** 24-pattern AI detection check. Scans for significance inflation, AI vocabulary, copula avoidance, filler phrases, em dash overuse, uniform sentence length.
-5. **LaTeX and format:** Enforces all Required items from the working-paper format standard (document class, doublespacing, biblatex+biber, fancyhdr, booktabs, table and figure notes, hyperref/cleveref ordering).
-6. **Compilation:** Verifier-lite checks --- does `latexmk` succeed, are references resolved, do cited tables/figures exist.
-7. **Voice fidelity:** Scored only when `personal-style-guide.md` has real content. Compares sentence length, paragraph openings, lexicon, tone, and hedging patterns against the style guide.
-8. **Notation consistency:** Same symbol means the same thing everywhere (INV-7). Notation in tables matches notation in text.
-
-**Top deductions:**
-
-| Issue | Deduction | Severity |
-|-------|-----------|----------|
-| Paper does not compile | -20 | Critical |
-| Causal language without identification (INV-8) | -20 | Critical |
-| No claim-source map | -15 | Critical |
-| Strategy section misrepresents the design | -15 | Critical |
-| Numbers in text do not match tables (INV-11) | -10 per, max -30 | Critical |
-| Voice tone mismatch (when style guide exists) | -10 | Major |
-| Missing table/figure notes (INV-1, INV-2) | -5 per, max -15 | Major |
-| Missing JEL codes or keywords (INV-6) | -5 | Major |
-
-**Blind spots:** Does not evaluate whether the identification strategy is sound (that is the strategist-critic's job). Does not evaluate code quality. Checks the manuscript as a written artifact --- structure, claims, format, and voice.
-
-**Escalation target:** Orchestrator --- structural rewrite.
-
----
-
-# Peer Review Phase {#peer-review}
-
-These agents simulate journal peer review. An editor performs desk review and assigns referee dispositions, then two independent referees evaluate the paper blind --- neither sees the other's report. The editor synthesizes the reports into an independent editorial decision. Invoked via `/review --peer [journal]`.
-
-## Editor
-
-**Phase:** Peer Review
-**Paired with:** None (the editor coordinates the review process)
-**Paper-type aware:** No (adapts through journal calibration)
-
-**What it does:** Operates in two phases. Phase 1 is desk review: reads the title, abstract, and introduction, skims the contribution and identification, verifies novelty claims via web search, and decides whether to send to referees or desk reject (wrong fit, no clear contribution, fatal design flaw, below bar, or already published). Phase 2 is editorial decision after receiving referee reports: classifies each referee concern as FATAL (cannot be fixed), ADDRESSABLE (fixable with revision), or TASTE (referee preference, not a real problem), resolves disagreements between referees with explicit reasoning, and issues a decision (Accept, Minor Revisions, Major Revisions, or Reject).
-
-**The disposition system:** When sending a paper to referees, the editor assigns each referee one of six intellectual dispositions drawn from the target journal's referee pool:
-
-| Disposition | Intellectual Prior |
-|-------------|-------------------|
-| STRUCTURAL | Values formal models, welfare analysis. "Where's the mechanism?" |
-| CREDIBILITY | Values clean identification, transparency. "Show me the pre-trends." |
-| MEASUREMENT | Obsessed with data quality. "How is this measured? What about attrition?" |
-| POLICY | Focused on generalizability. "Does this apply outside your sample?" |
-| THEORY | Wants economic model before empirics. "What does the theory predict?" |
-| SKEPTIC | Thinks the result is probably wrong. "What would make this go away?" |
-
-The two referees always receive different dispositions to create productive tension. Each referee also receives two pet peeves --- one critical (e.g., "demands Oster bounds") and one constructive (e.g., "gives credit for transparent sample documentation") --- drawn from pools of 27 critical and 24 constructive peeves.
-
-**R&R mode:** In second-round reviews, the same dispositions and pet peeves are reloaded. Max 3 rounds --- if the paper is not ready after 3 rounds, the editor rejects and suggests resubmission elsewhere.
-
-**Blind spots:** The editor is not a third referee. It does not add new substantive criticisms --- it synthesizes and decides. Cannot verify novelty claims with certainty via web search. Journal calibration depends on the quality of journal profiles in `journal-profiles.md`.
-
-**Escalation target:** User --- editorial judgment calls.
-
-## Domain-Referee
-
-**Phase:** Peer Review
-**Paired with:** None (referee is already a reviewer)
-**Paper-type aware:** No (evaluates substance, not methods)
-
-**What it does:** The subject expert reviewer. Evaluates the paper across 5 weighted dimensions: contribution and novelty (30% --- is the question important? is this genuinely new?), literature positioning (25% --- seminal papers cited? correctly positioned relative to closest 3--5 papers?), substantive arguments (20% --- do results have economic meaning? are mechanisms plausible?), external validity and scope (15% --- can you generalize? is LATE vs. ATE acknowledged?), and fit for target journal (10% --- does this belong here?).
-
-Calibrated to the paper's field via `domain-profile.md`. When a target journal is specified, calibrates further using `journal-profiles.md`. Every major comment includes a "what would change my mind" statement --- specific evidence, analysis, or revision that would resolve the concern. Review is blind --- the domain-referee does not see the methods-referee's report.
-
-**Scoring:**
-
-| Score | Recommendation |
-|-------|----------------|
-| 90+ | Accept |
-| 80--89 | Minor Revisions |
-| 65--79 | Major Revisions |
-| < 65 | Reject |
-
-**Blind spots:** Does not evaluate empirical methods in detail (that is the methods-referee's job). Evaluates substance --- whether the paper contributes something new to the field --- not whether the estimation is correct.
-
-**Escalation target:** Editor.
-
-## Methods-Referee
-
-**Phase:** Peer Review
-**Paired with:** None (referee is already a reviewer)
-**Paper-type aware:** Yes
-
-**What it does:** The empirical methods expert. First identifies the paper type, then evaluates using type-specific weighted dimensions.
-
-**Paper-type adaptations:**
-
-- **Reduced-form:** Identification strategy (35%), estimation and implementation (25%), statistical inference (20%), robustness and sensitivity (15%), replication readiness (5%). Checks design-specific elements: parallel trends for DiD, first-stage F for IV, manipulation test for RDD, pre-event coefficients for event studies.
-- **Structural:** Model specification (20%), identification of parameters (30%), estimation and computation (20%), model fit and validation (15%), counterfactual credibility (15%). Checks whether identification comes from data variation or functional form, convergence diagnostics, whether counterfactuals are within data support.
-- **Theory + empirics:** Model quality (20%), prediction sharpness (25%), test design and power (25%), honesty of assessment (15%), empirical execution (15%). Checks whether predictions rule things out, whether any result could confirm the model, and whether the tests have power to reject.
-- **Descriptive:** Construct validity (30%), construction and replicability (25%), validation (25%), analysis quality (15%), replication readiness (5%). Checks concept definition, measurement error discussion, no causal language without design.
-
-Mandatory sanity checks before scoring: sign plausibility, magnitude plausibility, dynamics coherence (reduced-form), parameter ranges (structural), confirmation bias (theory+empirics), face validity (descriptive). If sanity checks fail, they dominate the score.
-
-Every major comment includes a "what would change my mind" statement. Review is blind --- does not see the domain-referee's report.
-
-**Scoring:** Same thresholds as domain-referee (90+ Accept, 80--89 Minor, 65--79 Major, <65 Reject).
-
-**Blind spots:** Does not evaluate whether the paper contributes to the field (that is the domain-referee's job). Evaluates whether the methods are sound, not whether the question matters.
-
-**Escalation target:** Editor.
-
----
-
-# Presentation Phase {#presentation}
-
-These agents create and review presentations. The storyteller requires an approved paper (writer-critic score >= 80). Presentation scores are advisory --- they do not block commits or PRs.
-
-## Storyteller
-
-**Phase:** Presentation
-**Paired with:** storyteller-critic
-**Paper-type aware:** Yes
-
-**What it does:** Creates presentations from the paper in 4 formats (job market 40--50 slides / 45--60 min, seminar 25--35 slides / 30--45 min, short 10--15 slides / 15 min, lightning 3--5 slides / 5 min) and 2 output types (Beamer PDF in `paper/talks/`, Quarto RevealJS HTML in `paper/quarto/`). Applies the core design rule: one idea per slide, whitespace as a tool, figures first and text second, visual rhythm (alternating dense and sparse slides), and a visually distinct key slide.
-
-**Paper-type adaptations:**
-
-- **Reduced-form:** Hook with policy question, show variation, present main result with magnitude, visual evidence (event study/RD plot), brief robustness, policy implication.
-- **Structural:** Motivate why a model is needed, show motivating facts, build model step by step with progressive reveal, show identification, present counterfactual as the payoff, welfare slide, sensitivity in backup.
-- **Theory + empirics:** Present competing explanations, build model, show predictions visually (Model A vs. Model B), present distinguishing prediction, show prediction-by-prediction evidence, honest scorecard.
-- **Descriptive:** Lead with what is missing in current measures, present data innovation, validate, show most surprising fact, decompositions, implications.
-
-Uses progressive reveal (`\pause`, `\only<>`, or auto-animate for Quarto) to build complexity gradually. Simplified tables for projection (max 4--5 columns, highlighted key coefficient). Speaker notes on every slide with key point, anticipated questions, and backup slide pointers. Prepares 3--5 backup slides for likely audience questions.
-
-**Blind spots:** All content derives from the paper --- never invents results. Tends to put too much content on slides; the user should expect to cut and add whitespace. Does not evaluate its own talk quality.
-
-**Escalation target:** Writer --- talk narrative issues may stem from paper structure.
-
-## Storyteller-Critic
-
-**Phase:** Presentation
-**Paired with:** storyteller (evaluates storyteller output)
-**Paper-type aware:** Yes
-
-**What it does:** Reviews the talk across 6 categories: narrative flow (does the hook work? is the story arc clear? is the key slide identifiable?), visual quality (text overflow, font sizes, table readability, one idea per slide), content fidelity (numbers match paper, identification correctly represented, no results not in the paper), scope for format (right length, right depth, backup slides available), compilation (does it compile or render cleanly?), and paper-type coherence (does the narrative arc match the paper type?).
-
-**Paper-type checks:** Flags a structural talk without counterfactual slides, a theory talk without the distinguishing prediction, or a descriptive talk that makes causal claims.
-
-**Top deductions:**
-
-| Issue | Deduction | Severity |
-|-------|-----------|----------|
-| Slides do not compile | -20 | Critical |
-| Numbers do not match paper | -20 | Critical |
-| Wrong narrative arc for paper type | -15 | Major |
-| No hook in first 2 slides | -15 | Major |
-| Talk wrong length for format | -15 | Major |
-| Structural talk missing counterfactual | -10 | Major |
-| Theory talk missing distinguishing prediction | -10 | Major |
-| Text overflow | -10 per slide, max -30 | Major |
-| Missing backup slides | -5 | Minor |
-
-**Scoring is advisory** --- it does not block commits or PRs.
-
-**Blind spots:** Judges the talk, not the paper. Does not evaluate whether the research is sound --- only whether it is communicated effectively. Cannot actually deliver the talk to test audience comprehension.
-
-**Escalation target:** Writer --- talk narrative issues stem from paper structure.
-
----
-
-# Infrastructure {#infrastructure}
-
-These agents coordinate and verify. They do not produce research content and have no adversarial pairing.
-
-## Orchestrator
-
-**Phase:** All phases
-**Paired with:** None (infrastructure)
-**Paper-type aware:** No (dispatches agents that are)
-
-**What it does:** The project manager. Seven responsibilities:
-
-1. **Dependency graph management:** Reads `permissions.md` to determine which agents can be dispatched based on available artifacts and prerequisite scores. Validates pre-dispatch (are REQUIRES met?) and post-completion (do PRODUCES exist with required sections?).
-2. **Agent dispatch:** Launches worker-critic pairs, parallel when independent (librarian + explorer, data-engineer + coder), sequential when dependent (coder must finish before writer starts). Includes severity level in critic prompts.
-3. **Three-strikes routing:** Tracks strike count per worker-critic pair. After 3 failed rounds, escalates per the agent's declared ESCALATION_TARGET.
-4. **Rule enforcement:** Flags separation-of-powers violations (critics producing artifacts, creators self-scoring). Checks scores against quality gates (80 commit, 90 PR, 95 submission). Computes weighted overall score.
-5. **Peer review management:** Dispatches the `/review --peer` flow when the pipeline reaches peer review. Tracks whether the editorial decision allows advancement.
-6. **Dual-critic dispatch:** For gate artifacts (strategy memo, main results, final manuscript), optionally dispatches two critics with different evaluation lenses. Both must score >= 80 to pass.
-7. **Pipeline state management:** Maintains `pipeline_state.json` with structured, machine-readable state (current phase, pending agents, scores, round counts). Updated after every agent completion, critic score, and phase transition.
-
-**Learning loop:** After completing multi-agent skills, reviews the execution trace for high-performance patterns (scored >= 90 first pass), friction patterns (hit 3 strikes), and user escalation patterns. Surfaces findings as suggested learnings for user approval --- never auto-appends to memory.
-
-**Blind spots:** Does not produce research artifacts. Does not score artifacts (that is the critics' job). Does not override critic or referee scores. Does not make research decisions --- escalates to the user when judgment is needed.
-
-**Escalation target:** User (only for orchestration-level deadlocks).
-
-## Verifier
-
-**Phase:** Submission (also runs between phase transitions in standard mode)
-**Paired with:** None (infrastructure)
-**Paper-type aware:** No
-
-**What it does:** Checks mechanical correctness in two modes.
-
-**Standard mode (4 checks, runs between phase transitions):**
-
-1. LaTeX compilation --- does `latexmk main.tex` succeed? Undefined citations? PDF generated?
-2. Script execution --- do scripts run without errors? Output files created with nonzero size?
-3. File integrity --- every `\input{}` and `\include{}` reference resolves, every referenced table and figure file exists.
-4. Output freshness --- timestamps of output files match latest script run, no stale outputs.
-
-**Submission mode (10 checks, runs before journal submission):**
-
-5. Package inventory --- all scripts present and numbered, master script exists, no orphan scripts.
-6. Dependency verification --- `renv.lock` or equivalent exists, non-standard packages documented.
-7. Data provenance --- every dataset has a documented source, access instructions for restricted data, data availability statement present.
-8. Execution verification --- master script runs end-to-end, captures all output and errors, reports runtime.
-9. Output cross-reference --- every table and figure in the paper traced to a specific script, no orphan or missing outputs.
-10. README completeness (AEA format) --- data availability statement, computational requirements, program descriptions, replication instructions, table/figure-to-script mapping.
-
-**Scoring:** Pass/fail per check. Binary for aggregation: 0 (any failure) or 100 (all pass). Contributes 5% weight to overall score.
-
-**Content invariant enforcement:** FAIL on any violation of INV-9 (biblatex+biber), INV-10 (hyperref/cleveref order), INV-14 (single set.seed), INV-15 (libraries at top), INV-16 (no absolute paths), INV-19 (no prohibited functions).
-
-**Blind spots:** Checks mechanical correctness, not research quality. A paper that compiles perfectly but has wrong results will pass the verifier. Does not evaluate identification, writing quality, or contribution.
-
-**Escalation target:** User.
+The system distinguishes between phases (sequential gates) and parallel groups (concurrent work within a phase). The librarian and explorer run concurrently. The data-engineer and coder run concurrently. But the writer waits for the coder to finish. These relationships are all declared in one file --- `permissions.md` --- not hardcoded in agent logic.
 
 ---
 
 # Quick Reference {#agent-catalog}
 
-All 19 agents at a glance.
+All 20 agents at a glance.
 
 | Agent | Phase | Creates / Checks | Paired With |
 |-------|-------|------------------|-------------|
@@ -600,3 +189,17 @@ All 19 agents at a glance.
 | storyteller-critic | Presentation | Checks narrative, visuals, content fidelity, scope | storyteller |
 | orchestrator | All | Agent dispatch, quality gates, pipeline state | None |
 | verifier | Submission | Compilation, execution, file integrity, AEA audit | None |
+
+---
+
+# Where the Details Live {#further-reading}
+
+This page teaches the architecture --- the four rules, the skill-centric model, the group relationships, and the phase flow. The operational specifics (rubrics, scoring tables, checklists, deduction schedules) live elsewhere:
+
+- **Agent identity files:** `.claude/agents/*.md` --- role, voice, constraints, paper-type awareness
+- **Skill templates:** `{skill}/templates/` --- checklists, protocols, report formats
+- **Skill config:** `{skill}/config/` --- scoring rubrics, tolerance thresholds
+- **Permission registry:** `.claude/rules/permissions.md` --- REQUIRES, PRODUCES, escalation targets, quality weights
+- **Lifecycle validation:** `.claude/rules/lifecycle.md` --- pre-dispatch and post-completion checks
+
+The permission registry is the single source of truth for agent dispatch. Adding a new agent means adding one entry there and one file in `.claude/agents/`. No other file needs to change.

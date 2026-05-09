@@ -3,6 +3,39 @@ title: "What's New"
 subtitle: "Release History"
 ---
 
+# 26.05.2 --- Skill-Centric Restructure {#r260502}
+
+*Released 2026-05-09*
+
+## Skill-Folder Architecture
+
+Skills are now rich directories. Each skill folder contains templates, gotchas, references, and config. Agents slimmed from 200--474 lines to 50--140 lines (identity + voice + constraints only). Operational knowledge lives in skill templates, loaded on demand.
+
+- **76 new files** across 13 skill folders (templates, gotchas, references, config)
+- **15 agents slimmed** (total lines: 4,454 → 1,898, −57%)
+- **Three-level loading:** metadata (always) → SKILL.md (on trigger) → templates (on demand)
+- **Gotchas** --- every skill documents known failure points
+
+## Session-Scoped Guards
+
+- `/freeze [dirs]` --- blocks edits outside specified directories
+- `/careful` --- blocks destructive bash commands
+- Backed by `session-guard.py` PreToolUse hook; zero overhead when inactive
+
+## Quarto-First Talks
+
+`/talk create` defaults to Quarto RevealJS. Beamer via `--beamer`. New `quarto-scaffold.qmd` template.
+
+## Guide Rewrite
+
+All pages rewritten with guide-writer voice. agents.qmd compressed 603 → 205 lines. Skill-folder architecture documented in architecture.qmd and customization.qmd. Nav reordered for user journey.
+
+## Rewind Strategy
+
+New context management guidance in workflow.md: Rewind vs Correct vs Compact vs Clear.
+
+---
+
 # 26.05.1 --- MAS Evolution v2 + Guide Overhaul {#r260501}
 
 *Released 2026-05-09*

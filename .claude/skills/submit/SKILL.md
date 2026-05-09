@@ -72,6 +72,18 @@ python3 scripts/generate_dashboard.py
 
 ---
 
+## Bundled Resources (Level 3)
+
+| Resource | Path | When |
+|----------|------|------|
+| Submission checklist | `templates/submission-checklist.md` | `/submit final` — pre-submission verification |
+| Cover letter | `templates/cover-letter.tex` | `/submit final` — draft cover letter |
+| Replication README | `templates/replication-readme.md` | `/submit package` — AEA-compliant README |
+| Audit checklist | `templates/audit-10-checks.md` | `/submit audit` — verifier submission mode |
+| Gotchas | `gotchas.md` | Always — known failure points |
+
+---
+
 ## Principles
 - **Score >= 95 + all components >= 80. No exceptions.**
 - **Don't skip verification.** Even if reports exist, check they're recent.

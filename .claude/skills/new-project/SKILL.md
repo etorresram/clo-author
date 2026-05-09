@@ -136,6 +136,15 @@ Between pauses, the orchestrator runs autonomously per `workflow.md`.
 
 ---
 
+## Bundled Resources (Level 3)
+
+| Resource | Path | When |
+|----------|------|------|
+| Quality gates | `config/quality-gates.json` | Phase transitions — score thresholds |
+| Gotchas | `gotchas.md` | Always — known failure points |
+
+---
+
 ## Principles
 
 - **This is always orchestrated.** Unlike other skills, `/new-project` always runs through the full pipeline.

@@ -242,6 +242,17 @@ The pre-compact hook reminds you of this checklist.
 **After Compression:**
 First message should be: "Resuming after compression. Last task: [read most recent plan + git log + last SESSION_REPORT entry]. Status: [next step]."
 
+### Rewind Strategy
+
+Choose the right context management action:
+
+- **Rewind** when Claude took a wrong approach -- removes the failed attempt from context entirely. Re-prompt with constraints upfront. Strictly superior to correction when the entire approach was wrong.
+- **Correct** when the approach was right but a detail was wrong ("use state-level clustering") -- the context of the prior attempt is useful.
+- **Compact** when context is bloated but the current trajectory is correct.
+- **Clear** when you need a fresh start on a new task.
+
+Rewind keeps failed exploration out of context, saving tokens and avoiding confusion on subsequent turns.
+
 ### Session Recovery
 
 After compression or a new session, in order:

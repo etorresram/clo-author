@@ -165,6 +165,20 @@ Generate:
 
 ---
 
+## Bundled Resources
+
+| Resource | Path | What It Contains |
+|----------|------|-----------------|
+| Research spec | `discover/templates/research-spec.md` | 8-section research specification output format |
+| Interview flow | `discover/templates/interview-flow.md` | 6-category conversational structure for interview mode |
+| Lit review entry | `discover/templates/lit-review-entry.md` | Per-paper annotation format with proximity scoring |
+| Data assessment | `discover/templates/data-assessment.md` | Data source evaluation with 5-point critique and feasibility grades |
+| Research ideas | `discover/templates/research-ideas.md` | Ideation output format with feasibility/novelty ranking |
+| PDF processing | `discover/references/pdf-processing.md` | Safe workflow for reading reference papers |
+| Gotchas | `discover/gotchas.md` | Known failure points and edge cases |
+
+---
+
 ## Principles
 
 - **Interview style:** Be curious, not prescriptive. Draw out the researcher's thinking.
