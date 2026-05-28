@@ -82,7 +82,7 @@
 % Body font sizes
 \setbeamerfont{frametitle}{family=\sffamily,series=\bfseries,size=\large}
 \setbeamerfont{title}{family=\sffamily,series=\bfseries,size=\Huge}
-\setbeamerfont{subtitle}{family=\sffamily,series=\mdseries,size=\Large}
+\setbeamerfont{subtitle}{family=\sffamily,series=\mdseries,size=\large}
 \setbeamerfont{author}{family=\sffamily,series=\mdseries,size=\normalsize}
 \setbeamerfont{date}{family=\sffamily,series=\mdseries,size=\small}
 \setbeamerfont{footline}{family=\sffamily,series=\mdseries,size=\scriptsize}
@@ -120,7 +120,7 @@
   \vspace*{2.2cm}
   \begingroup
   \setlength{\baselineskip}{1.05\baselineskip}%
-  {\titlefont\huge\color{pdark}\inserttitle\par}
+  {\titlefont\Large\color{pdark}\inserttitle\par}
   \endgroup
   \vspace{0.45em}
   {\usebeamerfont{subtitle}\color{pdark}\insertsubtitle\par}
@@ -156,7 +156,7 @@
     \setlength{\fboxsep}{0.7em}%
     \colorbox{paccent!8}{%
       \begin{minipage}{\dimexpr\linewidth-1.4em}%
-        {\color{paccent}\textbf{Punto débil.}} \color{pdark}#1%
+        {\color{paccent}\textbf{}} \color{pdark}#1%
       \end{minipage}%
     }%
   \end{minipage}
@@ -328,7 +328,7 @@ Respuesta salarial neta a la llegada de los LLMs:
 \textbf{Narrativa} & \textbf{Predicción para el país $c$} \\
 \midrule
 \textbf{A.} Informalidad amplifica & $|\hat\tau^c| > 2\%$ y $\tau^c_I < \tau^c_F < 0$. Los informales absorben más el shock. \\[0.3em]
-\textbf{B.} Replicación del nulo & $|\hat\tau^c|$ pequeño y nulo en ambos canales. Perú/ALC = Dinamarca \cit{HV 2025a}. \\[0.3em]
+\textbf{B.} Replicación del nulo & $|\hat\tau^c|$ pequeño y nulo en ambos canales. Perú/ALC = \cit{HV 2025a}. \\[0.3em]
 \textbf{C.} Nulo formal, grande informal & $\tau^c_F \approx 0$ y $\tau^c_I$ significativamente negativo. Canal que DK/EE.UU.\ no pueden detectar. \\[0.3em]
 \textbf{D.} Ganancias estratificadas & $\tau^c > 0$ sobre salarios, concentrado en formales urbanos con educación terciaria. \\
 \bottomrule
@@ -373,7 +373,7 @@ Costa Rica & ECE     & Trimestral             & CIUO-08 4d directo \\
 Colombia   & GEIH    & Mensual                & Agregar 3 meses $\to$ trimestre \\
 Ecuador    & ENEMDU  & Mensual (continua)     & Agregar 3 meses $\to$ trimestre \\
 México   & ENOE    & Trimestral             & SINCO $\to$ CIUO-08 (INEGI, 97.4\%) \\
-\textbf{Perú} & \textbf{EPEN} & \textbf{Trimestral, solo Lima Metro} & \textbf{CO-1995 $\to$ CNO-2015 $\to$ CIUO-08} \\
+\textbf{Perú} & \textbf{EPEN} & \textbf{Trimestral, solo Lima Metro} & \textbf{CO1995 $\to$ CNO2015 $\to$ CIUO08} \\
 Uruguay    & ECH     & Anual (campo continuo) & Separar por mes de entrevista \\
 \bottomrule
 \end{tabularx}
@@ -579,7 +579,7 @@ Coeficientes $\hat\tau_F$ (canal formal) y $\hat\tau_I$ (canal informal) con IC 
 \end{frame}
 
 % ----- Puntos débiles (I): identificación y datos -----
-\begin{frame}{Puntos débiles (I): identificación y datos}
+\begin{frame}{Puntos a considerar (I): identificación y datos}
 \footnotesize
 \vspace{0.2em}
 \begin{enumerate}\setlength\itemsep{0.35em}
@@ -591,7 +591,7 @@ Coeficientes $\hat\tau_F$ (canal formal) y $\hat\tau_I$ (canal informal) con IC 
 \end{frame}
 
 % ----- Puntos débiles (II): supuestos y método -----
-\begin{frame}{Puntos débiles (II): supuestos y método}
+\begin{frame}{Puntos a considerar (II): supuestos y método}
 \footnotesize
 \vspace{0.2em}
 \begin{enumerate}\setlength\itemsep{0.35em}
@@ -608,31 +608,31 @@ Coeficientes $\hat\tau_F$ (canal formal) y $\hat\tau_I$ (canal informal) con IC 
 \begin{frame}{Próximos pasos}
 \small
 \vspace{0.1em}
-\textbf{Corto plazo (verano 2026).}
+%\textbf{Corto plazo}
 \begin{itemize}
   \item Cerrar escalera de robustez del clasificador para Perú (5 columnas).
   \item Validar con ENAHO anual nacional (representatividad + definición OIT de formalidad).
   \item Reportar medidas alternativas de exposición: $\alpha$, $\zeta$ \cit{Eloundou et al.\ 2024}; Webb \cit{2019}; AIOE \cit{Felten et al.\ 2021}.
   \item Cotas Honest-DiD, Oster \cit{2019}, shift-share con SE de Adão--Kolesár--Morales.
-\end{itemize}
+%\end{itemize}
 
 \vspace{0.3em}
-\textbf{Mediano plazo.}
-\begin{itemize}
+%\textbf{Mediano plazo.}
+%\begin{itemize}
   \item Replicar el \emph{pipeline} en Costa Rica, Colombia, Ecuador, México, Uruguay.
-  \item Pre-registro formal en OSF para los 5 países restantes, incluyendo el \emph{Patrón Peruano} como hipótesis adicional.
+  %\item Pre-registro formal en OSF para los 5 países restantes, incluyendo el \emph{Patrón Peruano} como hipótesis adicional.
   \item Comparación lado a lado de los seis $\{\hat\tau^c\}_{c=1}^{6}$: contribución empírica central.
-\end{itemize}
+%\end{itemize}
 
-\vspace{0.3em}
-\textbf{Largo plazo.}
-\begin{itemize}
-  \item Segundo artículo: panel rotativo de la ENOE de México para estimar \emph{transiciones individuales} entre ocupaciones de distinta exposición.
+%\vspace{0.3em}
+%\textbf{Largo plazo.}
+%\begin{itemize}
+  %\item Segundo artículo: panel rotativo de la ENOE de México para estimar \emph{transiciones individuales} entre ocupaciones de distinta exposición.
 \end{itemize}
 \end{frame}
 
 % ----- Referencias clave -----
-\begin{frame}{Referencias clave}
+\begin{frame}{Algunas referencias clave}
 \scriptsize
 \setlength{\parskip}{0.30em}
 
