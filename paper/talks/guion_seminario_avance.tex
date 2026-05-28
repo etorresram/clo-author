@@ -1,0 +1,609 @@
+% !TEX TS-program = xelatex
+% !TEX encoding = UTF-8 Unicode
+% ============================================================================
+%  GUION DE LECTURA — Seminario de Investigación I (Avance)
+%  Acompaña a talk_seminario_avance.tex (mismos títulos de frame).
+%  Texto hablado, fluido, para leer en voz alta durante la presentación online.
+%
+%  El número al inicio de cada título coincide con el número de diapositiva
+%  que aparece en el pie del talk principal, para sincronizar fácilmente.
+%
+%  Compila con XeLaTeX o LuaLaTeX (o tectonic). Formato deliberadamente simple.
+% ============================================================================
+\documentclass[11pt,aspectratio=169]{beamer}
+
+\usepackage[spanish,es-noshorthands]{babel}
+\usepackage{amsmath,amssymb}
+
+% ---------- Formato mínimo y legible ----------
+\usetheme{default}
+\setbeamertemplate{navigation symbols}{}
+\setbeamercolor{frametitle}{fg=black}
+\setbeamerfont{frametitle}{series=\bfseries,size=\large}
+\setbeamertemplate{frametitle continuation}{\quad(cont.)}
+
+% Texto a la izquierda, interlineado cómodo para leer
+\setbeamertemplate{itemize item}{--}
+\setlength{\parskip}{0.55em}
+\linespread{1.08}
+
+\title{Guion de lectura — Avance}
+\subtitle{Efectos de la IA Generativa en los Mercados Laborales de América Latina}
+\author{Eric Torres}
+\date{Seminario de Investigación I}
+
+\begin{document}
+
+% ===== Portada del guion =====
+\begin{frame}[plain]
+  \titlepage
+  \vfill
+  {\footnotesize Documento de apoyo para leer en voz alta. El número de cada
+  título corresponde a la diapositiva del talk principal.}
+\end{frame}
+
+% ===== Portada del talk =====
+\begin{frame}[allowframebreaks]{Portada — Apertura}
+Muy buenas tardes a todas y a todos. Muchas gracias por su tiempo y por estar
+aquí. Mi nombre es Eric Torres, soy estudiante del Programa Doctoral en Economía
+de la Pontificia Universidad Católica del Perú.
+
+Hoy quiero presentarles un avance de mi investigación sobre los efectos de la
+inteligencia artificial generativa —en concreto, de los grandes modelos de
+lenguaje, los LLMs, que es la tecnología detrás de herramientas como ChatGPT—
+sobre los mercados laborales de América Latina.
+
+La pregunta de fondo es muy sencilla de enunciar y muy difícil de responder:
+¿esta nueva tecnología ya está cambiando el empleo, los salarios y las horas de
+trabajo de la gente? Y, sobre todo, ¿está cambiándolos de la misma manera en una
+región como la nuestra, donde el mercado laboral funciona de un modo muy distinto
+al de los países ricos?
+
+Quiero ser transparente desde el inicio: esto es un avance. La meta del proyecto
+es comparar seis países de la región, pero hoy traigo resultados terminados solo
+para el Perú, concretamente para Lima Metropolitana. Sobre esos resultados peruanos
+voy a concentrar la mayor parte de la charla.
+\end{frame}
+
+% ===== 1 =====
+\begin{frame}[allowframebreaks]{1 · Hoja de ruta del avance}
+Permítanme primero darles el mapa de la charla, para que sepan a dónde vamos.
+
+Empiezo con la \textbf{motivación}: por qué este es un buen momento para estudiar
+esto, y por qué casi toda la evidencia que tenemos viene de fuera de nuestra región.
+
+Luego planteo la \textbf{pregunta} central: ¿movieron los LLMs los resultados del
+mercado laboral en América Latina?
+
+Después explico la \textbf{estrategia}: uso una metodología de diferencias en
+diferencias con tratamiento continuo, propuesta por Callaway, Goodman-Bacon y
+Sant'Anna en 2024, y la aplico país por país.
+
+En la parte central muestro \textbf{lo que traigo hoy}: las estimaciones para el
+Perú, usando la Encuesta Permanente de Empleo Nacional, entre el primer trimestre
+de 2021 y el cuarto de 2025.
+
+Y cierro con lo que queda \textbf{pendiente}: los otros cinco países —Costa Rica,
+Colombia, Ecuador, México y Uruguay—.
+
+Insisto en una idea que repetiré varias veces: esta presentación es un avance.
+Solo reporto estimaciones preliminares para Perú. La comparación entre los seis
+países queda pendiente, y esa comparación es, en realidad, la contribución
+empírica central del artículo.
+\end{frame}
+
+% ===== 2 =====
+\begin{frame}[allowframebreaks]{2 · Motivación: General-Purpose Technology}
+Antes de hablar del mercado laboral, conviene entender qué tipo de tecnología
+tenemos entre manos.
+
+Los economistas usamos el término ``tecnología de propósito general'', en inglés
+\emph{General-Purpose Technology} o GPT. Una tecnología de propósito general es
+aquella que es tan importante que llega a transformar gran parte de la economía y
+de la sociedad. No es una herramienta diseñada para una sola tarea, sino más bien
+una plataforma de base sobre la que se construyen muchísimas otras cosas.
+
+¿Cómo reconocemos una tecnología de propósito general? Tiene tres características.
+Primero, se usa en muchos sectores a la vez, no en uno solo. Segundo, mejora de
+forma continua con el tiempo, es decir, evoluciona. Y tercero, genera innovación
+complementaria: aparecen nuevos productos y nuevas formas de trabajo alrededor de
+ella.
+
+Los ejemplos históricos son los grandes hitos de la economía moderna: la máquina
+de vapor, la electricidad, las computadoras y el internet. La tesis de fondo de
+este proyecto es que la inteligencia artificial —y muy en particular los modelos
+de lenguaje de hoy— pertenece a esa misma categoría. Si eso es cierto, entonces
+sus efectos sobre el trabajo no son un tema de moda pasajera: son algo que vale
+la pena medir con cuidado.
+\end{frame}
+
+% ===== 3 =====
+\begin{frame}[allowframebreaks]{3 · Motivación: un shock global, evidencia local}
+Concretemos. El 30 de noviembre de 2022 se lanzó ChatGPT. En cuestión de semanas,
+puso un modelo de lenguaje de propósito general en manos de cientos de millones de
+personas. Fue, literalmente, un shock global y casi instantáneo.
+
+¿Qué tan grande puede ser su impacto potencial? Eloundou y coautores, en un
+trabajo de 2024, estiman que alrededor del cincuenta por ciento de los empleos en
+Estados Unidos tienen al menos una tarea que podría reducirse en al menos un
+cincuenta por ciento usando un LLM. Es una cifra enorme; sugiere que el potencial
+de exposición es muy amplio.
+
+Pero —y este es el punto importante— una cosa es el potencial y otra muy distinta
+es el efecto realizado. Cuando uno mira las primeras estimaciones causales
+rigurosas, los efectos medidos son sorprendentemente pequeños. Humlum y
+Vestergaard, en Dinamarca, descartan efectos sobre salarios u horas mayores al
+dos por ciento. Hartley y coautores, y Chen y coautores en Estados Unidos,
+encuentran efectos detectables, pero concentrados en las ocupaciones más
+expuestas. Hui y coautores sí hallan caídas grandes, del veinte al cincuenta por
+ciento, pero en plataformas de trabajo \emph{freelance}.
+
+Y aquí está el vacío que motiva mi tesis: casi toda esta evidencia causal proviene
+de Estados Unidos, de Dinamarca o de plataformas dominadas por trabajadores de
+economías avanzadas. Prácticamente no sabemos nada, de forma causal, sobre lo que
+pasa en una economía en desarrollo.
+\end{frame}
+
+% ===== 4 =====
+\begin{frame}[allowframebreaks]{4 · El shock llegó a la región}
+Antes de preguntarnos por los efectos, vale la pena confirmar algo básico: ¿el
+shock siquiera llegó a nuestra región?
+
+En esta diapositiva, el gráfico de la izquierda muestra el interés de búsqueda en
+Google Trends para los seis países del estudio: Costa Rica, Colombia, Ecuador,
+México, Perú y Uruguay. La historia que cuenta es muy clara. En las ocho semanas
+previas al lanzamiento de ChatGPT, el interés era prácticamente cero. A lo largo
+de 2023 se produce una subida abrupta. Y el máximo se alcanza a inicios de 2025.
+Es decir: la curiosidad y el uso explotaron en muy poco tiempo, igual que en el
+resto del mundo.
+
+Ahora bien, quiero ser cuidadoso con lo que esto significa, porque es fácil
+sobreinterpretarlo. Que la gente conozca y busque ChatGPT no es lo mismo que que
+lo adopte en su trabajo, y la adopción tampoco es lo mismo que un efecto causal
+sobre el mercado laboral. Reconocimiento, adopción y efecto causal son tres cosas
+distintas. Google Trends solo me confirma la primera. El resto de la charla se
+dedica, justamente, a intentar medir la tercera.
+\end{frame}
+
+% ===== 5 =====
+\begin{frame}[allowframebreaks]{5 · ¿Por qué América Latina?}
+¿Por qué estudiar América Latina, y no simplemente replicar los estudios de
+Estados Unidos? Porque nuestra región tiene rasgos estructurales que pueden hacer
+que la tecnología actúe de una manera completamente distinta.
+
+Primero, la \textbf{informalidad}. La tasa promedio de la región ronda el
+cincuenta y cinco por ciento, pero con un rango enorme: desde alrededor del
+veinticinco por ciento en Uruguay hasta más del setenta por ciento en la región
+andina. Esto no existe en los países donde se ha hecho la mayoría de los estudios.
+
+Segundo, son \textbf{mercados segmentados}. El sector formal y el informal
+funcionan casi como dos mercados distintos: tienen instituciones diferentes para
+fijar salarios, distinta exposición digital y distintos colchones para
+amortiguar un shock de productividad.
+
+Tercero, la \textbf{exposición a la tecnología es estructuralmente distinta}. En
+un trabajo del BID de 2024 —del que soy coautor, Azuara, Ripani y Torres—
+mostramos que la exposición a los LLMs en la región se inclina hacia los
+trabajadores formales, urbanos y con educación terciaria.
+
+Y aquí está, de nuevo, el vacío: ningún artículo ha dado el paso de estimar de
+forma \emph{causal} si esa exposición efectivamente movió los resultados del
+mercado laboral. La literatura latinoamericana que existe —Ciaschi y coautores,
+Egana-delSol y Bravo-Ortega— es valiosa, pero es descriptiva sobre exposición.
+Describe quién está expuesto, no qué le pasó. Este artículo busca dar ese paso
+causal.
+\end{frame}
+
+% ===== 6 =====
+\begin{frame}[allowframebreaks]{6 · Pregunta de investigación y contribuciones}
+Con todo eso, puedo enunciar la pregunta de investigación de forma precisa.
+
+¿Cuál es el efecto causal de la exposición ocupacional a los LLMs sobre el empleo,
+los salarios y las horas de trabajo en seis países de América Latina? Y,
+crucialmente, ¿cómo varía ese efecto según la formalidad de base de la ocupación?
+
+El proyecto hace cinco contribuciones. Primera: ofrece las primeras estimaciones
+causales fuera de la OCDE sobre el efecto laboral de los LLMs. Segunda: aplica el
+estimador de diferencias en diferencias con tratamiento continuo de Callaway y
+coautores, país por país. Tercera: pone la formalidad de base en el centro del
+análisis de heterogeneidad, no como un simple subgrupo de robustez, sino como el
+margen principal de interés. Cuarta: construye un \emph{crosswalk} y una base de
+datos armonizada para seis países, entre 2021 y 2025, que es reproducible. Y
+quinta —esta es metodológica— precompromete cuatro narrativas posibles antes de
+mirar los datos, de modo que el patrón que encontremos en cada país lo determine
+el dato, y no una búsqueda \emph{ex post} de la especificación que más nos guste.
+\end{frame}
+
+% ===== 7 =====
+\begin{frame}[allowframebreaks]{7 · Marco teórico: tareas, desplazamiento, reposición}
+Déjenme dar el marco teórico, que es sencillo pero ordena todo el análisis. Me
+apoyo en el enfoque de producción basada en tareas, de Acemoglu, Autor y Restrepo.
+
+La idea es esta: una ocupación no es una caja negra; es un paquete de tareas. Cada
+ocupación dedica una proporción de su tiempo a distintas tareas. La exposición de
+una ocupación a los LLMs, que llamo $\beta_o$, es simplemente la suma de las
+proporciones de tiempo dedicadas a tareas que un LLM puede complementar. Una
+ocupación con $\beta$ alto tiene muchas tareas ``llm-izables''; una con $\beta$
+bajo, pocas.
+
+¿Qué le pasa al salario cuando llegan los LLMs? La respuesta neta tiene dos
+fuerzas opuestas. Por un lado, un efecto de \textbf{desplazamiento}: la máquina
+hace la tarea y reduce la demanda de trabajo. Por otro, un efecto de
+\textbf{reposición o productividad}: el trabajador se vuelve más productivo y eso
+empuja su salario hacia arriba. El efecto neto sobre el salario es la diferencia
+entre reposición y desplazamiento, multiplicada por la exposición $\beta$.
+
+El punto clave es que el \emph{signo} de esa diferencia no es una predicción
+teórica: es un objeto empírico. La teoría no me dice si gana la reposición o el
+desplazamiento; eso hay que medirlo.
+
+Y aquí entra el canal que más me interesa, el de la formalidad. Adoptar estas
+herramientas en una empresa requiere una inversión de costo fijo. Por eso la
+adopción tiende a concentrarse en las firmas formales. Como consecuencia, el
+efecto en el sector formal y en el informal puede diferir tanto en magnitud como
+en signo. Esa intuición es la que después voy a poner a prueba con los datos.
+\end{frame}
+
+% ===== 8 =====
+\begin{frame}[allowframebreaks]{8 · Cuatro narrativas pre-registradas, país por país}
+Esta diapositiva contiene el corazón metodológico del diseño, así que me detengo
+un momento.
+
+Antes de mirar los resultados posteriores al tratamiento, dejé por escrito cuatro
+historias posibles, cuatro narrativas, con sus predicciones. La idea es
+comprometerse de antemano para no caer en la tentación de inventar la explicación
+después de ver el número.
+
+La narrativa A, ``la informalidad amplifica'', predice efectos grandes y negativos,
+sobre todo en los informales, que absorberían más el golpe. La narrativa B, la
+``replicación del nulo'', dice que no pasa casi nada, igual que en Dinamarca: el
+Perú se parecería a Humlum y Vestergaard. La narrativa C, ``nulo formal, grande
+informal'', predice que los formales no se mueven pero los informales sí sufren un
+efecto negativo importante; sería un canal que los estudios de Estados Unidos o
+Dinamarca no pueden detectar, porque allá casi no hay informalidad. Y la narrativa
+D, ``ganancias estratificadas'', predice ganancias salariales, pero concentradas
+en los formales urbanos con educación terciaria.
+
+La contribución metodológica está, precisamente, en precomprometer estas
+narrativas antes de mirar el dato post-tratamiento. Ahora bien, seré honesto con
+ustedes: las estimaciones de Perú se ejecutaron antes del depósito formal del
+pre-registro. Por eso las trato como \textbf{exploratorias} en el mapeo a
+narrativas. El pre-registro formal, en firme, cubrirá los cinco países restantes.
+\end{frame}
+
+% ===== 9 =====
+\begin{frame}[allowframebreaks]{9 · Estrategia empírica: DiD continuo, país por país}
+Veamos ahora la estrategia empírica con un poco más de detalle, pero sin perdernos
+en lo técnico.
+
+Uso una sola fecha de adopción global: el cuarto trimestre de 2022. Ese trimestre,
+el del lanzamiento, lo descarto como ``colchón'', y considero que el tratamiento
+empieza de forma efectiva en el primer trimestre de 2023.
+
+La idea de diferencias en diferencias es comparar cómo evolucionan, antes y después
+de esa fecha, las ocupaciones más expuestas frente a las menos expuestas. Como la
+exposición $\beta$ es una variable continua —no un simple ``tratado o no
+tratado''— uso el estimador de tratamiento continuo de Callaway, Goodman-Bacon y
+Sant'Anna.
+
+Los resultados que miro son tres, a nivel de celda ocupación-trimestre: el
+logaritmo del empleo, el logaritmo del salario por hora, y las horas semanales. La
+exposición $\beta$ viene de Eloundou y coautores, y la mapeo a la clasificación
+internacional de ocupaciones, la CIUO-08 a cuatro dígitos, con un emparejamiento
+del noventa y ocho por ciento. Los errores estándar los agrupo a nivel de
+ocupación.
+
+Y, muy importante, no me quedo con una sola especificación. Apoyo el resultado
+con varias herramientas complementarias: un \emph{event study} de Sun y Abraham,
+una versión binaria del estimador de Callaway y Sant'Anna partiendo en la mediana,
+un enfoque tipo \emph{shift-share}, y un \emph{wild cluster bootstrap}. La idea es
+que la conclusión no dependa de una única receta.
+\end{frame}
+
+% ===== 10 =====
+\begin{frame}[allowframebreaks]{10 · Datos: armonización a CIUO-08 en seis países}
+Para comparar seis países hay que hablar el mismo idioma estadístico, y esa es la
+parte menos glamorosa pero más laboriosa del proyecto.
+
+Cada país tiene su propia encuesta de empleo, con su propia frecuencia y su propia
+clasificación de ocupaciones. Costa Rica usa la ECE, trimestral. Colombia, la
+GEIH, mensual, que agrego a trimestres. Ecuador, la ENEMDU, también mensual.
+México, la ENOE, trimestral, donde aprovecho una correspondencia oficial del INEGI.
+Uruguay, la ECH, con un trabajo de campo continuo que separo por mes de entrevista.
+Y el Perú —destacado en la tabla— usa la EPEN, que es trimestral pero solo cubre
+Lima Metropolitana, y que tiene además un cambio de clasificador que les explico en
+la siguiente diapositiva.
+
+A todas las llevo a una misma clasificación internacional, la CIUO-08 a cuatro
+dígitos, y a una ventana común de tiempo: del primer trimestre de 2021 al cuarto de
+2025. Esa ventana es deliberadamente posterior a la COVID, para no confundir el
+efecto de los LLMs con el de la pandemia.
+
+Tiene un costo: el período ``pre'', antes del tratamiento, es corto, apenas siete
+trimestres limpios. Eso le quita potencia a las pruebas de tendencias previas, y
+por eso más adelante me apoyo en las cotas de Honest-DiD para ser honesto sobre esa
+limitación.
+\end{frame}
+
+% ===== 11 =====
+\begin{frame}[allowframebreaks]{11 · Perú: el cambio de clasificador coincide con el shock}
+Esta diapositiva trata el principal reto técnico del caso peruano, y quiero
+explicarlo bien porque es delicado.
+
+La EPEN cambió su clasificador de ocupaciones justo en el cuarto trimestre de 2022.
+Hasta el tercer trimestre de 2022 usaba el clasificador CO-1995, a tres dígitos,
+con 319 códigos. Desde el cuarto trimestre de 2022 pasó al CNO-2015, a cuatro
+dígitos, con 473 códigos. El problema salta a la vista: el cambio de clasificador
+cae exactamente en la misma fecha del tratamiento. Si no se trata con cuidado, uno
+podría confundir un mero cambio de codificación con un efecto real de la tecnología.
+
+¿Cómo lo resuelvo? Llevo ambos períodos a la clasificación internacional CIUO-08 a
+cuatro dígitos, usando los cuatro anexos oficiales del INEI, pero con un refinamiento:
+empleo pesos posteriores empíricos, condicionados en variables como la edad, el
+sexo, la educación, el sector económico y el dominio geográfico. En palabras
+simples: no traduzco a ciegas, sino tomando en cuenta el perfil del trabajador.
+
+Y validé esa traducción con criterios fijados de antemano. El salto máximo en la
+composición de ocupaciones entre el tercer y el cuarto trimestre de 2022 fue de
+apenas dos puntos porcentuales, muy por debajo del umbral de cinco que me había
+puesto. La divergencia máxima de los pesos entre 2023 y 2025 fue de cero coma cero
+cuarenta y seis, también por debajo del umbral. Y queda pendiente, como robustez,
+un DiD tipo \emph{donut} que descarte los trimestres del corte. En resumen: el
+cambio de clasificador está bajo control, y puedo mostrar que no contamina el
+resultado.
+\end{frame}
+
+% ===== 12 =====
+\begin{frame}[allowframebreaks]{12 · Lima Metropolitana 2021: descriptivos}
+Antes de los resultados, una foto de la muestra en el año base, 2021, para que
+tengan en mente con quién estamos trabajando.
+
+La edad promedio es de unos 38 años. Las mujeres son el 45 por ciento de la
+muestra. Un 36 por ciento tiene educación terciaria o postsecundaria. La tasa de
+formalidad, medida por afiliación al seguro de salud, es de un 37 por ciento. Se
+trabajan, en promedio, unas 43 horas semanales, y el logaritmo del salario por hora
+es de 1,88.
+
+A la derecha está la distribución de la exposición $\beta$, ponderada por empleo.
+La exposición media es de 0,28. Un dato que me parece relevante: una de cada cuatro
+personas —el 25,6 por ciento— trabaja en ocupaciones con exposición cero, es decir,
+prácticamente no tocadas por los LLMs.
+
+Y hay un patrón que anticipa todo lo que viene: la formalidad sube de forma marcada
+a medida que aumenta la exposición. En el quintil menos expuesto, la formalidad es
+del 26 por ciento; en el más expuesto, sube al 51 por ciento. Dicho de otro modo,
+en Lima las ocupaciones más expuestas a la IA son justamente las más formales. Por
+eso el análisis por formalidad, que viene después, es tan central.
+\end{frame}
+
+% ===== 13 =====
+\begin{frame}[allowframebreaks]{13 · Resultado 1: estimaciones agregadas para Perú}
+Llegamos al primer resultado: el efecto agregado para el Perú. Y aquí hay una
+lección importante sobre cómo se promedian los efectos.
+
+En el Panel A está la especificación principal, el TWFE continuo, es decir, el
+estimador de efectos fijos en dos vías. ¿Qué muestra? Sobre el empleo, un
+coeficiente de 0,221, pero no significativo. Sobre el salario, 0,042, tampoco
+significativo. Y sobre las horas, menos 3,25, marginalmente significativo. Si uno
+se quedara solo con este panel, concluiría que ``no pasa nada'': sería la
+replicación del nulo, como en Dinamarca.
+
+Pero veamos el Panel B, que usa el estimador binario de Callaway y Sant'Anna,
+partiendo la muestra en la mediana de exposición. Este estimador agrega
+correctamente los efectos por cohorte y por tiempo. Y aquí aparece otra cosa: un
+efecto positivo y muy significativo sobre el empleo, de 0,144, significativo al uno
+por ciento; el salario sigue plano; y un efecto negativo y significativo sobre las
+horas, de menos 0,8.
+
+La moraleja es esta: el ``nada pasa'' del Panel A y el ``sí pasa'' del Panel B no
+se contradicen por casualidad. Cuando uno agrega bien los efectos, aparece una
+señal —más empleo, menos horas— que el promedio ingenuo del Panel A escondía. En la
+siguiente diapositiva les explico por qué, y por qué prefiero el Panel B.
+\end{frame}
+
+% ===== 14 =====
+\begin{frame}[allowframebreaks]{14 · Robustez 1: cota Honest-DiD}
+Esta diapositiva es un ejercicio de honestidad metodológica, y quiero subrayarlo
+porque habla de la seriedad del diseño.
+
+Me impuse, de antemano, un estándar de robustez: para tomarme en serio una
+afirmación principal, el resultado debía resistir cierta violación de las
+tendencias paralelas. Técnicamente, usando el método de Rambachan y Roth, exigía un
+valor de quiebre de al menos dos. En cristiano: el efecto tenía que sobrevivir
+incluso si las tendencias previas no eran perfectamente paralelas.
+
+¿Qué pasó con la especificación continua del Panel A? Que ese valor de quiebre fue
+cero, para los tres resultados. Es decir, el intervalo de confianza original ya
+incluía el cero, así que el criterio ni siquiera logra separar la especificación
+continua de la hipótesis nula.
+
+Lo digo con todas sus letras: la especificación continua TWFE no supera el estándar
+de robustez que el propio artículo se impuso. Lo reporto de manera transparente.
+Y por eso, a la luz de esto, trato al estimador binario de Callaway y Sant'Anna,
+el del Panel B, como la lectura preferida del agregado.
+
+Por último, esta discrepancia entre paneles no es un fracaso: es informativa. Cuando
+hay respuestas heterogéneas a la dosis de tratamiento, el TWFE puede asignar pesos
+implícitos negativos a algunos grupos y, al promediar, diluir o cancelar el efecto.
+Es un fenómeno bien documentado, por de Chaisemartin y D'Haultfœuille, y por Sun y
+Abraham. En otras palabras: el promedio simple miente, y por eso necesito un
+estimador que agregue bien.
+\end{frame}
+
+% ===== 15 =====
+\begin{frame}[allowframebreaks]{15 · Resultado 2: tendencias previas y dinámica del efecto}
+Pasemos a las tendencias previas y a la dinámica del efecto en el tiempo, que es lo
+que muestra el \emph{event study} de la izquierda.
+
+Lo primero que hay que comprobar en un diseño de diferencias en diferencias es que,
+antes del tratamiento, los grupos venían evolucionando en paralelo. El test
+conjunto de Wald sobre los coeficientes previos no rechaza esa hipótesis en ninguno
+de los tres resultados: los \emph{p}-valores están todos por encima de 0,17. Es
+decir, no encuentro evidencia de tendencias previas problemáticas. Con la salvedad,
+que ya mencioné, de que el período pre es corto y por tanto la prueba tiene poca
+potencia.
+
+Sobre el empleo, en el panel (a): los doce coeficientes posteriores al tratamiento
+son positivos sin excepción, y van de más 0,25 a más 0,52. Es un patrón muy
+consistente: tras la llegada de los LLMs, el empleo en las ocupaciones expuestas se
+expande, y se mantiene expandido.
+
+Sobre las horas, en el panel (c): los coeficientes previos son sistemáticamente
+positivos, y los posteriores, negativos. Aquí debo ser cauto. Ese perfil de
+``inversión'' —positivo antes, negativo después— sugiere una posible reversión de
+tendencia que podría estar inflando mecánicamente el coeficiente principal de las
+horas. Siguiendo la recomendación de Roth, lo tomo con pinzas y lo señalo como una
+debilidad, no como un hallazgo firme.
+\end{frame}
+
+% ===== 16 =====
+\begin{frame}[allowframebreaks]{16 · Resultado 3: heterogeneidad por formalidad}
+Y llegamos al resultado que, para mí, es el más interesante de toda la charla: qué
+pasa cuando separo el efecto por la formalidad de base de la ocupación.
+
+Miren la tabla. En el canal formal, el efecto sobre el empleo es positivo y muy
+significativo, 0,567; sobre el salario por hora es negativo y significativo, menos
+0,128; y sobre las horas, negativo. En el canal informal, en cambio, el cuadro se
+invierte: el empleo no se mueve de forma significativa, pero el salario por hora
+sube de forma fuerte y significativa, 0,265.
+
+Es decir, el sector formal y el informal se mueven en direcciones opuestas. Y esas
+diferencias no son ruido: la prueba de igualdad entre ambos canales se rechaza para
+el empleo, con un \emph{p}-valor de 0,005, y para el salario, con un \emph{p}-valor
+menor a 0,001.
+
+La conclusión es contundente, y reordena todo lo anterior: aquel ``nulo agregado''
+que veíamos en el Panel A es, en realidad, un artefacto de cancelación. No es que no
+pase nada; es que pasan dos cosas opuestas —una en el formal y otra en el informal—
+que, al promediarse a ciegas, se anulan entre sí. Solo al separar por formalidad
+aparece la verdadera estructura del efecto.
+\end{frame}
+
+% ===== 17 =====
+\begin{frame}[allowframebreaks]{17 · Heterogeneidad por formalidad: visualización}
+Esta diapositiva es simplemente la versión visual del resultado anterior, para que
+quede grabado de un vistazo.
+
+En el gráfico ven los coeficientes del canal formal y del canal informal, cada uno
+con su intervalo de confianza al noventa y cinco por ciento. Lo que quiero que noten
+es la separación: para el empleo y para el salario por hora, los dos canales no solo
+apuntan en direcciones distintas, sino que sus intervalos casi no se traslapan. Esa
+separación visual es la misma que la tabla resumía con los \emph{p}-valores de
+0,005 para el empleo y menor a 0,001 para el salario.
+
+En una sola frase: la formalidad no es un detalle; es el eje sobre el que se
+organiza todo el efecto de los LLMs en el caso peruano.
+\end{frame}
+
+% ===== 18 =====
+\begin{frame}[allowframebreaks]{18 · Síntesis: el ``Patrón Peruano'' emergente}
+Recojo todo lo anterior en una síntesis, y empiezo siendo honesto sobre las cuatro
+narrativas que había precomprometido: ninguna de las cuatro reproduce exactamente lo
+que encontré en Lima.
+
+La narrativa A requería que el efecto formal sobre el empleo fuera negativo, y me
+salió positivo. La B requería que ambos canales fueran nulos, y rechazo esa igualdad
+tanto en empleo como en salario. La C requería que el canal formal fuera
+aproximadamente nulo, pero la magnitud y la significancia del canal formal lo
+contradicen. Y la D predecía ganancias salariales para los formales, cuando el signo
+salarial formal me salió, de hecho, opuesto.
+
+Entonces, ¿qué encontré? Lo que llamo, de manera exploratoria, el ``Patrón
+Peruano''. Las ocupaciones formales-dominantes expuestas a los LLMs expanden el
+empleo y reducen las horas, con una presión a la baja sobre el salario por hora. Las
+ocupaciones informales-dominantes, en cambio, muestran una contracción débil del
+empleo, pero con salarios al alza entre quienes permanecen en la ocupación, lo cual
+podría reflejar selección positiva o un efecto de equilibrio general.
+
+Como este patrón no estaba entre los cuatro pre-registrados, lo propongo como un
+quinto patrón, que añadiré a la pre-registración formal antes de mirar los datos
+posteriores de los otros cinco países. Así mantengo la disciplina del diseño.
+\end{frame}
+
+% ===== 19 =====
+\begin{frame}[allowframebreaks]{19 · Puntos a considerar (I): identificación y datos}
+Quiero dedicar dos diapositivas a las limitaciones, con toda transparencia, porque
+creo que reconocerlas es parte de hacer buena investigación. Empiezo por las de
+identificación y datos.
+
+Primero, la cobertura geográfica. La EPEN cubre únicamente Lima Metropolitana, así
+que mi estimación para el Perú no es nacionalmente representativa. Tengo prevista una
+validación con la ENAHO anual, que sí es nacional.
+
+Segundo, la definición de formalidad. La construyo a partir de la afiliación al
+seguro de salud. La definición de la OIT, basada en pensiones, requeriría también la
+ENAHO.
+
+Tercero —y ya lo discutí— la cota Honest-DiD es cero en el TWFE continuo. La
+especificación principal no supera el criterio de robustez que me había puesto, y por
+eso la lectura preferida pasa al estimador binario de Callaway y Sant'Anna.
+
+Y cuarto, la posible reversión de tendencia en las horas, que ya señalé en el
+\emph{event study}: los coeficientes previos positivos podrían estar inflando el
+coeficiente de horas, así que lo trato con cautela.
+\end{frame}
+
+% ===== 20 =====
+\begin{frame}[allowframebreaks]{20 · Puntos a considerar (II): supuestos y método}
+Sigo con las limitaciones de supuestos y método.
+
+Quinto, la selección no modelada. La EPEN es un corte transversal repetido, no un
+panel. Eso significa que la migración entre ocupaciones, la salida hacia el
+desempleo y la recomposición demográfica no son identificables con estos datos. Veo
+fotos sucesivas de la población, no sigo a las mismas personas.
+
+Sexto, el \emph{crosswalk} descansa en pesos posteriores empíricos. Queda pendiente
+la escalera completa de robustez: probar con CO-1995 a tres dígitos, el DiD
+\emph{donut}, pesos uniformes y una versión solo con datos posteriores.
+
+Séptimo, el supuesto SUTVA. Si hay derrames dentro de las empresas, mi estimación
+del desplazamiento estaría sesgada hacia cero. Una cota narrativa, de Berg y
+coautores, acota la magnitud de ese problema, pero no lo elimina.
+
+Octavo, el período previo es corto: solo siete trimestres. Las pruebas de tendencias
+previas tienen, por tanto, poca potencia.
+
+Y noveno, lo repito una vez más: las estimaciones de Perú son previas al depósito del
+pre-registro, así que las identifico como exploratorias. El pre-registro formal en
+OSF cubrirá los cinco países restantes.
+\end{frame}
+
+% ===== 21 =====
+\begin{frame}[allowframebreaks]{21 · Próximos pasos}
+¿Hacia dónde va el proyecto a partir de aquí?
+
+En lo inmediato, voy a cerrar la escalera de robustez del clasificador para el Perú,
+y a validar los resultados con la ENAHO anual, que me dará representatividad nacional
+y la definición de formalidad de la OIT. También probaré medidas alternativas de
+exposición —además de la $\beta$ de Eloundou, las medidas de Webb y el índice AIOE de
+Felten y coautores— y añadiré las cotas de Honest-DiD, el método de Oster y los
+errores estándar adecuados para el enfoque \emph{shift-share}.
+
+Y en el horizonte central del proyecto: replicar todo este \emph{pipeline} en Costa
+Rica, Colombia, Ecuador, México y Uruguay. La meta final es poner los seis países
+lado a lado y comparar sus efectos. Esa comparación entre países es, como dije al
+inicio, la contribución empírica central del artículo. Lo de hoy, el caso peruano,
+es la primera pieza de ese rompecabezas.
+\end{frame}
+
+% ===== 22 =====
+\begin{frame}[allowframebreaks]{22 · Algunas referencias clave}
+Esta última diapositiva recoge las referencias clave del trabajo, que ya fui citando
+a lo largo de la charla: el marco de tareas de Acemoglu y Restrepo; las medidas de
+exposición de Eloundou y coautores; los estimadores de diferencias en diferencias de
+Callaway, Goodman-Bacon y Sant'Anna; las herramientas de robustez de Rambachan y Roth
+y de Roth; y los antecedentes sobre América Latina, incluido el trabajo del BID del
+que soy coautor.
+
+Permítanme cerrar con una sola idea. La pregunta de si la inteligencia artificial
+generativa está cambiando el trabajo no se responde igual en todas partes. En una
+región con altísima informalidad y mercados segmentados como la nuestra, el efecto
+puede tener una estructura propia. La evidencia preliminar para el Perú sugiere,
+justamente, que el promedio agregado esconde dos fuerzas opuestas según la
+formalidad. Confirmar si ese patrón se repite, o cambia, en los otros cinco países
+es el siguiente paso.
+
+Muchas gracias por su atención. Quedo atento a sus comentarios y sugerencias.
+\end{frame}
+
+\end{document}
