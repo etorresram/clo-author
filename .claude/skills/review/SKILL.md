@@ -102,19 +102,6 @@ Save all outputs to `quality_reports/reviews/`:
 
 Log the referee assignments (dispositions + pet peeves) in the editorial decision so the user can re-run with different combinations.
 
-#### Generate HTML Report
-After saving markdown reports, generate the interactive HTML version and refresh the dashboard:
-
-```bash
-python3 scripts/generate_html_report.py peer-review \
-  quality_reports/reviews/YYYY-MM-DD_referee_domain.md \
-  quality_reports/reviews/YYYY-MM-DD_referee_methods.md \
-  quality_reports/reviews/YYYY-MM-DD_editorial_decision.md
-python3 scripts/generate_dashboard.py
-```
-
-Open the HTML report for the user: `open quality_reports/reviews/YYYY-MM-DD_peer_review.html`
-
 ### R&R Second Round (`--peer --r2 [journal]`)
 
 Continues the review cycle after the author has revised the paper.
@@ -203,12 +190,6 @@ Include the lint report in the coder-critic's input so it can skip already-flagg
 
 Save report to `quality_reports/[file]_code_review.md`
 
-Generate HTML version and refresh dashboard:
-```bash
-python3 scripts/generate_html_report.py code-audit quality_reports/[file]_code_review.md
-python3 scripts/generate_dashboard.py
-```
-
 ### Causal Audit (`--methods`)
 
 Dispatch **strategist-critic** standalone for a full 4-phase causal inference review.
@@ -250,12 +231,6 @@ Dispatch **strategist-critic** standalone for a full 4-phase causal inference re
 - **CRITICAL ERRORS** — Fundamental design flaw or incorrect implementation
 
 Save report to `quality_reports/[file]_strategy_review.md`
-
-Generate HTML version and refresh dashboard:
-```bash
-python3 scripts/generate_html_report.py strategy-review quality_reports/[file]_strategy_review.md
-python3 scripts/generate_dashboard.py
-```
 
 ### Manuscript Polish (`--proofread`)
 Dispatch **writer-critic** standalone:
@@ -311,47 +286,15 @@ Verifier score maps to 0 (FAIL) or 100 (PASS) for weighted aggregation.
 
 ---
 
-## Bundled Resources
-
-All review checklists, rubrics, and templates live under `review/`:
-
-### Templates (checklists and report formats)
-
-| File | Used By | Content |
-|------|---------|---------|
-| `templates/manuscript-review-8-categories.md` | writer-critic | 8 check categories: structure, claims, ID fidelity, writing, LaTeX, compilation, voice, notation |
-| `templates/code-review-16-categories.md` | coder-critic | 16 check categories: strategic alignment (4) + code quality (12) |
-| `templates/causal-audit-4-phases.md` | strategist-critic | 4-phase sequential protocol: claim, design, inference, polish |
-| `templates/theory-review-4-phases.md` | theorist-critic | 4-phase theory review: claim, proof validity, assumptions, citations/linkage |
-| `templates/talk-review-6-categories.md` | storyteller-critic | 6 check categories: narrative, visual, content, scope, compilation, coherence |
-| `templates/literature-review-6-categories.md` | librarian-critic | 6 check categories: coverage, journal quality, scope, recency, categorization, BibTeX |
-| `templates/data-review-6-categories.md` | explorer-critic | 6 check categories: measurement, sample, external validity, alternatives, feasibility, ID compatibility |
-| `templates/disposition-pool.md` | editor | Referee dispositions, pet peeves, desk reject criteria, decision rules, report formats |
-| `templates/referee-report-template.md` | domain-referee, methods-referee | Standard output format for referee reports |
-
-### Config
-
-| File | Content |
-|------|---------|
-| `config/scoring-rubrics.md` | Consolidated deduction tables for all 7 critics + quality gates |
-
-### Gotchas
-
-| File | Content |
-|------|---------|
-| `gotchas.md` | Known failure points and edge cases for all review modes |
-
----
-
 ## Principles
 - **Smart routing.** File type determines the default review mode.
 - **Flags override.** Use explicit flags for targeted reviews.
 - **Critics never edit.** All reviews produce reports only.
 - **Journal drives everything.** The journal profile shapes the editor's bar, referee selection, and review culture.
-- **Referees vary.** Different dispositions and pet peeves mean running `/review --peer` twice gives different feedback -- just like submitting to two journals would.
+- **Referees vary.** Different dispositions and pet peeves mean running `/review --peer` twice gives different feedback — just like submitting to two journals would.
 - **"What would change my mind."** Every major comment must include the specific evidence or analysis that would resolve the concern.
 - **Design-opinionated, package-flexible.** Recommend standard packages (fixest, did, rdrobust, etc.) but accept and validate alternatives. The design matters more than the package.
 - **Sequential phases in causal audit.** Never skip to robustness before verifying the core design holds.
 - **Proportional severity.** Missing `set.seed()` is Major; missing comment is Minor.
-- **Worker-critic separation.** The reviewer never fixes code or rewrites text -- it only critiques.
+- **Worker-critic separation.** The reviewer never fixes code or rewrites text — it only critiques.
 - **Actionable output.** Every issue must have a concrete fix, not vague advice.

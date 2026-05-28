@@ -76,24 +76,13 @@ Before presenting the draft:
 - [ ] Notation consistent throughout
 - [ ] All tables/figures referenced actually exist in `paper/tables/` or `paper/figures/`
 - [ ] Results narrated correctly for output type (tables, event study figures, counterfactuals)
-- [ ] Personal style guide loaded (not template) — or user prompted to run `/write style-guide`
-- [ ] Claim-source map produced for all numerical claims (`quality_reports/claim_source_map_{project}.md`)
-- [ ] Results/Conclusion only drafted after verifying actual output files exist
 
 #### 6. Present to User
 
-Present sections through drafting gates, pausing for approval at each:
-
-**GATE 1:** Introduction + Literature positioning → present, wait for approval
-**GATE 2:** Data + Empirical Strategy (or Model) → present, wait for approval
-**GATE 3:** Results + Robustness + Conclusion → present, wait for approval
-
-For single-section drafts, present the section directly. For `full`, use all three gates.
-
-Flag items that need attention:
-- **BLOCKED items:** Results/Conclusion cannot be drafted without output files
+Present each section for feedback. Flag items that need attention:
+- **TBD items:** Where empirical results are needed but not yet available
 - **VERIFY items:** Citations that need user confirmation
-- **VOICE items:** Style guide not yet extracted (drafting blocked until resolved)
+- **PLACEHOLDER items:** Effect sizes awaiting final estimates
 
 ### `/write style-guide [paper-dir]` — Extract Personal Voice
 
@@ -169,24 +158,6 @@ Strips 24 patterns across 4 categories:
 - `\citep{}` for parenthetical citations ("...is well documented (Smith, 2024)")
 - `booktabs` rules (`\toprule`, `\midrule`, `\bottomrule`) — never `\hline`
 - Notation protocol: `Y_{it}`, `D_{it}`, `\gamma_i`, `\delta_t`, `\varepsilon_{it}`
-
----
-
-## Bundled Resources (Level 3)
-
-Loaded on demand by the writer agent:
-
-| Resource | Path | When |
-|----------|------|------|
-| Section templates | `templates/section-templates.md` | Always -- defines section structure |
-| Paragraph moves | `templates/paragraph-moves.md` | Always -- defines argument types |
-| Cleanup patterns | `templates/cleanup-patterns.md` | After drafting -- cleanup pass |
-| Style extraction | `templates/style-extraction-protocol.md` | `/write style-guide` mode |
-| Drafting gates | `templates/drafting-gates.md` | Full draft mode |
-| Claim-source map | `templates/claim-source-map.md` | After results section |
-| Notation protocol | `references/notation-protocol.md` | Strategy + results sections |
-
-See also: `gotchas.md` for known failure points and edge cases.
 
 ---
 

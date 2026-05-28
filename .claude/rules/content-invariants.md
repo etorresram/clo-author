@@ -52,17 +52,13 @@ These are non-negotiable. Every agent checks against them. Violations are deduct
 
 **INV-21.** Every claim on a slide is traceable to the paper. No orphan results or numbers that don't appear in the manuscript.
 
-## Traceability
-
-**INV-22.** Every numerical claim in the manuscript must have an entry in the claim-source map (`quality_reports/claim_source_map_{project}.md`) traceable to a specific script line and output file.
-
 ---
 
 ## How Agents Use This File
 
 | Agent | Checks | Action on Violation |
 |-------|--------|-------------------|
-| **writer-critic** | INV-1 through INV-13, INV-22 | Deduct per scoring rubric |
+| **writer-critic** | INV-1 through INV-13 | Deduct per scoring rubric |
 | **coder-critic** | INV-13 through INV-19 | Deduct per scoring rubric |
 | **storyteller-critic** | INV-20, INV-21 | Deduct per scoring rubric |
 | **verifier** | INV-9, INV-10, INV-14, INV-15, INV-16, INV-19 | FAIL if present |

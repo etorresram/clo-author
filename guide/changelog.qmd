@@ -3,71 +3,7 @@ title: "What's New"
 subtitle: "Release History"
 ---
 
-**Versioning:** CalVer (YY.MM) --- one version per month maximum. Git commits provide granularity within a release.
-
----
-
-# 26.05 --- May 2026 {#r2605}
-
-## HTML Report Pipeline
-
-Two Python generators produce self-contained interactive HTML from agent markdown output:
-
-- **`scripts/generate_dashboard.py`** --- project-level overview (manuscript sections, data, code, quality scorecard, review history, active plans)
-- **`scripts/generate_html_report.py`** --- 5 detail report subcommands (peer-review, code-audit, strategy-review, quality-gate, literature)
-
-Shared design system in `templates/html/base/`. Dark mode, print support, collapsible sections, filter engine.
-
-## MAS Evolution v2
-
-Five architectural phases drawn from OxyGent, LangGraph, Data-to-Paper, MAR, and Cunningham's Referee 2:
-
-- **Permission Registry** --- centralized agent registry replacing hardcoded dispatch tables. Adding a new agent is a one-file change.
-- **Lifecycle Validation** --- PRE-dispatch and POST-completion checks with fail-fast.
-- **Writer Evolution** --- writer-critic rebuilt with 8 categories (voice fidelity, claim-source traceability INV-22). Writer hard gates: refuses Results without tables, refuses drafting without style guide, section-level approval checkpoints.
-- **Cold-Read Critics** --- all 7 critics evaluate blind (no round history). Dual-critic dispatch for gate artifacts.
-- **Pipeline Checkpointing** --- structured JSON state (`pipeline_state.json`) survives sessions. Execution traces with Mermaid graphs.
-- **Learning Loop** --- post-pipeline pattern detection (HIGH-PERF, FRICTION, ESCALATION). Learning promotion after 3+ project validation.
-
-## Skill-Centric Restructure
-
-Skills are now rich directories. Each skill folder contains templates, gotchas, references, and config. Agents slimmed to identity + voice + constraints only.
-
-- **76 new files** across 13 skill folders (templates, gotchas, references, config)
-- **15 agents slimmed** (total lines: 4,454 → 1,898, −57%)
-- **Three-level loading:** metadata (always) → SKILL.md (on trigger) → templates (on demand)
-- **Gotchas** --- every skill documents known failure points
-
-## Session-Scoped Guards
-
-- `/freeze [dirs]` --- blocks edits outside specified directories
-- `/careful` --- blocks destructive bash commands
-- Backed by `session-guard.py` PreToolUse hook; zero overhead when inactive
-
-## Quarto-First Talks
-
-`/talk create` defaults to Quarto RevealJS. Beamer via `--beamer`.
-
-## Guide Site
-
-9 pages rewritten with guide-writer voice (bold openings, problem-solution arcs, progressive disclosure). Thariqs aesthetic (ivory/clay/serif). agents.qmd compressed 603 → 205 lines. Skill-folder architecture documented. Nav reordered for user journey.
-
-## Also
-
-- CalVer adoption (YY.MM)
-- Rewind strategy in workflow.md
-- `pre-compact.py` exit code fix
-| `literature` | Zotero-like filterable bibliography (category, proximity, method filters, sort, search, copy-cite) |
-
-Shared design system in `templates/html/base/` (styles.css + components.js). Dark mode, print support, collapsible sections, filter engine. All skills auto-generate HTML after saving markdown reports.
-
-## Guide Site Overhaul
-
-Migrated from cyberpunk neon (dark, scanlines, pink/cyan glow) to the thariqs aesthetic (ivory background, clay accents, serif headings). All mermaid diagrams updated to match. Readability pass across all pages --- trimmed agent descriptions, broke up dense paragraphs, removed duplicate content.
-
----
-
-# 26.04.3 --- Theorist Pair, Personal Style Guide, Checkpoint {#r260403}
+# v4.2.0 --- Theorist Pair, Personal Style Guide, Checkpoint {#v420}
 
 *Released 2026-04-17*
 
@@ -103,7 +39,7 @@ Codifies compaction hygiene and adds a project-level session-handoff skill.
 
 ---
 
-# 26.04.2 --- Modern LaTeX Stack {#r260402}
+# v4.1.1 --- Modern LaTeX Stack {#v411}
 
 *Released 2026-04-11*
 
@@ -131,7 +67,7 @@ Promoted from Recommended to Required. Writer-critic now deducts -2 for missing 
 
 ---
 
-# 26.04.1 --- Enforcement Layer {#r260401}
+# v4.1.0 --- Enforcement Layer {#v41}
 
 *Released 2026-04-09*
 
@@ -162,7 +98,7 @@ Auto-lints R, Python, and Julia files on every Edit or Write operation. Advisory
 
 ---
 
-# 26.04 --- Paper-Type Architecture {#r2604}
+# v4.0.0 --- Paper-Type Architecture {#v4}
 
 *Released 2026-04-08*
 
@@ -193,9 +129,9 @@ New in the Coder and Coder-critic, derived from C++ Core Guidelines:
 
 ## Scope: Back to Economics
 
-The 26.03.4 release claimed to serve "all empirical social science." That was too broad --- the pipeline's agents, rules, and section templates are built for economics.
+The v3.0 release claimed to serve "all empirical social science." That was too broad --- the pipeline's agents, rules, and section templates are built for economics.
 
-26.04 is honest about this: **built for economics, adaptable to adjacent fields.** Finance, accounting, marketing, and management researchers can customize the domain profile and journal profiles. The 30 journal profiles across these fields are retained as useful reference data.
+v4.0 is honest about this: **built for economics, adaptable to adjacent fields.** Finance, accounting, marketing, and management researchers can customize the domain profile and journal profiles. The 30 journal profiles across these fields are retained as useful reference data.
 
 ## Profile-Aware Table Standards
 
@@ -236,18 +172,18 @@ Writer-critic deductions adjusted accordingly --- recommended items are reported
 
 ---
 
-# 26.03.6 --- 2026-03-24
+# v3.1.1 --- 2026-03-24
 
 Output organization setting (by-script default). Bug fixes for Paper/ → paper/ path migration, domain-profile path, plan mode in /new-project.
 
 ---
 
-# 26.03.5 --- 2026-03-23
+# v3.1.0 --- 2026-03-23
 
-Skill detail restoration --- 22 items lost in the 26.03 to 26.03.4 consolidation were restored while keeping 26.03.4 structure.
+Skill detail restoration --- 22 items lost in the v2→v3 consolidation were restored while keeping v3 structure.
 
 ---
 
-# 26.03.4 --- 2026-03-20
+# v3.0.0 --- 2026-03-20
 
 Major architecture redesign. Peer review simulation with Editor + dispositions + desk reject. 30 journal profiles. Demand-loaded references. Skill consolidation (26 → 10 commands). Scope clarification to economics.

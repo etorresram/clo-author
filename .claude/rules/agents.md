@@ -95,7 +95,16 @@ Round 3: Critic reviews → Worker fixes
 
 ### Escalation Routing
 
-Escalation targets are declared in each agent's entry in `.claude/rules/permissions.md` (ESCALATION_TARGET field). The Orchestrator reads this field when a pair hits 3 strikes.
+| Pair | Escalation Target | What Happens |
+|------|-------------------|--------------|
+| coder + coder-critic | strategist-critic | Re-evaluates whether the strategy memo is implementable |
+| data-engineer + coder-critic | strategist-critic | Re-evaluates whether the data specification is tractable |
+| writer + writer-critic | Orchestrator | Structural rewrite, not just polish |
+| strategist + strategist-critic | User | Fundamental design question — needs human judgment |
+| theorist + theorist-critic | User | Proof-level disagreement — user adjudicates whether the result holds |
+| librarian + librarian-critic | User | Scope disagreement — user decides breadth vs depth |
+| explorer + explorer-critic | User | Data feasibility deadlock — user decides resource trade-offs |
+| storyteller + storyteller-critic | User | Talk scope/format disagreement |
 
 ### Rules
 

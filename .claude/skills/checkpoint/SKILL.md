@@ -170,13 +170,6 @@ Entry format for project note journal:
 
 Keep it tight — 3–5 bullets per section max.
 
-### Step 4e. Refresh Project Dashboard
-
-Regenerate the project dashboard to capture latest session state:
-```bash
-python3 scripts/generate_dashboard.py
-```
-
 ### Step 5: Confirm
 
 Report what was saved:
@@ -186,7 +179,6 @@ Checkpoint saved:
 - Memory: [updated/created N files | no changes]
 - SESSION_REPORT.md: [entry added]
 - research_journal.md: [entry added | skipped — no agent work]
-- Dashboard: [refreshed]
 - Obsidian: [entry added to Project Name | not configured]
 ```
 
@@ -215,17 +207,6 @@ When invoked with `--setup-obsidian`:
 5. Confirm `.claude/state/` is in `.gitignore`.
 
 Do NOT run this on every checkpoint — only when the user explicitly opts in.
-
----
-
-## Bundled Resources
-
-| Resource | Path | What It Contains |
-|----------|------|-----------------|
-| Session report entry | `checkpoint/templates/session-report-entry.md` | Append format for SESSION_REPORT.md |
-| Research journal entry | `checkpoint/templates/research-journal-entry.md` | Append format for research_journal.md |
-| Memory entry types | `checkpoint/templates/memory-entry-types.md` | 4 memory types with when-to-save guidance |
-| Gotchas | `checkpoint/gotchas.md` | Known failure points and edge cases |
 
 ---
 

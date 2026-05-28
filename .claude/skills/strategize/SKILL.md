@@ -60,12 +60,7 @@ If research spec, literature review, or data assessment are missing, the Strateg
 5. If CRITICAL issues found, iterate (max 3 rounds per three-strikes)
 6. Save memo to `quality_reports/strategy_memo_[topic].md`
 7. Save review to `quality_reports/strategy_memo_[topic]_review.md`
-8. Generate HTML version and refresh dashboard:
-   ```bash
-   python3 scripts/generate_html_report.py strategy-review quality_reports/strategy_memo_[topic]_review.md
-   python3 scripts/generate_dashboard.py
-   ```
-9. **Save decision record** → `quality_reports/decisions/strategy_[topic].md`
+8. **Save decision record** → `quality_reports/decisions/strategy_[topic].md`
    Using `templates/decision-record.md`, record:
    - **Decision:** The chosen identification strategy (design + estimator)
    - **Alternatives:** Other designs the Strategist considered (e.g., IV, RDD, SC, selection-on-observables)
@@ -249,50 +244,10 @@ If strategy memo or paper type is missing, the Theorist flags it and asks before
 
 ---
 
-## Bundled Resources
-
-### Templates
-| File | Purpose |
-|------|---------|
-| `strategize/templates/pre-strategy-report.md` | Mandatory pre-check report before designing strategy |
-| `strategize/templates/strategy-memo.md` | Strategy memo output format (5 required sections) |
-| `strategize/templates/robustness-plan.md` | Ordered robustness checklist template |
-| `strategize/templates/theory-memo.md` | Theory section output format (assumptions, results, proofs) |
-| `strategize/templates/decision-record.md` | Template for documenting strategy decisions with alternatives |
-
-### Design Checklists
-| File | Design |
-|------|--------|
-| `strategize/templates/design-checklists/did.md` | Difference-in-Differences (parallel trends, staggered, estimator selection) |
-| `strategize/templates/design-checklists/iv.md` | Instrumental Variables (relevance, exclusion, monotonicity, LATE) |
-| `strategize/templates/design-checklists/rdd.md` | Regression Discontinuity (bandwidth, manipulation, balance) |
-| `strategize/templates/design-checklists/event-study.md` | Event Study (pre-trends, binning, heterogeneity-robust estimators) |
-| `strategize/templates/design-checklists/structural.md` | Structural Estimation (model environment, identification, counterfactuals) |
-| `strategize/templates/design-checklists/descriptive.md` | Descriptive/Measurement (construction, validation, decomposition) |
-
-### PAP Templates
-| File | Registry |
-|------|----------|
-| `strategize/templates/pap-templates/aea-rct.md` | AEA RCT Registry (most structured, all fields required) |
-| `strategize/templates/pap-templates/osf.md` | OSF (flexible, good for observational studies) |
-| `strategize/templates/pap-templates/egap.md` | EGAP (development/political science, governance emphasis) |
-
-### References
-| File | Purpose |
-|------|---------|
-| `strategize/references/pap-interview-flow.md` | 6-question guided interview for building a PAP interactively |
-
-### Gotchas
-| File | Purpose |
-|------|---------|
-| `strategize/gotchas.md` | Known failure points: design selection traps, memo pitfalls, PAP anti-patterns, theory-mode caveats |
-
----
-
 ## Principles
 
 - **Strategist proposes, strategist-critic critiques.** Adversarial pairing catches design flaws early.
-- **Theorist proves, theorist-critic checks the proof.** Proof validity gates everything downstream -- notation, citations, polish.
+- **Theorist proves, theorist-critic checks the proof.** Proof validity gates everything downstream — notation, citations, polish.
 - **Strategy memo is the contract.** Once approved, the Coder implements it faithfully.
 - **Catch problems before coding.** A flawed strategy caught now saves weeks of wasted analysis.
 - **Multiple strategies are OK.** Present trade-offs and let the user choose.

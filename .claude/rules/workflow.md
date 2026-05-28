@@ -91,11 +91,28 @@ Plan approved → orchestrator activates
 
 ### Agent Dispatch Rules
 
-The Orchestrator selects agents by reading `.claude/rules/permissions.md`. Each agent entry declares its PHASE, REQUIRES, and PARALLEL_GROUP. The Orchestrator matches the task to the appropriate PHASE and dispatches the agents whose REQUIRES are satisfied. Before dispatch, it runs PRE-validation per `.claude/rules/lifecycle.md`.
+The Orchestrator selects agents based on what the task requires:
+
+| Task Involves | Agents Dispatched |
+|--------------|-------------------|
+| Literature/references | librarian + librarian-critic |
+| Data sourcing | explorer + explorer-critic |
+| Data engineering | data-engineer + coder-critic |
+| Identification strategy | strategist + strategist-critic |
+| Formal theory (assumptions, theorems, proofs) | theorist + theorist-critic |
+| R/Python/Julia scripts | coder + coder-critic |
+| Paper manuscript | writer + writer-critic |
+| Peer review | Orchestrator → domain-referee + methods-referee |
+| Beamer talks | storyteller + storyteller-critic |
+| Replication package | verifier (submission mode) |
+| Compilation only | verifier (standard mode) |
 
 ### Parallel Dispatch
 
-Agents in the same PARALLEL_GROUP run concurrently when their REQUIRES are met. See `permissions.md` for the complete parallel group table.
+Independent phases run concurrently:
+- Literature and Data discovery run in parallel
+- Code and Paper execution run in parallel (after Strategy)
+- Presentation can run parallel with Peer Review
 
 ### Limits
 
@@ -138,23 +155,32 @@ When user says "just do it" / "handle it":
 
 ### Phase Dependencies
 
-Phase dependencies are declared in `.claude/rules/permissions.md`. Each agent's REQUIRES field specifies what must exist before it can be dispatched. The PHASE field determines sequencing. The PARALLEL_GROUP field determines which agents can run concurrently.
-
-Re-entry is allowed for all phases except Submission (terminal).
+| Phase | Requires | Can Re-enter? |
+|-------|----------|---------------|
+| Discovery | Research idea | Always — librarian is persistent |
+| Strategy | At least one of: literature review OR data assessment | Yes — new data or literature can trigger re-strategy |
+| Execution (Code) | Approved strategy (strategist-critic >= 80) | Yes — strategy revision triggers re-coding |
+| Execution (Write) | Approved code (coder-critic >= 80) | Yes — new results trigger rewriting |
+| Peer Review | Approved paper (writer-critic >= 80) + approved code | Yes — major revisions loop back |
+| Submission | Orchestrator accepts + Verifier PASS + overall >= 95 | No — terminal |
+| Presentation | Approved paper (can run parallel with Peer Review) | Yes — paper revisions trigger talk updates |
 
 ### How It Works
 
-The Orchestrator reads `permissions.md` before dispatching any agent. If an agent's REQUIRES are satisfied, it can activate — regardless of whether earlier phases are "complete."
+The Orchestrator checks the dependency graph before dispatching any agent. If a phase's inputs are satisfied, it can activate — regardless of whether earlier phases are "complete."
 
 **Example — entering mid-pipeline:**
-You already have data and a draft paper. You can enter at Strategy (skip Discovery) or even at Peer Review (skip Execution). The Orchestrator checks REQUIRES, not phase numbers.
+You already have data and a draft paper. You can enter at Strategy (skip Discovery) or even at Peer Review (skip Execution). The Orchestrator checks dependencies, not phase numbers.
 
 **Example — targeted re-entry:**
 A referee says "control for X." The Orchestrator routes back to coder (not through the full pipeline), coder-critic reviews, writer updates, writer-critic reviews the update, then back to peer review.
 
 ### Parallel Activation
 
-Agents in the same PARALLEL_GROUP run concurrently when their REQUIRES are met. See `permissions.md` for the complete parallel group table.
+Independent phases run concurrently:
+- Literature (librarian + librarian-critic) and Data (explorer + explorer-critic) run in parallel
+- Code (coder + coder-critic) and Paper (writer + writer-critic) run in parallel after Strategy
+- Presentation can run parallel with Peer Review
 
 ---
 
@@ -242,22 +268,10 @@ The pre-compact hook reminds you of this checklist.
 **After Compression:**
 First message should be: "Resuming after compression. Last task: [read most recent plan + git log + last SESSION_REPORT entry]. Status: [next step]."
 
-### Rewind Strategy
-
-Choose the right context management action:
-
-- **Rewind** when Claude took a wrong approach -- removes the failed attempt from context entirely. Re-prompt with constraints upfront. Strictly superior to correction when the entire approach was wrong.
-- **Correct** when the approach was right but a detail was wrong ("use state-level clustering") -- the context of the prior attempt is useful.
-- **Compact** when context is bloated but the current trajectory is correct.
-- **Clear** when you need a fresh start on a new task.
-
-Rewind keeps failed exploration out of context, saving tokens and avoiding confusion on subsequent turns.
-
 ### Session Recovery
 
 After compression or a new session, in order:
-0. **Read pipeline state:** If `quality_reports/pipeline_state.json` exists, read it to determine: current phase, completed agents (with scores), in-progress agents (with round count and remaining issues), pending agents, and any blocking conditions. This is faster and more reliable than reconstructing state from prose logs.
-1. **Read the most recent checkpoint artifacts:** tail of `SESSION_REPORT.md`, tail of `quality_reports/research_journal.md`, and — if `.claude/state/obsidian-config.md` exists and Obsidian MCP is connected — the latest project-note journal entry
-2. Read `CLAUDE.md` + most recent plan in `quality_reports/plans/`
+0. **Read the most recent checkpoint artifacts:** tail of `SESSION_REPORT.md`, tail of `quality_reports/research_journal.md`, and — if `.claude/state/obsidian-config.md` exists and Obsidian MCP is connected — the latest project-note journal entry
+1. Read `CLAUDE.md` + most recent plan in `quality_reports/plans/`
 2. Check `git log --oneline -10` and `git diff`
 3. State what you understand the current task to be

@@ -89,12 +89,6 @@ Dispatch **coder-critic** agent — run the full 12-category checklist:
 If strategy memo exists, cross-reference code against stated design.
 Save report to `quality_reports/[script]_code_review.md`.
 
-Generate HTML version and refresh dashboard:
-```bash
-python3 scripts/generate_html_report.py code-audit quality_reports/[script]_code_review.md
-python3 scripts/generate_dashboard.py
-```
-
 ### Step 5: Fix Issues
 If coder-critic finds Critical or Major issues:
 1. Re-dispatch Coder with specific fixes (max 3 rounds)
@@ -191,40 +185,11 @@ Inspired by Scott Cunningham's replication methodology: **if two independent imp
 
 ---
 
-## Bundled Resources
-
-### Templates
-| File | Purpose |
-|------|---------|
-| `analyze/templates/pre-code-report.md` | Mandatory pre-check report format before writing code |
-| `analyze/templates/paper-to-code-map.md` | Naming map protocol: paper notation to code variables |
-| `analyze/templates/r-script-structure.R` | Boilerplate R script scaffold following INV-14..19 |
-| `analyze/templates/python-script-structure.py` | Boilerplate Python script scaffold |
-| `analyze/templates/results-summary.md` | Mandatory results summary output for writer handoff |
-
-### References
-| File | Purpose |
-|------|---------|
-| `analyze/references/table-standards.md` | Full table formatting standards: booktabs, coefficient display, panel structure, R packages, file naming |
-| `analyze/references/figure-standards.md` | Full figure formatting standards: themes, colors, axis labels, export settings, common plot types |
-
-### Config
-| File | Purpose |
-|------|---------|
-| `analyze/config/replication-tolerances.json` | Tolerances for dual-language replication comparison (point estimates, SEs, p-values) |
-
-### Gotchas
-| File | Purpose |
-|------|---------|
-| `analyze/gotchas.md` | Known failure points: R package quirks, numerical issues, output traps, cross-language divergence sources |
-
----
-
 ## Principles
 - **Reproduce, don't guess.** If the user specifies a regression, run exactly that.
 - **Show your work.** Print summary statistics before jumping to regressions.
 - **Strategy alignment.** If strategy memo exists, code MUST implement it faithfully.
 - **Worker-critic pairing.** Coder creates, coder-critic critiques. Never skip review.
-- **saveRDS everything.** Every computed object gets saved via `saveRDS()` for downstream use -- model fits, cleaned data frames, summary statistics, not just final tables.
+- **saveRDS everything.** Every computed object gets saved via `saveRDS()` for downstream use — model fits, cleaned data frames, summary statistics, not just final tables.
 - **Publication-ready output.** Tables and figures directly includable in the paper.
 - **Cross-language convergence.** When `--dual` is used, divergence is a bug until proven otherwise.

@@ -2,64 +2,9 @@
 
 All notable changes to the Clo-Author are documented here.
 
-**Versioning:** CalVer (YY.MM) — one version per month maximum. Git commits provide granularity within a release. Releases before 26.05 used semver tags.
-
 ---
 
-## [26.05] — May 2026
-
-### HTML Report Pipeline
-
-Two Python generators produce self-contained interactive HTML from agent markdown output:
-
-- **`scripts/generate_dashboard.py`** — project-level overview (manuscript sections, data, code, quality scorecard, review history, active plans)
-- **`scripts/generate_html_report.py`** — 5 detail report subcommands (peer-review, code-audit, strategy-review, quality-gate, literature)
-
-Shared design system in `templates/html/base/` (styles.css + components.js). Dark mode, print support, collapsible sections, filter engine.
-
-### MAS Evolution v2
-
-Five architectural phases drawn from OxyGent, LangGraph, Data-to-Paper, MAR, and Cunningham's Referee 2:
-
-- **Permission Registry** — centralized agent registry (`permissions.md`) replacing hardcoded dispatch tables. Adding a new agent is a one-file change.
-- **Lifecycle Validation** — PRE-dispatch and POST-completion handoff checks with fail-fast (`lifecycle.md`)
-- **Writer Evolution** — writer-critic rebuilt with 8 categories (voice fidelity, claim-source traceability INV-22). Writer hard gates: refuses Results without tables, refuses drafting without style guide, section-level approval checkpoints.
-- **Cold-Read Critics** — all 7 critics evaluate blind (no round history). Dual-critic dispatch for gate artifacts.
-- **Pipeline Checkpointing** — structured JSON state (`pipeline_state.json`) survives sessions. Execution traces with Mermaid graphs.
-- **Learning Loop** — post-pipeline pattern detection (HIGH-PERF, FRICTION, ESCALATION). Learning promotion after 3+ project validation.
-
-### Skill-Centric Restructure
-
-Skills are now rich directories — not thin dispatchers. Each skill folder contains templates, gotchas, references, and config. Agents slimmed to identity + voice + constraints only.
-
-- **76 new template/reference/config files** across 13 skill folders
-- **15 agents slimmed** (total lines: 4,454 → 1,898, −57%)
-- **Three-level progressive loading:** metadata (always) → SKILL.md (on trigger) → templates (on demand)
-- **Gotchas as first-class content** — every skill documents known failure points
-
-### Session-Scoped Guards
-
-- `/freeze [dirs]` — blocks Edit/Write outside specified directories for the session
-- `/careful` — blocks destructive bash commands for the session
-- `session-guard.py` PreToolUse hook enforces both; zero overhead when inactive
-
-### Quarto-First Talks
-
-`/talk create` now defaults to Quarto RevealJS. Beamer available via `--beamer` flag.
-
-### Guide Site
-
-9 pages rewritten with guide-writer voice (bold openings, problem-solution arcs, progressive disclosure). Migrated to thariqs aesthetic (ivory/clay/serif). agents.qmd compressed 603 → 205 lines. Skill-folder architecture documented. Nav reordered for user journey.
-
-### Also
-
-- CalVer adoption (YY.MM)
-- Rewind strategy added to workflow.md
-- `pre-compact.py` exit code fix (was blocking compaction)
-
----
-
-## [26.04.3] — 2026-04-17 — Theorist Pair, Personal Style Guide, Checkpoint
+## [4.2.0] — 2026-04-17 — Theorist Pair, Personal Style Guide, Checkpoint
 
 Three feature additions inspired by parallel work in the Claude-Code-for-economists space (Goldsmith-Pinkham's Markus Academy series) and by a theorist pair developed in the bad-controls project. Generalized and wired into the scaffold.
 
@@ -107,7 +52,7 @@ Codifies compaction hygiene and adds a project-level session-handoff skill.
 
 ---
 
-## [26.04.2] — 2026-04-11 — Modern LaTeX Stack
+## [4.1.1] — 2026-04-11 — Modern LaTeX Stack
 
 Modernizes the LaTeX infrastructure: automated builds, modern table engine, smart cross-references, and CI compilation. All changes are Overleaf-compatible.
 
@@ -142,7 +87,7 @@ Modernizes the LaTeX infrastructure: automated builds, modern table engine, smar
 
 ---
 
-## [26.04.1] — 2026-04-09 — Enforcement Layer
+## [4.1.0] — 2026-04-09 — Enforcement Layer
 
 Adds hard mechanical enforcement underneath the existing creative orchestration. Agents still do judgment work; the new layer catches grep-able violations before judgment is even needed. Inspired by contract-driven, grep-verified patterns from defensive engineering.
 
@@ -184,7 +129,7 @@ Adds hard mechanical enforcement underneath the existing creative orchestration.
 
 ---
 
-## [26.04] — 2026-04-08 — Paper-Type Architecture
+## [4.0.0] — 2026-04-08 — Paper-Type Architecture
 
 Every agent now knows whether it's working on a reduced-form, structural, theory+empirics, or descriptive paper — and adapts accordingly.
 
@@ -241,7 +186,7 @@ Every agent now knows whether it's working on a reduced-form, structural, theory
 
 ---
 
-## [26.03.6] — 2026-03-24
+## [3.1.1] — 2026-03-24
 
 ### Output Organization
 - Added `Output Organization` setting to CLAUDE.md (by-script or by-purpose)
@@ -257,11 +202,11 @@ Every agent now knows whether it's working on a reduced-form, structural, theory
 
 ---
 
-## [26.03.5] — 2026-03-23
+## [3.1.0] — 2026-03-23
 
-### Skill Detail Restoration — 26.02.1 Depth Returns to 26.03.4
+### Skill Detail Restoration — v1.0 Depth Returns to v3.0
 
-The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6 skills. This release restores all 22 lost items while keeping the 26.03.4 structure.
+The v2.0→v3.0 consolidation accidentally stripped practical detail from 6 skills. This release restores all 22 lost items while keeping the v3.0 structure.
 
 **`/discover`:**
 - Restored proximity scoring (1-5 scale) for literature papers
@@ -310,7 +255,7 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 
 ---
 
-## [26.03.4] — 2026-03-20
+## [3.0.0] — 2026-03-20
 
 ### Scope Clarification
 - clo-author is built for empirical economics; adaptable to adjacent fields (finance, accounting, marketing, management) via domain profile
@@ -364,11 +309,11 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 - Added `[YOUR FIELD]` placeholder to CLAUDE.md and starter prompt
 - Agent prompts made field-neutral — read field from `.claude/references/domain-profile.md` (defaults to economics)
 - Deleted archived agents (16 files) and archived skills (20+ files)
-- Guide and documentation fully updated for 26.03.4
+- Guide and documentation fully updated for v3.0
 
 ---
 
-## [26.03.3] — 2026-03-07
+## [2.0.3] — 2026-03-07
 
 ### Working Paper Format Rule
 
@@ -378,7 +323,7 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 
 ---
 
-## [26.03.2] — 2026-03-07
+## [2.0.2] — 2026-03-07
 
 ### Figures & Tables Rules
 
@@ -388,7 +333,7 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 
 ---
 
-## [26.03.1] — 2026-03-05
+## [2.0.1] — 2026-03-05
 
 ### Cross-Language Replication
 
@@ -400,7 +345,7 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 
 ---
 
-## [26.03] — 2026-03-05
+## [2.0.0] — 2026-03-05
 
 **The Great Restructure.** 16-agent worker-critic system, journal-calibrated referees, consolidated rules, 6-page guide with command reference dictionary.
 
@@ -459,7 +404,7 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 
 ---
 
-## [26.02.2] — 2026-02-25–26
+## [1.0.1] — 2026-02-25–26
 
 ### Adversarial Architecture
 
@@ -473,7 +418,7 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 
 ---
 
-## [26.02.1] — 2026-02-08–15
+## [1.0.0] — 2026-02-08–15
 
 ### Research Workflow
 
@@ -494,7 +439,7 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 
 ---
 
-## [26.02] — 2026-02-06–07
+## [0.1.0] — 2026-02-06–07
 
 ### Initial Release
 
@@ -507,21 +452,10 @@ The 26.03 to 26.03.4 consolidation accidentally stripped practical detail from 6
 
 ---
 
-<!-- Note: Releases before 26.05 used semver git tags. Comparison links below
-     reference those original tags, which remain in the repository. -->
-
-[26.05]: https://github.com/hugosantanna/clo-author/compare/v4.2.0...v4.3.0
-[26.04.3]: https://github.com/hugosantanna/clo-author/compare/v4.1.1...v4.2.0
-[26.04.2]: https://github.com/hugosantanna/clo-author/compare/v4.1.0...v4.1.1
-[26.04.1]: https://github.com/hugosantanna/clo-author/compare/v4.0.0...v4.1.0
-[26.04]: https://github.com/hugosantanna/clo-author/compare/v3.1.1...v4.0.0
-[26.03.6]: https://github.com/hugosantanna/clo-author/compare/v3.1.0...v3.1.1
-[26.03.5]: https://github.com/hugosantanna/clo-author/compare/v3.0.0...v3.1.0
-[26.03.4]: https://github.com/hugosantanna/clo-author/compare/v2.0.3...v3.0.0
-[26.03.3]: https://github.com/hugosantanna/clo-author/compare/v2.0.2...v2.0.3
-[26.03.2]: https://github.com/hugosantanna/clo-author/compare/v2.0.1...v2.0.2
-[26.03.1]: https://github.com/hugosantanna/clo-author/compare/v2.0.0...v2.0.1
-[26.03]: https://github.com/hugosantanna/clo-author/compare/v1.0.1...v2.0.0
-[26.02.2]: https://github.com/hugosantanna/clo-author/compare/v1.0.0...v1.0.1
-[26.02.1]: https://github.com/hugosantanna/clo-author/compare/v0.1.0...v1.0.0
-[26.02]: https://github.com/hugosantanna/clo-author/commits/v0.1.0
+[4.1.0]: https://github.com/hugosantanna/clo-author/compare/v4.0.0...v4.1.0
+[2.0.2]: https://github.com/hugosantanna/clo-author/compare/v2.0.1...v2.0.2
+[2.0.1]: https://github.com/hugosantanna/clo-author/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/hugosantanna/clo-author/compare/v1.0.1...v2.0.0
+[1.0.1]: https://github.com/hugosantanna/clo-author/compare/v1.0.0...v1.0.1
+[1.0.0]: https://github.com/hugosantanna/clo-author/compare/v0.1.0...v1.0.0
+[0.1.0]: https://github.com/hugosantanna/clo-author/commits/v0.1.0

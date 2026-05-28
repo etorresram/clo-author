@@ -8,12 +8,20 @@
 
 ### Weighted Aggregation
 
-The overall project score that gates submission (>= 95) is a weighted aggregate. Each agent's QUALITY_WEIGHT is declared in `.claude/rules/permissions.md`.
+The overall project score that gates submission (>= 95) is a weighted aggregate:
 
-The Orchestrator reads the registry to compute the weighted average:
-- Sum each agent's critic score multiplied by its declared weight
-- Theory weight applies only when the theorist agent was dispatched (see CONDITIONAL flag in `permissions.md`)
-- If a component hasn't been scored, exclude it and renormalize remaining weights
+| Component | Weight | Source Agent |
+|-----------|--------|-------------|
+| Literature coverage | 10% | librarian-critic's score of librarian |
+| Data quality | 10% | explorer-critic's score of explorer |
+| Identification validity | 25% | strategist-critic's score of strategist |
+| Theory (when present) | 20% | theorist-critic's score of theorist |
+| Code quality | 15% | coder-critic's score of coder |
+| Paper quality | 25% | Average of domain-referee + methods-referee scores |
+| Manuscript polish | 10% | writer-critic's score of writer |
+| Replication readiness | 5% | verifier pass/fail (0 or 100) |
+
+**Theory weight applies only to papers with a formal theory section** (econometric methods, theory+empirics, structural identification, or methodological reduced-form). For applied papers using off-the-shelf estimators, the Theory row is excluded and remaining weights renormalize per the rule below.
 
 ### Minimum Per Component
 
